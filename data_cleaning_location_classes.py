@@ -39,6 +39,7 @@
 
 
 import ast
+import collections
 from datetime import datetime
 from functools import partial
 import gensim
@@ -622,15 +623,16 @@ class LDAPreparation(object):
                                                                           self.ngram_min_count, self.ngram_threshold,
                                                                           ngram_type='tri')
 
-        def trylambda(value): #flatten single tweets indices
-            try:
-                return list(it.chain(*value))
-            except (ValueError, TypeError):
-                return value
+        def flatten_lists(l): #see: https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
+            for el in l:
+                if isinstance(el, collections.Iterable) and not isinstance(el, (str, bytes)):
+                    yield from flatten_lists(el)
+                else:
+                    yield el
 
-        lda_all_tweets_pooled['index'] = lda_all_tweets_pooled['index'].apply(lambda x: trylambda(x))
-        pd.set_option('display.max_rows', 5000)
-        print(lda_all_tweets_pooled['index'])
+        # flatten indices nested list: single tweets indices were appended as list, producing unwanted nested lists that
+        # must be flattend.
+        lda_all_tweets_pooled['index'] = lda_all_tweets_pooled['index'].apply(lambda x: list(flatten_lists(x)))
         self.lda_all_tweets_pooled = lda_all_tweets_pooled #all tweets which are used for the next steps
 
         return
@@ -729,7 +731,7 @@ class LDAPreparation(object):
         for i in topic_numbers_to_fit:
             res.append(train_a_lda_and_compute_coherence_values(corpus, id2word=dic_id2word, num_topics=i,
                                                                 n_jobs=self.n_jobs))
-            print(i)
+            print('Done: Model with ' + str(i) + ' Topics trained!')
             print(datetime.now())
 
         # sort results by best coherence score:
@@ -781,15 +783,10 @@ class LDAPreparation(object):
 
         # get a set of all, for-pooling-used tweets:
         indices_of_pooled_unique_tweets = []
-        print(self.lda_all_tweets_pooled)
-        print(len(self.lda_all_tweets_pooled))
-
         for i in range(len(self.lda_all_tweets_pooled)):
             if type(self.lda_all_tweets_pooled['index'].iloc[i]) is list: #in case index is from as single appended tweet
-                print(self.lda_all_tweets_pooled['index'].iloc[i])
                 indices_of_pooled_unique_tweets.extend(self.lda_all_tweets_pooled['index'].iloc[i])
             else:
-                print(self.lda_all_tweets_pooled['index'].iloc[i])
                 indices_of_pooled_unique_tweets.extend(self.lda_all_tweets_pooled['index'].iloc[i])
         indices_of_pooled_unique_tweets = list(set(indices_of_pooled_unique_tweets))  # get only the unique tweets
 
@@ -799,10 +796,10 @@ class LDAPreparation(object):
         # As for the pooled tweets, get also bigrams for the the tweets that produced the pooled tweets.
 
         # create corpus for the training set:
-        if ngram_type == 'bigrams':
+        if ngram_type == 'bi_grams':
             lda_df_trained_tweets['bi_grams'] = LDAPreparation.make_ngrams(lda_df_trained_tweets['text_tokens'],
                                                                            self.ngram_min_count, self.ngram_threshold)
-        if ngram_type == 'trigrams':
+        if ngram_type == 'tri_grams':
             lda_df_trained_tweets['tri_grams'] = LDAPreparation.make_ngrams(lda_df_trained_tweets['text_tokens'],
                                                                             self.ngram_min_count, self.ngram_threshold,
                                                                             ngram_type='tri')
@@ -811,10 +808,10 @@ class LDAPreparation(object):
         if ngram_type == 'pooled_tweets_token':
             ut_corpus = [dic_id2word.doc2bow(tweets_unique) for tweets_unique in lda_df_trained_tweets['text_tokens']]
 
-        if ngram_type == 'bigrams':
+        if ngram_type == 'bi_grams':
             ut_corpus = [dic_id2word.doc2bow(tweets_unique) for tweets_unique in lda_df_trained_tweets['bi_grams']]
 
-        if ngram_type == 'trigrams':
+        if ngram_type == 'tri_grams':
             ut_corpus = [dic_id2word.doc2bow(tweets_unique) for tweets_unique in lda_df_trained_tweets['tri_grams']]
 
         # __Details about the following blocks:__
@@ -837,8 +834,8 @@ class LDAPreparation(object):
                                                             minimum_probability=0.0)  # calculate the topic distribution for every tweet in test set
                 topic_vec = [top_topics[i][1] for i in
                              range(number_of_topics)]  # get the distribution values for all topics
-                topic_vec.extend(
-                    [len(lda_df_trained_tweets['text_tokens'].iloc[i])])  # include length of tweet as covariate, too
+                #topic_vec.extend(
+                #    [len(lda_df_trained_tweets['text_tokens'].iloc[i])])  # include length of tweet as covariate, too
                 train_vecs.append(topic_vec)
                 counter = counter + 1
 
@@ -874,6 +871,8 @@ class LDAPreparation(object):
             else:
                 file_name = 'my_lda_df_trained_tweets_save_part_' + str(i + 1) + '.pkl'
                 file_to_save.to_csv(os.path.join(data_save_path, file_name))
+
+        self.lda_df_trained_tweets = lda_df_trained_tweets
 
         return
 
@@ -959,4 +958,5 @@ if __name__ == '__main__': #Mandatory for windows! see: https://stackoverflow.co
     #print(type(d.data))
     d.hashtag_pooling()
     d.lda_training(data_save_path=r'C:\Users\gilli\OneDrive\Desktop\test', models_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
-                   ngram_style='bigrams', topic_numbers_to_fit=[10], n_saved_top_models=1)
+                   ngram_style='bigrams', topic_numbers_to_fit=[3, 5], n_saved_top_models=2)
+    print(d.lda_df_trained_tweets)
