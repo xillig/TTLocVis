@@ -1,4 +1,6 @@
 #used in the script "LDA Preparation". STORE IT IN THE SCRIPTS FOLDER!
+##
+
 def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, single_tweet_vectorizer_fit_unpooled):
 
     from sklearn.metrics.pairwise import cosine_similarity
