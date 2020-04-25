@@ -108,6 +108,14 @@ class TwitterStreamer(StreamListener):
     # The Twitter API credentials shall be passed as a txt-file containing the necessary information
     # line by line in the following order: consumer key, consumer secret, access token, access secret.
 
+    #arguments:
+    # - auth_path: str: path of txt-file containing the users Twitter API credentials.
+    # - languages: list: language codes of desired language(s) of the streamed tweets content.
+    # - locations: list: box-coordinates for streaming locations. example: [-125,25,-65,48]
+    # - save_path: str: path to where the json files are saved.
+    # - extended: bool: Decide if only "extended tweets" are collected.
+    # - hashtag: bool: Decide if only tweets with min. one hashtag are collected.
+
     def __init__(self, auth_path, languages, locations, save_path=os.getcwd(), extended=True, hashtag=True):
         super(StreamListener, self).__init__()
         self.auth_path = auth_path  # path containing the Twitter API Information
@@ -221,17 +229,22 @@ class TwitterStreamer(StreamListener):
 
 
 
+
+
+
 # 2. Cleaner class
-##
-# # Contents of the script:
+# Contents of the class:
+# method "loading":
+# - loads json files
+# method "cleaning":
 # - Data cleaning: removing duplicates, removing quoted tweets and retweets.
 # - Text cleaning: removal of Hyperlink-embeddings and mentions (usernames), identify and handle hashtags and Emojis.
 # - Handling the location data: access bounding box coordinates and calculate its center.
 # - Accessing user meta-data for every tweet.
 # - Removing unnecessary data. 
-# -
+#
 
-# # Overview about all covarates that are availiable after running that script:
+# # Overview about all covariates that are available after running the "cleaning" method:
 # - created_at - timestamp of the creation of the corresponding tweet.
 # - extended_tweet - shows the complete text of a tweet if it is longer than 140 characters. Else None.
 # - id - the tweets id as integer. 
@@ -267,8 +280,17 @@ class TwitterStreamer(StreamListener):
 # # Read-in the Raw data:
 
 # __Details about the following blocks:__ 
-# At the beginning, all JSON files were read-in and merged together. This was necessary to ensure that only complete JSON strings were read. While streaming, it can sometimes happen that the stream stops during the saving process of a tweet or that an error occurs. In that case, an incomplete JSON string would be saved, which would lead to an error message. The script catches this error when reading-in the JSON files by checking the code for each tweet, provided in JSON-string format, on whether the tweets string is complete or not. If it is not, the incomplete string is ignored and the next one is read-in.
-# This is achieved with a try-except combination, in which the try block tries to read-in the JSON string by json.loads(), a function that decodes a JSON string. If this function returns a ValueError, the next iteration of the loop over all JSON strings calls the except block located in the try-except construct. In the following, the JSON file, which is assembled by individual JSON strings, is converted into a pandas DataFrame named raw_data and the data is given a first table structure.
+# At the beginning, all JSON files were read-in and merged together. This was necessary to ensure that only
+# complete JSON strings were read. While streaming, it can sometimes happen that the stream stops during
+# the saving process of a tweet or that an error occurs. In that case, an incomplete JSON string would be saved,
+# which would lead to an error message. The script catches this error when reading-in the JSON files by
+# checking the code for each tweet, provided in JSON-string format, on whether the tweets string is complete or not.
+# If it is not, the incomplete string is ignored and the next one is read-in.
+# This is achieved with a try-except combination, in which the try block tries to read-in the JSON string by
+# json.loads(), a function that decodes a JSON string. If this function returns a ValueError,
+# the next iteration of the loop over all JSON strings calls the except block located in the try-except construct.
+# In the following, the JSON file, which is assembled by individual JSON strings, is converted into a pandas
+# DataFrame named raw_data and the data is given a first table structure.
 
 # Combine all raw tweet-objects in JSON format (all JSONs that are in the specified folder):
 
@@ -277,6 +299,7 @@ class TwitterStreamer(StreamListener):
 # The tweets json-strings are separeted while beeing read in.
 
 # source: https://stackoverflow.com/questions/20400818/python-trying-to-deserialize-multiple-json-objects-in-a-file-with-each-object-s
+
 
 class Cleaner(object):
 
