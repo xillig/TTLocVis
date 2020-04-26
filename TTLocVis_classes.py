@@ -1173,3 +1173,4 @@ if __name__ == '__main__': #Mandatory for windows! see: https://stackoverflow.co
     d.lda_training(data_save_path=r'C:\Users\gilli\OneDrive\Desktop\test', models_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
                    ngram_style='bigrams', topic_numbers_to_fit=[3, 5], n_saved_top_models=2)
     print(d.lda_df_trained_tweets)
+    
