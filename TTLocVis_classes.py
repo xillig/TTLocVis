@@ -42,6 +42,7 @@ from urllib3.exceptions import ProtocolError
 from urllib3.exceptions import ReadTimeoutError
 import warnings
 
+
 # 1. Data Scraping: TwitterStreamer class
 
 # Contents of the class "TwitterStreamer"
@@ -50,8 +51,9 @@ import warnings
 
 # Additional information:
 # To be able to use Twitter data, one first needs to have access to it. Therefore, a Twitter Developer Account is
-# necessary to access the Twitter API. This account can be obtained through an application process on the Twitter website,
-# in which one has to enter his or her personal data and a description of the project one plans to use the Twitter data with.
+# necessary to access the Twitter API. This account can be obtained through an application process on the 
+# Twitter website, in which one has to enter his or her personal data and a description of the project one plans to 
+# use the Twitter data with.
 # In general, Twitter needs to ensure that its users' data is not used for activities that are harmful towards its
 # own users or third parties. Particularly sensitive are processes in which political discrimination could occur
 # through the creation of a profile of individual users by the developer account holder. For example,
@@ -71,7 +73,7 @@ import warnings
 # Set up the StreamListener object. For more information,
 # see: https://tweepy.readthedocs.io/en/latest/streaming_how_to.html
 
-# __Details about the following block:__
+# __Details about the class 'TwitterStreamer':__
 # The data handling method is "on_data". It is used to access every single tweet in raw form. As a result,
 # operations can be performed directly on the incoming raw data. Here, these are very simple
 # actions: A tweet, which is transmitted in the form of a JSON string, might be queried to include the substring
@@ -93,29 +95,25 @@ import warnings
 # file in the folder where the script “Data Scraping” itself is stored. It's name contains the respective
 # time of instantiation, in order to refer the streaming start time to the respective file.
 
-# Streaming: run the StreamListener object, collect tweets and handle errors
-# (assure streaming continues if errors occur)
-
-# sources: Pfaffenberger (2016): Twitter als Basis wissenschaftlicher Studien: Eine Bewertung
-# gängiger Erhebungs- und Analysemethoden der Twitter-Forschung
+# sources: 
+# Pfaffenberger (2016): Twitter als Basis wissenschaftlicher Studien: Eine Bewertung gängiger Erhebungs- und
+# Analysemethoden der Twitter-Forschung.
 # https://stackoverflow.com/questions/48034725/tweepy-connection-broken-incompleteread-best-way-to-handle-exception-or-can
 # https://github.com/tweepy/tweepy/issues/908
 
 
 class TwitterStreamer(StreamListener):
-    # ATTENTION: Authentication procedure: After getting an Twitter developer account, one has to verify him-/herself via
-    # the personal key, token and secrets. Tweepy is using this information to access the Twitter API.
+    # ATTENTION: Authentication procedure: After getting an Twitter developer account, one has to verify themselves
+    # via the personal key, token and secrets. Tweepy is using this information to access the Twitter API.
     # The Twitter API credentials shall be passed as a txt-file containing the necessary information
     # line by line in the following order: consumer key, consumer secret, access token, access secret.
-
-    #arguments:
-    # - auth_path: str: path of txt-file containing the users Twitter API credentials.
-    # - languages: list: language codes of desired language(s) of the streamed tweets content.
-    # - locations: list: box-coordinates for streaming locations. example: [-125,25,-65,48]
-    # - save_path: str: path to where the json files are saved.
-    # - extended: bool: Decide if only "extended tweets" are collected.
-    # - hashtag: bool: Decide if only tweets with min. one hashtag are collected.
-
+    # arguments:
+    # - auth_path (str): path of txt-file containing the users Twitter API credentials.
+    # - languages (list): language codes of desired language(s) of the streamed tweets content.
+    # - locations (list): box-coordinates for streaming locations. example: [-125,25,-65,48]
+    # - save_path (str): path to where the json files are saved. Default is the working directory
+    # - extended (bool): Decide if only "extended tweets" are collected. Default is True.
+    # - hashtag (bool): Decide if only tweets with min. one hashtag are collected. Default is True.
     def __init__(self, auth_path, languages, locations, save_path=os.getcwd(), extended=True, hashtag=True):
         super(StreamListener, self).__init__()
         self.auth_path = auth_path  # path containing the Twitter API Information
@@ -226,12 +224,6 @@ class TwitterStreamer(StreamListener):
         return
 
 
-
-
-
-
-
-
 # 2. Cleaner class
 # Contents of the class:
 # method "loading":
@@ -242,22 +234,29 @@ class TwitterStreamer(StreamListener):
 # - Handling the location data: access bounding box coordinates and calculate its center.
 # - Accessing user meta-data for every tweet.
 # - Removing unnecessary data. 
-#
+# - Tokenization and lemmarization of the tweets text
+# method "saving":
+# - save the processed tweets as pickle or csv as batches of 300.000 tweets each
 
-# # Overview about all covariates that are available after running the "cleaning" method:
-# - created_at - timestamp of the creation of the corresponding tweet.
+# The user might decide the create a Cleaner object for other analytical purposes than for this package. In that case
+# set "metadata=TRUE" when instancing an object to get access to all the covariates!
+
+# Overview about all covariates that are available after instancing a "Cleaner"-object using "metadata=TRUE"
+# (intended covariates are the ones available with default "metadata=FALSE"):
+# ----- created_at - timestamp of the creation of the corresponding tweet.
 # - extended_tweet - shows the complete text of a tweet if it is longer than 140 characters. Else None.
 # - id - the tweets id as integer. 
 # - id_str - the tweets id as string.
 # - place - sub-dictionary: contains information about the tweets associated location.
 # - source - hyperlink to the Twitter website, where the tweet object is stored.
-# - text - shows the complete text of a tweet, regardless of whether it’s longer than 140 characters or not.
+# ----- text - shows the complete text of a tweet, regardless of whether it’s longer than 140 characters or not.
+# ----- text_tokens - contains the created lemmatized tokens from "text".
 # - user - sub-dictionary: contains information about the tweets’ associated user.
 # - emojis - contains the emoji(s) of a tweet.
-# - hashtags - contains the hashtag(s) of a tweet (without “#”)
+# ----- hashtags - contains the hashtag(s) of a tweet (without “#”)
 # - bounding_box.coordinates_str - contains all bounding box coordinates as a string. Originates from place.
-# - center_coord_X - the X-coordinate of the center of the bounding box.
-# - center_coord_Y - the Y-coordinate of the center of the bounding box.
+# ----- center_coord_X - the X-coordinate of the center of the bounding box.
+# ----- center_coord_Y - the Y-coordinate of the center of the bounding box.
 # - retweet_count - number of retweets of the corresponding tweet.
 # - favorite_count - number of favorites of the corresponding tweet.
 # - user_created_at - timestamp of the users’ profile creation. Originates from user.
@@ -271,38 +270,20 @@ class TwitterStreamer(StreamListener):
 # - user_name - self-defined name for the user themselfs. Originates from user.
 # - user_screen_name - alias of the self-defined name for the user themselfs. Originates from user.
 # - user_statuses_count - number of tweets published by the user (incl. retweets). Originates from user.
-# 
-
-
-
-
-
-# # Read-in the Raw data:
-
-# __Details about the following blocks:__ 
-# At the beginning, all JSON files were read-in and merged together. This was necessary to ensure that only
-# complete JSON strings were read. While streaming, it can sometimes happen that the stream stops during
-# the saving process of a tweet or that an error occurs. In that case, an incomplete JSON string would be saved,
-# which would lead to an error message. The script catches this error when reading-in the JSON files by
-# checking the code for each tweet, provided in JSON-string format, on whether the tweets string is complete or not.
-# If it is not, the incomplete string is ignored and the next one is read-in.
-# This is achieved with a try-except combination, in which the try block tries to read-in the JSON string by
-# json.loads(), a function that decodes a JSON string. If this function returns a ValueError,
-# the next iteration of the loop over all JSON strings calls the except block located in the try-except construct.
-# In the following, the JSON file, which is assembled by individual JSON strings, is converted into a pandas
-# DataFrame named raw_data and the data is given a first table structure.
-
-# Combine all raw tweet-objects in JSON format (all JSONs that are in the specified folder):
-
-# Read-in the raw data:
-# Problem: the stream collects data in one file, therefore many different json-objects have to be read in.
-# The tweets json-strings are separeted while beeing read in.
-
-# source: https://stackoverflow.com/questions/20400818/python-trying-to-deserialize-multiple-json-objects-in-a-file-with-each-object-s
 
 
 class Cleaner(object):
 
+    # arguments:
+    # load_path (str): path containing the raw twitter json files
+    # data_save_name (str): name of the data saved to drive after processing without file-suffix.
+    # Default is 'my_cleaned_and_tokenized_data'
+    # languages (list): List of string codes for certain languages to filter for. Default is None.
+    # metadata (bool): Keep all covariates or only the ones necessary for the package. Default is 'False'
+    # min_tweet_len (int): Refilter for an minimal token amount after the cleaning process. Default is None.
+    # spacy_model (str): Choose the desired spacy model for tokenization. Non-default model installation tutorial and
+    # an overview about the supported languages can be found at https://spacy.io/usage/models.
+    # Default is the small "English" model called 'en_core_web_sm'.
     def __init__(self, load_path, data_save_name='my_cleaned_and_tokenized_data', languages=None, metadata=False,
                  min_tweet_len=None, spacy_model='en_core_web_sm'):
         self.data_save_name = data_save_name
@@ -315,6 +296,13 @@ class Cleaner(object):
         self.raw_data = self.cleaning()
 
     def loading(self):
+        # All JSON files are read-in and merged together. Is was necessary to ensure that only
+        # complete JSON strings were read. While streaming, it can sometimes happen that the stream stops during
+        # the saving process of a tweet or that an error occurs. In that case, an incomplete JSON string would be saved,
+        # which would lead to an error message. The script catches this error when reading-in the JSON files by
+        # checking the code for each tweet, provided in JSON-string format, on whether the tweets string is complete or not.
+        # If it is not, the incomplete string is ignored and the next one is read-in.
+        # source: https://stackoverflow.com/questions/20400818/python-trying-to-deserialize-multiple-json-objects-in-a-file-with-each-object-s
         json_data = []
         for filename in glob.glob(os.path.join(self.load_path, '*.json')):
             try:
@@ -330,7 +318,7 @@ class Cleaner(object):
                                 # Not yet a complete JSON value
                                 line += next(f)
 
-                        # do something with jfile
+                        # append the complete strings
                         json_data.append(json.loads(line))
             except:
                 next
@@ -344,34 +332,34 @@ class Cleaner(object):
         return df_data
 
     def cleaning(self):
-        # delete duplicates, check for US origin and language and polygon bounding_box-geotag:
         self.raw_data = self.raw_data.drop_duplicates('id')  # remove duplicates
         self.raw_data = self.raw_data[self.raw_data['is_quote_status'] == False]  # remove quoted statuses
         self.raw_data = self.raw_data[self.raw_data['retweeted'] == False]  # remove retweets
         if self.languages is not None:
-            self.raw_data = self.raw_data[self.raw_data['lang'] == self.languages]  # check for language
-        # getting the indexes, to check sub-json 'raw_data['place']':
+            for i in self.languages:
+                self.raw_data = self.raw_data[self.raw_data['lang'] == i]  # check for language
+        # getting the indices, to check sub-json 'raw_data['place']':
         self.raw_data['place'] = self.raw_data['place'].fillna('')  # handling the "None"-values
         self.raw_data = self.raw_data[self.raw_data['place'] != '']  # take only tweets with bounding_box-geodata
         place_df = json_normalize(self.raw_data['place'])  # read the geo-location sub-json in as data frame
-        poly_indices = place_df.index[place_df['bounding_box.type'] == 'Polygon'].to_numpy()  # check is location is
+        poly_indices = place_df.index[place_df['bounding_box.type'] == 'Polygon'].to_numpy()  # check if location is
         # available and turn indices object to numpy array.
 
         # get a sub-df with the conditions above met:
         self.raw_data = self.raw_data.iloc[poly_indices, :]
         place_df = place_df.iloc[poly_indices, :]
 
-        # if tweet is longer than 140 chars: The extended tweet-text must be submitted to the 'text' column:
-        indices_extw = np.array(self.raw_data[self.raw_data['extended_tweet'].notna()].index.tolist())  # get indices of
-        # extended tweets.
+        # if tweet is longer than 140 chars: The extended tweet-text is submitted to the 'text' column:
+        indices_extw = np.array(self.raw_data[self.raw_data['extended_tweet']
+                                .notna()].index.tolist())  # get indices of extended tweets.
         ex_tweet_df = self.raw_data['extended_tweet']  # get the extended tweets sub-json
         ex_tweet_df = json_normalize(ex_tweet_df[indices_extw])  # normalize it
         ex_tweet_df = ex_tweet_df['full_text']  # save the full text as list
         ex_tweet_df = pd.Series(ex_tweet_df)
         ex_tweet_df = pd.Series(ex_tweet_df.values,
-                                index=indices_extw)  # change the list to a Series and put the right indices on
+                                index=indices_extw)  # change the list to a Series and attach the right indices.
         self.raw_data.loc[indices_extw, 'text'] = ex_tweet_df[indices_extw]  # overwrite the data in 'text',
-        # where the tweet is extended.
+        # in cases where the tweet is 'extended'.
 
         # split the string at the occurrence of the embedded hyperlink and take the first part over all
         # entries (remove hyperlinks):
@@ -388,7 +376,7 @@ class Cleaner(object):
             l1 = pd.Series(l1)
             l1 = pd.Series(l1.values, index=indices)  # put the gathered values together with the old indices
             l1 = l1.rename('emojis')
-            self.raw_data = pd.concat([self.raw_data, l1], axis=1)  # concat the series with the emojis to our dataframe
+            self.raw_data = pd.concat([self.raw_data, l1], axis=1)  # concat the series with the emojis to the dataframe
 
         self.raw_data['text'] = self.raw_data['text'].apply(
             lambda x: x.encode('ascii', 'ignore').decode('ascii'))  # remove emojis from textfield
@@ -412,14 +400,8 @@ class Cleaner(object):
         l1 = pd.Series(l1)
         l1 = pd.Series(l1.values, index=indices)  # put the gathered values together with the old indices
         l1 = l1.rename('hashtags')
-        self.raw_data = pd.concat([self.raw_data, l1], axis=1)  # concat the series to our dataframe
+        self.raw_data = pd.concat([self.raw_data, l1], axis=1)  # concat the series to the dataframe
         self.raw_data['text'] = self.raw_data['text'].str.replace('#', '')
-
-        if self.min_tweet_len is not None:
-            # check the length of a tweet:
-            len_text = self.raw_data['text'].apply(lambda x: len(x))  # get the length of all text fields
-            self.raw_data = self.raw_data[
-                len_text > self.min_tweet_len]  # take only texts with more than 100 characters
 
         # append the location data:
         place_df = json_normalize(self.raw_data['place'])  # update 'place_df' to remaining numbers of tweets
@@ -427,9 +409,9 @@ class Cleaner(object):
         st = place_df['bounding_box.coordinates'].apply(lambda x: str(x))  # convert all entries to strings
         st = pd.Series(st)  # list to series
         st = pd.Series(st.values, index=indices)  # insert updated indices
-        st = st.str.replace('[', '')  # remove all unneeded symbols
+        st = st.str.replace('[', '')  # remove all unnecessary symbols
         st = st.str.replace(']', '')
-        st = st.apply(lambda x: re.split(',', x))  # split the string to isolate every number
+        st = st.apply(lambda x: re.split(',', x))  # split the string to isolate each number
         st = pd.DataFrame(st)
         st = st.rename(columns={0: "bounding_box.coordinates_str"})  # rename the column
 
@@ -444,14 +426,20 @@ class Cleaner(object):
 
         st['center_coord_X'] = (st['val1'] + st['val3']) / 2  # bounding box-center x-coordinate
         st['center_coord_Y'] = (st['val0'] + st['val4']) / 2  # bounding box-center y-coordinate
-        self.raw_data = pd.concat([self.raw_data, st], axis=1)  # append the X and Y coordinates to our dataframe
+        self.raw_data = pd.concat([self.raw_data, st], axis=1)  # append the X and Y coordinates to the dataframe
 
-        # Predicts part-of-speech tags, dependency labels, named entities and more.
-        # Tokenization:
+        # Tokenization (usage of static method):
         self.raw_data['text_tokens'] = self.raw_data['text'].apply(lambda x: Cleaner._tokenizer(self.spacy_model, x))
 
-        if self.metadata == True:
+        if self.min_tweet_len is not None:
+            # check the length of a tweet:
+            len_text = self.raw_data['text_tokens'].apply(lambda x: len(x))  # get the length of all text fields
+            self.raw_data = self.raw_data[
+                len_text > self.min_tweet_len]  # take only texts with more than 100 characters
+
+        if self.metadata:
             user_df = json_normalize(self.raw_data['user'])  # unpack the nested dict
+
             # pick interesting columns
             user_df = user_df.loc[:, ['created_at', 'description', 'favourites_count', 'followers_count',
                                       'friends_count', 'id', 'listed_count', 'location', 'name', 'screen_name',
@@ -487,11 +475,12 @@ class Cleaner(object):
 
     @staticmethod  # using static method, see: https://realpython.com/instance-class-and-static-methods-demystified/
     def _tokenizer(nlp, text):
-        #  "nlp" Object is used to create documents with linguistic annotations.
+        # "nlp" Object is used to create documents with linguistic annotations.
         doc = nlp(text)
 
-        # Create list of word tokens
-        token_list_general = []
+        # Create list of word tokens:
+        # remove stop-words, non-alphabethical words, punctuation, words shorter than three characters and every 
+        # word that contains the sub-string 'amp'. From these words, keep only Proper Nouns, Nouns, Adjectives and Verbs
         token_list_topic_model = []
         for token in doc:
             if (token.is_stop == False) & (token.is_alpha == True) & (token.pos_ != 'PUNCT') & (len(token) > 2) & (
@@ -501,11 +490,11 @@ class Cleaner(object):
 
         return token_list_topic_model
 
-    # _stat_func_caller = _tokenizer.__func__(spacy_model,b) #ensure callability of static method inside instance method, see:
-    # https://stackoverflow.com/questions/12718187/calling-class-staticmethod-within-the-class-body
+    # _stat_func_caller = _tokenizer.__func__(spacy_model,b) #ensure callability of static method inside instance 
+    # method, see: https://stackoverflow.com/questions/12718187/calling-class-staticmethod-within-the-class-body
 
     def saving(self, save_path, type='pkl'):
-
+        # save data as pickle or csv.
         _pack_size = 300000  # no of tweets saved in one go
         parts_to_save = math.ceil(len(self.raw_data) / _pack_size)  # calculate how many parts to save (rounds up)
         upper_bound = _pack_size
@@ -517,13 +506,26 @@ class Cleaner(object):
             if type == 'pkl':
                 file_to_save.to_pickle(os.path.join(save_path, self.data_save_name + '_part_' + str(i + 1) + '.pkl'))
             else:
-                file_to_save.to_csv(os.path.join(save_path, self.data_save_name + '_part_' + str(i + 1) + '.pkl'))
+                file_to_save.to_csv(os.path.join(save_path, self.data_save_name + '_part_' + str(i + 1) + '.csv'))
 
         return
 
 
-class LDAPreparation(object):
-    # self.data is the previous 'lda_df_full'!
+# 3. LDAAnalyzer class
+# Contents of the class:
+# method "loading":
+# - load cleaned data, if no "Cleaner" object is provided.
+# method "hashtag_pooling":
+# - pool tweets by hashtags using cosine similarity.
+# - create n-gram tokens
+# method "lda_training":
+# - train several LDA models on all tweets, decide for the n-best to be saved by coherence score
+# - save corpi, models and vocabularies.
+# - calculate topic distributions and save them.
+
+
+class LDAAnalyzer(object):
+
     def __init__(self, load_path=None, raw_data=None, n_jobs=2, cs_threshold=0.5, output_type='All', seed=1,
                  spacy_model='en_core_web_sm', ngram_min_count=10, ngram_threshold=300):
         self.load_path = load_path
@@ -545,12 +547,19 @@ class LDAPreparation(object):
         self.spacy_model = spacy_model
 
     def loading(self):
-        pickles = []
-        for filename in glob.glob(os.path.join(self.load_path, '*.pkl')):  # check the data in folder
-            pickles.append(pd.read_pickle(filename))
+        try:
+            pickles = []
+            for filename in glob.glob(os.path.join(self.load_path, '*.pkl')):  # check the data in folder
+                pickles.append(pd.read_pickle(filename))
+            data = pd.concat(pickles, sort=False, ignore_index=True)  # concat all pickles
 
-        lda_df_full = pd.concat(pickles, sort=False, ignore_index=True)  # concat all pkls
-        return lda_df_full
+        except:
+            csvs = []
+            for filename in glob.glob(os.path.join(self.load_path, '*.csv')):  # check the data in folder
+                csvs.append(pd.read_csv(filename))
+            data = pd.concat(csvs, sort=False, ignore_index=True)  # concat all pickles
+
+        return data
 
     def hashtag_pooling(self):
         self.data = self.data.loc[:,
@@ -825,18 +834,17 @@ class LDAPreparation(object):
         # Now, everything is finally ready for LDA training.
         #
 
-
         # example:
         # print(bigram_mod[lda_all_tweets_pooled['pooled_tweets_token'].iloc[3]])
 
         # make_(bi-)trigrams functions are provided as static methods!
-        lda_all_tweets_pooled['bi_grams'] = LDAPreparation.make_ngrams(lda_all_tweets_pooled['pooled_tweets_token'],
-                                                                        self.ngram_min_count, self.ngram_threshold)
-        lda_all_tweets_pooled['tri_grams'] = LDAPreparation.make_ngrams(lda_all_tweets_pooled['pooled_tweets_token'],
-                                                                          self.ngram_min_count, self.ngram_threshold,
-                                                                          ngram_type='tri')
+        lda_all_tweets_pooled['bi_grams'] = LDAAnalyzer.make_ngrams(lda_all_tweets_pooled['pooled_tweets_token'],
+                                                                    self.ngram_min_count, self.ngram_threshold)
+        lda_all_tweets_pooled['tri_grams'] = LDAAnalyzer.make_ngrams(lda_all_tweets_pooled['pooled_tweets_token'],
+                                                                     self.ngram_min_count, self.ngram_threshold,
+                                                                     ngram_type='tri')
 
-        def flatten_lists(l): #see: https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
+        def flatten_lists(l):  # see: https://stackoverflow.com/questions/2158395/flatten-an-irregular-list-of-lists
             for el in l:
                 if isinstance(el, collections.Iterable) and not isinstance(el, (str, bytes)):
                     yield from flatten_lists(el)
@@ -844,9 +852,9 @@ class LDAPreparation(object):
                     yield el
 
         # flatten indices nested list: single tweets indices were appended as list, producing unwanted nested lists that
-        # must be flattend.
+        # must be flattened.
         lda_all_tweets_pooled['index'] = lda_all_tweets_pooled['index'].apply(lambda x: list(flatten_lists(x)))
-        self.lda_all_tweets_pooled = lda_all_tweets_pooled #all tweets which are used for the next steps
+        self.lda_all_tweets_pooled = lda_all_tweets_pooled  # all tweets which are used for the next steps
 
         return
 
@@ -905,33 +913,34 @@ class LDAPreparation(object):
         def train_a_lda_and_compute_coherence_values(corpus, id2word, num_topics, n_jobs):
             with warnings.catch_warnings():
                 warnings.simplefilter('ignore')
-                lda = gensim.models.ldamulticore.LdaMulticore(corpus=corpus,
-                                                              # corpus — Stream of document vectors or sparse matrix of shape (num_terms, num_documents)
-                                                              id2word=id2word,
-                                                              # id2word – Mapping from word IDs to words.
-                                                              # It is used to determine the vocabulary size, as well as for debugging and topic printing.
-                                                              num_topics=num_topics,
-                                                              # num_topics — The number of requested latent topics to be extracted from the training corpus.
-                                                              random_state=100,
-                                                              # random_state — Either a randomState object or a seed to generate one. Useful for reproducibility.
-                                                              # update_every=1,
-                                                              # update_every — Number of documents to be iterated through for each update.
-                                                              # Set to 0 for batch learning, > 1 for online iterative learning.
-                                                              # NOT IN Lda.Multicore!!!
-                                                              chunksize=60000,
-                                                              # chunksize — Number of documents to be used in each training chunk.
-                                                              workers=n_jobs,
-                                                              # workers: number of physical cpu-cores. use core-number - 1
-                                                              passes=30,
-                                                              # passes — Number of passes through the corpus during training.
-                                                              # alpha='auto',
-                                                              # alpha — auto: Learns an asymmetric prior from the corpus
-                                                              # NOT IN Lda.Multicore!!!
-                                                              per_word_topics=True)
-                # per_word_topics — If True, the model also computes a list of topics, sorted in descending order of most
-                # likely topics for each word, along with their phi values multiplied by the feature-length (i.e. word count)
+                lda = gensim.models. \
+                    ldamulticore.LdaMulticore(corpus=corpus,
+                                              # corpus — Stream of document vectors or sparse matrix of shape
+                                              # (num_terms, num_documents)
+                                              id2word=id2word,
+                                              # id2word – Mapping from word IDs to words.
+                                              # It is used to determine the vocabulary size, as well as for debugging
+                                              # and topic printing.
+                                              num_topics=num_topics,
+                                              # num_topics — The number of requested latent topics to be extracted from
+                                              # the training corpus.
+                                              random_state=100,
+                                              # random_state — Either a randomState object or a seed to generate one.
+                                              # Useful for reproducibility.
+                                              chunksize=60000,
+                                              # chunksize — Number of documents to be used in each training chunk.
+                                              workers=n_jobs,
+                                              # workers: number of physical cpu-cores. use core-number - 1
+                                              passes=30,
+                                              # passes — Number of passes through the corpus during training.
+                                              per_word_topics=True
+                                              # per_word_topics — If True, the model also computes a list of topics,
+                                              # sorted in descending order of most likely topics for each word, along
+                                              # with their phi values multiplied by the feature-length (i.e. word count)
+                                              )
 
-            # calculate c_v coherence. see: https://radimrehurek.com/gensim/models/coherencemodel.html and http://svn.aksw.org/papers/2015/WSDM_Topic_Evaluation/public.pdf
+            # calculate c_v coherence. see: https://radimrehurek.com/gensim/models/coherencemodel.html and
+            # http://svn.aksw.org/papers/2015/WSDM_Topic_Evaluation/public.pdf
             coherence_model_lda = CoherenceModel(model=lda, texts=self.lda_all_tweets_pooled[ngram_type],
                                                  dictionary=id2word, coherence='c_v')
 
@@ -997,7 +1006,8 @@ class LDAPreparation(object):
         # get a set of all, for-pooling-used tweets:
         indices_of_pooled_unique_tweets = []
         for i in range(len(self.lda_all_tweets_pooled)):
-            if type(self.lda_all_tweets_pooled['index'].iloc[i]) is list: #in case index is from as single appended tweet
+            if type(self.lda_all_tweets_pooled['index'].iloc[
+                        i]) is list:  # in case index is from as single appended tweet
                 indices_of_pooled_unique_tweets.extend(self.lda_all_tweets_pooled['index'].iloc[i])
             else:
                 indices_of_pooled_unique_tweets.extend(self.lda_all_tweets_pooled['index'].iloc[i])
@@ -1010,12 +1020,12 @@ class LDAPreparation(object):
 
         # create corpus for the training set:
         if ngram_type == 'bi_grams':
-            lda_df_trained_tweets['bi_grams'] = LDAPreparation.make_ngrams(lda_df_trained_tweets['text_tokens'],
-                                                                           self.ngram_min_count, self.ngram_threshold)
+            lda_df_trained_tweets['bi_grams'] = LDAAnalyzer.make_ngrams(lda_df_trained_tweets['text_tokens'],
+                                                                        self.ngram_min_count, self.ngram_threshold)
         if ngram_type == 'tri_grams':
-            lda_df_trained_tweets['tri_grams'] = LDAPreparation.make_ngrams(lda_df_trained_tweets['text_tokens'],
-                                                                            self.ngram_min_count, self.ngram_threshold,
-                                                                            ngram_type='tri')
+            lda_df_trained_tweets['tri_grams'] = LDAAnalyzer.make_ngrams(lda_df_trained_tweets['text_tokens'],
+                                                                         self.ngram_min_count, self.ngram_threshold,
+                                                                         ngram_type='tri')
 
         # IMPORTANT! use the pre-trained "dic_id2word*"-objects!
         if ngram_type == 'pooled_tweets_token':
@@ -1044,10 +1054,10 @@ class LDAPreparation(object):
                 if counter % 500 == 0:
                     print(counter)
                 top_topics = lda_model.get_document_topics(ut_corpus[i],
-                                                            minimum_probability=0.0)  # calculate the topic distribution for every tweet in test set
+                                                           minimum_probability=0.0)  # calculate the topic distribution for every tweet in test set
                 topic_vec = [top_topics[i][1] for i in
                              range(number_of_topics)]  # get the distribution values for all topics
-                #topic_vec.extend(
+                # topic_vec.extend(
                 #    [len(lda_df_trained_tweets['text_tokens'].iloc[i])])  # include length of tweet as covariate, too
                 train_vecs.append(topic_vec)
                 counter = counter + 1
@@ -1089,9 +1099,6 @@ class LDAPreparation(object):
 
         return
 
-
-
-
     # Building ngrams:
     # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
 
@@ -1102,10 +1109,10 @@ class LDAPreparation(object):
         # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
         bigram = Phrases(corpus, min_count=ngram_min_count,
                          threshold=ngram_threshold)  # higher threshold -> fewer phrases.
-        #trigram-model:
+        # trigram-model:
         if ngram_type == 'tri':
             trigram = Phrases(bigram[corpus], min_count=ngram_min_count,
-                            threshold=ngram_threshold)
+                              threshold=ngram_threshold)
 
         # Faster way to get a sentence clubbed as a bigram
         bigram_mod = Phraser(bigram)
@@ -1113,7 +1120,6 @@ class LDAPreparation(object):
             trigram_mod = Phraser(trigram)
             return [trigram_mod[bigram_mod[hashtag_pool]] for hashtag_pool in corpus]
         return [bigram_mod[hashtag_pool] for hashtag_pool in corpus]
-
 
 
 # parallel called function for cosine similarity calculation:
@@ -1146,31 +1152,30 @@ def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, sing
         return  # return 'None' if cs of single tweet couldn't pass the threshold
 
 
-
 ##################################################################################################
 
-#import sys
-#import pandas as pd
-#sys.path.append(r'C:\Users\gilli\PycharmProjects\TopViz\self-defined classes') #add path to be able to import produced classes.
-#from data_scraping_classes import WriteFileListener
-#from data_cleaning_location_classes import Cleaner
-#from data_cleaning_location_classes import LDAPreparation
+# import sys
+# import pandas as pd
+# sys.path.append(r'C:\Users\gilli\PycharmProjects\TopViz\self-defined classes') #add path to be able to import produced classes.
+# from data_scraping_classes import WriteFileListener
+# from data_cleaning_location_classes import Cleaner
+# from data_cleaning_location_classes import LDAAnalyzer
 
-#pd.set_option('display.max_columns', None)  # show all columns
+# pd.set_option('display.max_columns', None)  # show all columns
 
-#wfl = WriteFileListener(r'C:\Users\gilli\OneDrive\Dokumente\Uni\Masterarbeit\Wichtige Informationen\Twitter API Access.txt',
+# wfl = WriteFileListener(r'C:\Users\gilli\OneDrive\Dokumente\Uni\Masterarbeit\Wichtige Informationen\Twitter API Access.txt',
 #                            save_path=r'C:\Users\gilli\OneDrive\Desktop', languages=['en'],locations=[-125,25,-65,48],
 #                        hashtag=False)
 
-#c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
-#print(c.raw_data)
-#c.saving(r'C:\Users\gilli\OneDrive\Desktop')
+# c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
+# print(c.raw_data)
+# c.saving(r'C:\Users\gilli\OneDrive\Desktop')
 
-if __name__ == '__main__': #Mandatory for windows! see: https://stackoverflow.com/questions/58323993/passing-a-class-to-multiprocessing-pool-in-python-on-windows
-    d = LDAPreparation(load_path=r'C:\Users\gilli\OneDrive\Desktop')
-    #print(type(d.data))
+if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.com/questions/58323993/passing-a-class-to-multiprocessing-pool-in-python-on-windows
+    d = LDAAnalyzer(load_path=r'C:\Users\gilli\OneDrive\Desktop')
+    # print(type(d.data))
     d.hashtag_pooling()
-    d.lda_training(data_save_path=r'C:\Users\gilli\OneDrive\Desktop\test', models_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
+    d.lda_training(data_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
+                   models_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
                    ngram_style='bigrams', topic_numbers_to_fit=[3, 5], n_saved_top_models=2)
     print(d.lda_df_trained_tweets)
-    
