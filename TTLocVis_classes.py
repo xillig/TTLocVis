@@ -281,8 +281,8 @@ class Cleaner(object):
     # languages (list): List of string codes for certain languages to filter for. Default is None.
     # metadata (bool): Keep all covariates or only the ones necessary for the package. Default is 'False'
     # min_tweet_len (int): Refilter for an minimal token amount after the cleaning process. Default is None.
-    # spacy_model (str): Choose the desired spacy model for tokenization. Non-default model installation tutorial and
-    # an overview about the supported languages can be found at https://spacy.io/usage/models.
+    # spacy_model (str): Choose the desired spacy model for text tokenization. Non-default model installation tutorial
+    # and an overview about the supported languages can be found at https://spacy.io/usage/models.
     # Default is the small "English" model called 'en_core_web_sm'.
     def __init__(self, load_path, data_save_name='my_cleaned_and_tokenized_data', languages=None, metadata=False,
                  min_tweet_len=None, spacy_model='en_core_web_sm'):
@@ -366,7 +366,7 @@ class Cleaner(object):
         self.raw_data['text'] = self.raw_data['text'].apply(lambda x: re.split('https://t.co', x)[0])
 
         # remove and append Emojis:
-        if self.metadata == True:
+        if self.metadata:
             emojis = re.compile(
                 u'([\U00002600-\U000027BF])|([\U0001f300-\U0001f64F])|([\U0001f680-\U0001f6FF])')  # emoji unicode
             indices = np.array(self.raw_data['text'].index.tolist())  # save the index numbers of the entries
@@ -525,8 +525,27 @@ class Cleaner(object):
 
 
 class LDAAnalyzer(object):
-
-    def __init__(self, load_path=None, raw_data=None, n_jobs=2, cs_threshold=0.5, output_type='All', seed=1,
+    # arguments:
+    # load_path (str): path containing the cleaned data. Define this argument or "raw_data",
+    # but not both. Default is None.
+    # raw_data (pandas DataFrame): pass the "self.raw_data" attribute from a previous produced "Cleaner"-object. Define
+    # this argument or "load_path", but not both. Default is None.
+    # n_jobs (int): Defines the number of CPU-cores to use for the hashtag-pooling and for LDA training. Default is 2.
+    # cs_threshold (float): Defines the value for the cosine-similarity threshold: 0>cs>1. It is advised to choose a
+    # value between 0.5 and 0.9. Default is 0.5.
+    # output_type (str): Defines the type of tweets that are returned after the hashtag pooling. Choose 'pool_hashtags'
+    # to return all hashtag-pools as well as all single tweets containing a hashtag. Choose 'pool' to return only all
+    # hashtag-pools. Choose 'All' (or any other string) to return all hashtag-pools, all single tweets containing a
+    # hashtag and all single tweets containing no hashtag. Default is 'All'.
+    # spacy_model (str): Choose the desired spacy model for hashtag tokenization. Non-default model installation
+    # tutorial and an overview about the supported languages can be found at https://spacy.io/usage/models. Default
+    # is the small "English" model called 'en_core_web_sm'.
+    # ngram_min_count (int): Ignores all words and n-grams with total collected count lower than this value.
+    # Default is 10.
+    # ngram_threshold (int): Represents a score threshold for forming the n-gram-phrases (higher means fewer phrases).
+    # For details about the scores calculation,
+    # see: https://radimrehurek.com/gensim/models/phrases.html#gensim.models.phrases.original_scorer
+    def __init__(self, load_path=None, raw_data=None, n_jobs=2, cs_threshold=0.5, output_type='All',
                  spacy_model='en_core_web_sm', ngram_min_count=10, ngram_threshold=300):
         self.load_path = load_path
         self.raw_data = raw_data
@@ -543,7 +562,6 @@ class LDAAnalyzer(object):
         self.ngram_min_count = ngram_min_count
         self.ngram_threshold = ngram_threshold
         self.output_type = output_type
-        self.seed = seed
         self.spacy_model = spacy_model
 
     def loading(self):
@@ -562,14 +580,13 @@ class LDAAnalyzer(object):
         return data
 
     def hashtag_pooling(self):
+        # executes the hashtag-pooling algorithm after Mehrotra et al. (2013):
+        # https://dl.acm.org/doi/pdf/10.1145/2484028.2484166
         self.data = self.data.loc[:,
                     ['created_at', 'text', 'text_tokens', 'hashtags', 'center_coord_X', 'center_coord_Y']]
         print('Length of input data: ' + str(len(self.data)))
 
-        rm.seed(self.seed)  # set seed
-
-        # set from which the LDA is going to be trained
-        print('Length of set: ' + str(len(self.data)))
+        print('Length of set to be trained: ' + str(len(self.data)))
         lda_df_ht = self.data[self.data.loc[:, 'hashtags'].str.len() > 0]  # get all entries with hashtag(s)
         lda_df_wht = self.data[self.data.loc[:, 'hashtags'].str.len() == 0]  # get all entries WITHOUT hashtag(s)
 
@@ -580,15 +597,24 @@ class LDAAnalyzer(object):
 
         # Goal: pool hashtags for all already existing hashtags:
 
-        # __Details about the following block:__
-        # The next steps, start with loading the spacy model. Afterwards, the self-defined function tokenize_hashtags is placed. It basically works as the tokenizer functions described before in Appendix B but filters the tokens for punctuation, in this case the “#”-symbol and “\”-symbol, and removes symbols and spaces. The results are hashtags only consisting of alphanumeric characters. Then, the self-defined function unique_words is provided. This function, fed a nested list of strings, is returning a list of all the unique strings in the passed nested list. This is achieved by first looping over all nested lists and extending them into an empty list, called unique_words_list. unique_words_list = list(set(unique_words_list))) contains all unique strings and saves them as a single list, being the return value of the function.
-        # Tokenize all hashtags in the 'lda_df_ht'-column, remove '#', spaces and punctiation. Additionally, get a list of all in the df exisisting hashtags, exactly once:
+        # __Details about the following code:__
+        # The next steps start with loading the spacy model. Afterwards, the self-defined function tokenize_hashtags
+        # is placed. It basically works as the tokenizer functions implemented before but filters the
+        # tokens for punctuation, in this case the “#”-symbol and “\”-symbol, and removes symbols and spaces. The
+        # results are hashtags only consisting of alphanumeric characters. Then, the self-defined function unique_words
+        # is provided. This function, fed a nested list of strings, is returning a list of all the unique strings in
+        # the passed nested list. This is achieved by first looping over all nested lists and extending them into an
+        # empty list, called unique_words_list. unique_words_list = list(set(unique_words_list))) contains all unique
+        # strings and saves them as a single list, being the return value of the function.
+
+        # Summary: Tokenize all hashtags in the hashtag-column, remove '#', spaces and punctuation. Additionally,
+        # get a list of all in the df existing hashtags, exactly once:
+
         # tokenize the hashtags and put them uniquely in a list:
 
         # loading the statistical spacy-model:
         nlp = spacy.load(self.spacy_model)
 
-        # Predicts part-of-speech tags, dependency labels, named entities and more.
         def tokenize_hashtags(lis):
             doc = nlp(lis)  # list of hashtags
             test_list = []
@@ -608,16 +634,13 @@ class LDAAnalyzer(object):
             unique_words_list = list(set(unique_words_list))  # remove duplicates and return every hashtag once
             return unique_words_list
 
-            # __Details about the following blocks:__
-            # Hereupon, prep, a nested list containing the hashtags for every tweet, is created by applying tokenize_hashtag on lda_df_ht[‘hashtags’] plus some further formatting. It will become a helper list to build the other two following lists. Consequently, prep_series is created, a pandas Series that contains the content of prep but additionally includes the corresponding indices from lda_df_ht. Finally, prep is passed to the unique_words function, the result is named prep_unique_hashtags.
-            #
-            # The following step is pooling all the tweets indices, where the tweet contains one of the unique hashtags. The self-defined function pooling_indices_to_hashtag takes two arguments: The first argument, unique_hashtags, is the list of unique words (here, applied on prep_unique_hashtags) and the second argument, index_hashtag_series, a Series (here, applied on prep_series). A loop runs over unique_hashtags. For every unique hashtag, it is now checked in which row it appears in index_hashtag_series. These results, a boolean list of the length of index_hashtag_series, are saved in hashtag_check. In res, the current hashtag is appended, as well as the index from index_hashtag_series, where hashtag_check equals True. After looping over the whole list of unique_hashtags, res is returned, containing nested lists with a unique hashtag, followed by a nested list of the corresponding indices of the tweets, which contains this hashtag. This is continued over all tweets to get all unique hashtags. The function is initialized with prep_unique_hashtags and prep_series and the result does overwrite prep. It is consequently transformed into a DataFrame named pooled, which now contains the hashtags and indices as columns.
-
-            # **prep: nested:** list including the hashtags for every tweet (helper list to build the other two following).
-            # <br>
-            # **prep_series:** pd.Series including the index of the tweet in 'lda_df_ht' original df and the hashtags for every tweet.
-            # <br>
-            # **prep_unique_hashtags:** list of all in 'lda_df_ht' existing hashtags, exactly once.
+        # __Details about the following code:__
+        # Hereupon, 'prep', a nested list containing the hashtags for every tweet, is created by applying the
+        # tokenize_hashtag function on lda_df_ht[‘hashtags’] plus some further formatting. It will become a helper list
+        # to build the other two lists described in the following: Consequently, 'prep_series' is created, a pandas
+        # Series that contains the content of prep but additionally includes the corresponding row indices from
+        # 'lda_df_ht'. Finally, 'prep: is passed to the unique_words function,
+        # the result is named 'prep_unique_hashtags.'
 
         prep = lda_df_ht['hashtags'].apply(
             lambda x: tokenize_hashtags(x))  # apply fct on all rows of 'hashtags'-column
@@ -629,6 +652,21 @@ class LDAAnalyzer(object):
         prep_series.index = prep_index_list  # append the corresponding indices from 'lda_df_ht' to the Series of tokens.
 
         prep_unique_hashtags = unique_words(prep)  # get all the available hashtags once.
+
+        # __Details about the following code:__
+        # The following step is the pooling of all the tweets indices, where the tweet contains one of the
+        # unique hashtags. The self-defined function pooling_indices_to_hashtag takes two arguments: The first argument,
+        # 'unique_hashtags', is the list of unique words (here, 'prep_unique_hashtags' is passed) and the second
+        # argument, index_hashtag_series, a Series (here, 'on prep_series' is passed). A loop runs over unique_hashtags.
+        # For every unique hashtag, it is now checked in which row it appears in 'index_hashtag_series'. These results,
+        # a boolean list of the length of 'index_hashtag_series', are saved in hashtag_check. In 'res', the current
+        # hashtag is appended, as well as the index from 'index_hashtag_series', where 'hashtag_check' equals True.
+        # After looping over the whole list of 'unique_hashtags', 'res' is returned, containing nested lists
+        # with a unique hashtag, followed by a nested list of the corresponding indices of the tweets, which
+        # contains this unique hashtag. This is continued over all tweets to get all unique hashtags. The function is
+        # initialized with 'prep_unique_hashtags' and 'prep_series' and the result does overwrite 'prep'. It is
+        # consequently transformed into a DataFrame named 'pooled', which now contains the hashtags and
+        # indices as columns.
 
         # combine unique hashtags with all corresponding indices
         def pooling_indices_to_hashtag(unique_hashtags, index_hashtag_series):
@@ -646,8 +684,23 @@ class LDAAnalyzer(object):
         # turn the result into an dataframe
         pooled = pd.DataFrame({'hashtag': prep[::2], 'index': prep[1::2]})
 
-        # __Details about the following blocks:__ 
-        # Next, the self-defined function pool_tweets is taking care of pooling the text tokens using the indices in prep. To achieve this, a nested for-loop is used to first go over the main list and then through the sub-lists, containing the desired indices. J_token stores the corresponding tokens by accessing them from lda_df_ht by going through every element of the nested indices lists. The tokens of every index saved in j_token are appended to group_of_tokens, an empty list created in every round of the outer loop. This list itself is appended to all_tokens, an empty list created outside of the loops. All_tokens is returned by the function. Thereby it is achieved that all_tokens becomes a nested list containing the tokens of all pooled tweets for every unique hashtag. The function is applied on every second row of prep, containing the lists of indices and is saved as pooled[‘pooled_tweets_token’], which contains all the necessary information, now. 
+        # summary of the produced objects:
+        # 'prep': list including the hashtags for every tweet (helper list to build the other two following).
+        # 'prep_series': pd.Series including the index of the tweet from the 'lda_df_ht' df and the hashtags for
+        # each tweet.
+        # prep_unique_hashtags: list of all in 'lda_df_ht' existing hashtags, exactly once.
+
+        # __Details about the following code:__
+        # Next, the self-defined function pool_tweets is taking care of pooling the text tokens using the indices
+        # in 'prep'. To achieve this, a nested for-loop is used to first go over the main list and then through the
+        # sub-lists, containing the desired indices. 'J_token' stores the corresponding tokens by accessing them from
+        # 'lda_df_ht' by going through every element of the nested indices lists. The tokens of every index saved in
+        # 'j_token' are appended to 'group_of_tokens', an empty list created in every round of the outer loop. This list
+        # itself is appended to 'all_tokens', an empty list created outside of the loops. 'all_tokens' is returned by
+        # the function. Thereby it is achieved that 'all_tokens' becomes a nested list containing the tokens of all
+        # pooled tweets for every unique hashtag. The function is applied on every second row of 'prep', containing the
+        # lists of indices and is saved as 'pooled[‘pooled_tweets_token’]', which contains all the necessary
+        # information, now.
 
         # get the tokens from the 'lda_df_ht'-indices
         def pool_tweets(indices):
@@ -665,17 +718,21 @@ class LDAAnalyzer(object):
         # append the tokens to its corresponding hashtags and indices
         pooled['pooled_tweets_token'] = pool_tweets(prep[1::2])
 
-        # # Calculate Cosine Similarity to append unlabeled Tweets to our Hashtags:
+        # Base idea of how to append the single tweets with no hashtag to the hashtag-pools:
+        # After the Tweets were pooled via unique hashtag (tweets tokens with more than one hashtag were appended to all
+        # all fitting hashtag-pools!), the cosine-similarity (measure for the similarity of two vectors) between an
+        # unlabeled tweet and all the hashtag-pools is now going to be calculated, based on TF-IDF. Unlabeled
+        # tweets that passed a certain threshold are appended to the hashtag-pool, which whom they have
+        # the highest score with.
 
-        # After the Tweets were pooled via unique hashtag (tweets with more than one hashtag were appended to all of the “hashtag-groups”), the cosine-similarity (measure for the similarity of two vectors) between an unlabeled tweet and all the hashtag-pools is now going to be calculated, based on TF-IDF. Unlabeled tweets that passed a certain threshold are appended to the hashtag-pool, which whom they have the highest score.
+        # __Details about the following code:__
+        # The code continues by defining 'all_tweets_pool', which concatenates 'pooled' with the corresponding
+        # information from all the tweets without a hashtag. Then, all tweets without a hashtag are concatenated,
+        # leading to a DataFrame that looks like 'pooled' for the upper entries but ends with the entries from all
+        # tweets without a hashtag (single tweets). Obviously, the all_tweets_pool[‘hashtag‘] column only consists
+        # of an empty list if an entry is a single tweet without a hashtag. The same applies to
+        # all_tweets_pool[‘index‘], which has only one value on each row, logically.
 
-        # The following cells are embedded into try-except blocks for the case that there were no tweets without hashtag passed!
-
-        # __Details about the following block:__ 
-        # The script continues by defining all_tweets_pool, which concatenates pooled with the corresponding information from all the tweets without a hashtag. Then, all tweets without a hashtag are concatenated, leading to a DataFrame that looks like pooled on the upper entries but ends with the entries from all tweets without a hashtag (single tweets). Obviously, the all_tweets_pool[‘hashtag ‘] column only consists of an empty list if an entry is a single tweet. The same applies to all_tweets_pool[‘index‘], which has only one value on each row, logically.
-
-        # append all unlabeled tweets 'lda_df_wht' indices and tokens to the 'pooled' df:
-        # try:
         # append all unlabeled tweets 'lda_df_wht' indices and tokens to the 'pooled' df:
         tweets_without = lda_df_wht.loc[:, ['hashtags', 'text_tokens']]
         tweets_without['index'] = lda_df_wht.index
@@ -685,29 +742,30 @@ class LDAAnalyzer(object):
 
         all_tweets_pool = pd.concat([pooled, tweets_without], ignore_index=True)
 
-        # except:
-        #    pass
-
-        # __Details about the following block:__
-        # The goal is now to calculate the cosine similarity between every single tweet and the tweet pools. Using larger data samples, the processing load becomes extremely high, since every single tweet needs to be checked against every hashtag pool. The number of computations is hereby equal to the number of hashtag pools times the number of single hashtags. One can easily see that this causes a problem with larger samples.
-        # To tackle this issue, the calculation of cosine similarity between the single tweets and tweet pools is parallelized. The single tweets are divided into sublists, the number is determined by the amount of worker processes that have been assigned.
-        # 
-        # First, the number of worker processes is to be defined by self.n_jobs while self.cs_threshold is defining the confidence threshold C. A tweets cosine similarity that is exceeding this threshold is attached to the hashtag pool. Second, pooled_to_vectorize is created, a list containing the “raw” tokens, only separated by whitespace instead of comma. Third, vecorizer_fit is constructed, a variable containing the TF-IDF values of all tweets, fitted by the TfidfVectorizer model from the scikit (sklearn) package. Followed by that, a self-written py-file is imported, called parallel_cs_2, containing a self-defined function called parallel. This function is later called by the worker processes. Next, the length of pooled is saved in len_pooled. Vecorizer_fit_unpooled stores all the TF-IDF values of the hashtag pools. no_of_packages_to_pass contains the number “packages” of  TF-IDF values of single tweets to be passed to the parallel function by one iteration. This number is determined by self.n_jobs.
-        # 
-        # The following initializes the parallelization: Pool is allocated to n parallel processes. Then, over the range of the length of no_of_packages_to_pass, an upper_bound and lower_bound are created. These values are determined by self.n_jobs and picking the current single tweets by index-slicing, which are transferred to parallel in one iteration of the outer loop. For example, if self.n_jobs = 20, then 20 TF-IDF values of single tweets from vecorizer_fit_unpooled, each as a sublist, are passed to the single_vectorizer_fit_unpooled_values list. This passing of the single tweets into single_vectorizer_fit_unpooled_values, together with a counter, counting each single tweets position from zero, is done by the inner for-loop. The parallel processes are working on one of these sub-lists, each.     
-        # 
-        # The function pool.map takes a function and an iterator. The function is passed via partial, which appends an argument to a given function. Here, the function parallel is passed with all its arguments, except one. The last argument, single_vectorizer_fit_unpooled_values, serves as the iterator for pool.map. Pool.map is simply applying parallel n-times by iterating the processes of pool over single_vectorizer_fit_unpooled_values. Since partial is fixing all the other arguments of parallel, the function is called self.n_jobs-times in parallel with the same values for all arguments, except single_vectorizer_fit_unpooled_values, which always passes a different sublist of itself. The return value for every iteration is saved in res, which is extended into the empty result list final_res on every iteration. pool.close() closes the worker processes after all packages are passed and all results are returned. 
-
-        # __Additional information about *parallel_cs_2.py*:__
-        # Let’s now have a look at parallel, the function that is called n-times in parallel. It is saved in the py-file parallel_cs_2. The reason for this is that jupyter as an interactive interpreter cannot call a function in a current session parallel because of the global interpreter lock. Therefore, the function is saved outside of the current session and is then reloaded.
-        # Parallel takes the following, above described, arguments: pooled_to_vectorize, self.cs_threshold, len_pooled, vectorizer_fit and single_vectorizer_fit_unpooled_values. After that, every worker thread takes one TF-IDF value from a single unlabeled tweet in form of a sublist from single_vectorizer_fit_unpooled_values and calculates the cosine similarity of all TF-IDF values of the hashtag pools and its passed TF-IDF value. The results are sorted by size and the largest one is saved in most_similar_tweets_index. Next, it is checked if this value can cross the self.cs_threshold. If True, the counter value of the single tweet is appended to indices_unlabeled, the corresponding cosine similarity score is appended to value_of_cs and the index number of the hashtag pool from pooled_to_vectorized (where the single tweet shall be appended later) is appended to indices_to_append. This process is repeated over the range of the length of no_of_packages_to_pass. The function finally returns indices_unlabeled, value_of_cs, indices_to_append_atp, if the single tweets TF-IDF is greater than the self.cs_threshold, else it returns None. The returned values are stored in res.    
-        # 
+        # __Details about the following code:__
+        # The goal is now to calculate the cosine similarity between every single tweet and the tweet pools.
+        # When using larger data samples, the processing load becomes extremely high, since every single tweet needs
+        # to be checked against every hashtag pool. The number of computations is hereby equal to the number of
+        # hashtag pools times the number of single hashtags.
+        # To tackle this issue, the calculation of cosine similarity between the single tweets without hashtag and
+        # the tweet pools is parallelized. The single tweets are divided into sub-lists, their number is determined
+        # by the amount of worker processes that have been assigned.
+        #
+        # First, the number of worker processes is to be defined by self.n_jobs while self.cs_threshold is defining
+        # the confidence threshold. A tweets cosine similarity that is exceeding this threshold is attached to the
+        # corresponding hashtag pool. Second, 'pooled_to_vectorize' is created, a list containing the “raw” tokens,
+        # only separated by whitespace instead of comma. Third, 'vectorizer_fit' is constructed, a variable
+        # containing the TF-IDF values of all tweets, fitted by the 'TfidfVectorizer' model from the 'sklearn' package.
+        # Next, the length of 'pooled' is saved in 'len_pooled'.
+        # 'Vectorizer_fit_unpooled' stores all the TF-IDF values of the hashtag pools. 'no_of_packages_to_pass' contains
+        # the number “packages” of  TF-IDF values of single tweets to be passed to the function 'parallel' (can be
+        # found far below!) at  by one iteration. This number is determined by self.n_jobs.
 
         # prepare the token-sets with hashtags:
         pooled_to_vectorize = all_tweets_pool['pooled_tweets_token'].apply(
             lambda x: ' '.join(x))  # nested list of all tokens, 
         # not separated by comma anymore but only by whitespace.
-        vectorizer = TfidfVectorizer()  # computes the word counts, IDF values, and Tf-idf scores all using the same dataset.
+        vectorizer = TfidfVectorizer()  # computes the word counts, IDF values and TF-IDF scores using the same dataset.
         vectorizer_fit = vectorizer.fit_transform(pooled_to_vectorize)  # fit the "TfidfVectorizer()"-model
 
         len_pooled = len(pooled)  # len of 'pooled'
@@ -717,6 +775,26 @@ class LDAAnalyzer(object):
             len(pooled_to_vectorize[len(pooled):]) / self.n_jobs)  # calculate the amount of packages of 
         # TF-IDF values to be passed.
 
+        #  __Details about the following code:__
+        # The following initializes the parallelization: 'Pool' is allocated to n parallel processes. Then, over the
+        # range of the length of 'no_of_packages_to_pass', an 'upper_bound' and 'lower_bound' are created. These values
+        # are determined by 'self.n_jobs' and do pick the current single tweets by index-slicing, which are transferred
+        # to the function 'parallel' in one iteration of the outer loop. For example, if self.n_jobs = 20,
+        # then 20 TF-IDF values of single tweets without hashtag from 'vectorizer_fit_unpooled', each as a sublist,
+        # are passed to the 'single_vectorizer_fit_unpooled_values' list. This passing of the single tweets into
+        # 'single_vectorizer_fit_unpooled_values', together with a 'counter', counting each single tweets
+        # position from zero, is done by the inner for-loop. The parallel processes are working on one of
+        # these sub-lists, each.
+        # The function 'pool.map' takes a function and an iterator. The function is passed via 'partial',
+        # which appends an argument to a given function. Here, the function parallel is passed with all
+        # its arguments, except one. The last argument, 'single_vectorizer_fit_unpooled_values', serves as the
+        # iterator for 'pool.map'. 'Pool.map' is simply applying 'parallel' n-times by iterating the processes of
+        # 'pool' over 'single_vectorizer_fit_unpooled_values'. Since 'partial' is fixing all the other arguments of
+        # 'parallel', the function is called 'self.n_jobs'-times in parallel with the same values for all arguments,
+        # except 'single_vectorizer_fit_unpooled_values', which always passes a different sublist of itself. The
+        # return value for every iteration is saved in 'res', which is extended into the empty result list 'final_res'
+        # on every iteration. 'pool.close()' closes the worker processes after all packages are passed and all
+        # results are returned.
         final_res = []
         upper_bound = self.n_jobs
         counter = 0
@@ -728,7 +806,8 @@ class LDAAnalyzer(object):
 
             if i % 100 == 0:
                 print("Total number of loop iterations for hashtag-pooling: " + str(no_of_packages_to_pass))
-            single_vectorizer_fit_unpooled_values = []  # put values of sparse matrix for every single tweet into a nested list, with number of nested lists == self.n_jobs
+            single_vectorizer_fit_unpooled_values = []  # put values of sparse matrix for every single tweet into
+            # a nested list, with number of nested lists == self.n_jobs
             for j in range(lower_bound, upper_bound):
                 try:
                     single_vectorizer_fit_unpooled_values.append([vectorizer_fit_unpooled[j], counter])
@@ -739,14 +818,13 @@ class LDAAnalyzer(object):
             try:
                 # print("cpu count: " + str(cpu_count()))
                 # print('pool count: ' + str(pool._processes))
+                # pool.map: take a function and an iterator to parallelize over. function arguments passed
+                # via 'partial' stay fixed during parallelization. 'nested_list_of_vectorizer_fit_single_tweets' is
+                # iterated over and worked on in parallel.
+                # 'parallel': function to be parallelized over. It is defined far below!
                 res = pool.map(partial(parallel, pooled_to_vectorize, self.cs_threshold, len_pooled,
                                        vectorizer_fit),
                                single_vectorizer_fit_unpooled_values)
-
-                # pool.map: take a function and an iterator to parallelize over. function arguments passed via 'partial' stay
-                # fixed via parallelization. 'nested_list_of_vectorizer_fit_single_tweets' is iterated over and worked on parallel.
-                # parallel_cs.parallel: function to be parallelized over. It is stored in a separate py-file, parallel_cs.py,            #because jupyter is an interctive interpreter and can't call a function out of the same session, if parallelization is applied.
-                # for more information see: https://stackoverflow.com/questions/20222534/python-multiprocessing-on-windows-if-name-main
 
             except KeyboardInterrupt:
                 pool.terminate()  # terminate worker processes in case of keyboard interrupt
@@ -766,15 +844,14 @@ class LDAAnalyzer(object):
         pool.close()  # close worker processes
         final_res = list(filter(None, final_res))
 
-        # __Details about the following blocks:__
-        # The three returned lists for every fitting single tweet are stored as nested lists in final_res.
-        # For that reason, the values of final_res are transformed using indexing to get them into the shape of three
-        # simple lists, named the same as the return values of parallel.
+        # __Details about the following code:__
+        # The three returned lists for every fitting single tweet are stored as nested lists in 'final_res'.
+        # For that reason, the values of 'final_res' are transformed using indexing to get them into the shape of three
+        # simple lists, named the same as the return values of 'parallel'.
         # Finally, these values are used to get the index of every single tweet and extend it to the indices of the
-        # hashtag pool. The same is done with the single tweets tokens, which are extended into the hashtag pools tokens
-        # as well. A new DataFrame lda_all_tweets_pooled is created, containing the updated hashtag pools, which are
-        # now the final pseudo-documents, including all single tweets with one hashtag. The remaining non-pooled,
-        # single tweets without a hashtag are discarded. This data is now ready to train the LDA.
+        # hashtag pool. The same is done with the tokens of the single tweets, which are extended into the
+        # hashtag pools tokens as well. A new DataFrame 'lda_all_tweets_pooled' is created, containing the updated
+        # hashtag pools, which are now the final pseudo-documents, including all single tweets with one hashtag.
 
         # get 'final_res' into the right form:
         indices_unlabeled = []
@@ -808,6 +885,7 @@ class LDAAnalyzer(object):
             new_token.extend(tweets_without.iloc[indices_unlabeled[i]][2])  # extend the cs-unlabeled matches' tokens
             pooled.iloc[indices_to_append_atp[i]][2] = new_token
 
+        # decision, which tweets are kept for further processing.
         if self.output_type == 'pool_hashtags':  # return pools plus hashtagged tweets
             lda_all_tweets_pooled = pooled
         elif self.output_type == 'pool':  # return only pooled tweets
@@ -818,26 +896,13 @@ class LDAAnalyzer(object):
             frames_to_concat = [pooled, final_single_tweets]
             lda_all_tweets_pooled = pd.concat(frames_to_concat)
 
-        # __Details about the following blocks:__
-        # Using the Phrases and Phraser functions of the gensim package,
-        # the tokens of lda_all_tweets_pooled['pooled_tweets_token'] are transformed to bigram tokens.
-        # The Phrases function lets one specify a scoring threshold for forming the bigram phrases.
-        # The actual creation of the bigrams is implemented by the self-defined function make_bigrams.
-        # The result is stored as a new column: lda_all_tweets_pooled[‘bi_grams’]. Next, a gensim dictionary
-        # is created to store the vocabulary of the corpus, named dic_id2word_bi. It is afterwards filtered
-        # to get the DTM of the LDA models in the desired shape. Only the 50.000 (keep_n=50000)
-        # most occuring words and only words that occur at least 10-times (no_below=10) are saved.
-        # Additionally, no words that occur in more than 85% (no_above=0.85) of the documents are saved.
-        # This filtering is necessary to improve the quality and training performance of the LDAs.
-        # Finally, the corpus for the LDA is created using lda_all_tweets_pooled[‘bi_grams’], the bigrams of the pooled
-        # tweets. Corpus_bi is containing all documents created by the bigrams which themselves are created from the pooled tweets.
-        # Now, everything is finally ready for LDA training.
-        #
+        # __Details about the following code:__
+        # Using the 'Phrases' and 'Phraser' functions of the gensim package,
+        # the tokens of lda_all_tweets_pooled['pooled_tweets_token'] are transformed to n-gram tokens.
+        # The 'Phrases' function lets one specify a scoring threshold for forming the n-gram phrases.
+        # This procedure is implemented inside the method make_ngram
 
-        # example:
-        # print(bigram_mod[lda_all_tweets_pooled['pooled_tweets_token'].iloc[3]])
-
-        # make_(bi-)trigrams functions are provided as static methods!
+        # make_ngram function is provided as static method (see further below)!
         lda_all_tweets_pooled['bi_grams'] = LDAAnalyzer.make_ngrams(lda_all_tweets_pooled['pooled_tweets_token'],
                                                                     self.ngram_min_count, self.ngram_threshold)
         lda_all_tweets_pooled['tri_grams'] = LDAAnalyzer.make_ngrams(lda_all_tweets_pooled['pooled_tweets_token'],
@@ -862,6 +927,24 @@ class LDAAnalyzer(object):
                      filter_keep_n=15000, filter_no_below=10,
                      filter_no_above=0.85, topic_numbers_to_fit=[10, 20, 30, 40, 50, 75, 100, 125, 150, 200, 250, 300],
                      n_saved_top_models=3):
+        # arguments:
+        # data_save_path (str): path directing where the topic distributions of the individual tweets shall be saved.
+        # models_save_path (str): path directing where the trained LDA models shall be saved.
+        # data_save_type (str): Decides how the topic distributions of the individual tweets are saved.
+        # Choose between 'pkl' and 'csv'. Default is 'pkl'.
+        # ngram_style (str): define the n-gram type.Choose between "unigrams" (default), "bigrams" and "trigrams".
+        # filter_keep_n (int): token filtering before the LDA training regarding the DTM. Keep only the n most
+        # occurring tokens. Default is 15.000.
+        # filter_no_below (int): token filtering before the LDA training regarding the DTM. Keep only tokens occurring
+        # at least n times. Default is 10.
+        # filter_no_above (float): token filtering before the LDA training regarding the DTM. Keep only tokens that are
+        # occurring in at least n percent of all documents (tweet pools, tweets). Value must be between 0 and 1. Default
+        # is 0.85.
+        # topic_numbers_to_fit (list of int): list containing integers. Each integer is referring to the number of
+        # topics chosen for one LDA model to be estimated. Default is [10, 20, 30, 40, 50, 75, 100, 125, 150, 200,
+        # 250, 300].
+        # n_saved_top_models (int): keep only the n best scoring LDA models regarding topical coherence score.
+        # Default is 3.
 
         if ngram_style == 'unigrams':
             ngram_type = 'pooled_tweets_token'
@@ -873,6 +956,14 @@ class LDAAnalyzer(object):
             return print('This is not a valid choice for "ngram_style"! Choose between "unigrams" (default), "bigrams"'
                          'and "trigrams"!')
 
+        # __Details about the following code:__
+        # Next, a gensim dictionary is created to store the vocabulary of the corpus, named 'dic_id2word' using the
+        # function 'dic_corpus_creation'. It is afterwards filtered to get the DTM of the LDA models in the
+        # desired shape. This filtering is necessary to improve the quality and training performance of the LDAs.
+        # Additionally, the corpus for the LDA is created inside the function 'dic_corpus_creation'.
+        # 'Corpus' is containing all (pseudo-)documents created by the n-grams which themselves are created from
+        # the (pooled) tweets tokens.
+
         def dic_corpus_creation(ngram_type):
             # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/7
             # Create Dictionaries:
@@ -880,7 +971,8 @@ class LDAAnalyzer(object):
             # filter the dictionary, see:
             # https://radimrehurek.com/gensim/corpora/dictionary.html#gensim.corpora.dictionary.Dictionary.filter_extremes
             # no_below (int, optional) – Keep tokens which are contained in at least no_below documents.
-            # no_above (float, optional) – Keep tokens which are contained in no more than no_above documents (fraction of total corpus size, not an absolute number).
+            # no_above (float, optional) – Keep tokens which are contained in no more than no_above documents
+            # (fraction of total corpus size, not an absolute number).
             # keep_n (int, optional) – Keep only the first keep_n most frequent tokens.
             # keep_tokens (iterable of str) – Iterable of tokens that must stay in dictionary after filtering.
             dic_id2word.filter_extremes(keep_n=filter_keep_n, no_below=filter_no_below, no_above=filter_no_above)
@@ -891,28 +983,33 @@ class LDAAnalyzer(object):
 
         dic_id2word, corpus = dic_corpus_creation(ngram_type)
 
-        # # Train LDAs and get the optimal number of Topics by topic coherence analysis:
+        # __Details about the following code:__
+        # This segment executes the training of LDAs with different topic numbers and chooses the best n models for
+        # further usage by coherence value comparison. 'Train_a_lda_and_compute_coherence_values' takes four arguments
+        # starting with corpus, which is the variable 'corpus', and id2word, which is the above defined gensim
+        # dictionary 'dic_id2word'. Num_topics gets a list called 'topic_numbers_to_fit' assigned, which contains
+        # integers stating the topic number for every LDA, and is later iterated over to try out different numbers
+        # of topics. The last argument is self.n_jobs, defining the number of CPU-cores to use.
+        # The function trains an LDA and calculates its coherence, returning the coherence value, the number of
+        # topics of the model and the fitted LDA model. The LDA model is fitted by
+        # lda = gensim.models.ldamulticore.LdaMulticore(...). The function fits the LDA using a Variational Bayes
+        # algorithm for approximation, based on Hoffman et al. (2010).
+        # The asymmetric prior of topic and word distribution are learned directly from the data (Gensim 2020b, 2020c).
+        # The corpus is iterated over 30 times during training, which is set relatively high to
+        # ensure document convergence.
+        # After fitting the a LDA model, it is transferred to coherence_model_lda = CoherenceModel(model=lda,
+        # texts=self.lda_all_tweets_pooled[ngram_type],  dictionary=id2word, coherence='c_v'), where the lda models
+        # topic coherence is calculated. As already stated above, 'train_a_lda_and_compute_coherence_values' returns
+        # the coherence value of the model, the number of topics of the model and the fitted LDA model itself. It
+        # is applied on a large variety of different topic numbers, passed to it by 'topic_numbers_to_fit'. The models
+        # with the n highest c_v scores are then selected and used for the topic distribution calculation.
+        # They are subsequently saved.
 
-        # __Details about the following blocks:__
-        # This segment executes the training of LDAs with different topic numbers and chooses the best three models for further usage by coherence value comparison.
-        #
-        # First, as always, n_jobs defines the number of CPU-cores to use. Train_a_lda_and_compute_coherence_values takes four arguments starting with corpus, which is always the variable corpus_bi, and id2word, which is the above defined gensim dictionary dic_id2word_bi. Num_topics gets a list called topic_numbers_to_fit assigned, which contains integers stating the topic number for every LDA, and is later iterated over to try out different numbers of topics. The last argument is n_jobs.
-        # The function trains an LDA and calculates its coherence, returning the coherence value, the number of topics of the model and the fitted LDA model. The LDA model is fitted by lda = gensim.models.ldamulticore.LdaMulticore(...). The function fits the LDA using a Variational Bayes algorithm for approximation, based on Hoffman et al. (2010). This algorithm can optimize posterior approximation time, leading to reduced computational time in comparison to traditional batch algorithms, when it comes to large datasets. The algorithm is used in models.ldamulticore as well as in models.ldamodel (Gensim 2020b, 2020c).
-        # The used configuration of the LdaMulticore method stays almost default, since we want to keep things as general as possible and do not want to include prior information regarding topic and / or word probability. The asymmetric prior of topic and word distribution are learned directly from the data (Gensim 2020b, 2020c). The corpus is iterated over 30 times during training, which is set relatively high to ensure document convergence.
-        #
-        # After fitting the a LDA model, it is transferred to coherence_model_lda = CoherenceModel(model=lda, texts=lda_all_tweets_pooled['bi_grams'],  dictionary=id2word, coherence='c_v'), where the lda models topic coherence is calculated. As already stated above, Train_a_lda_and_compute_coherence_values returns the coherence value of the model, the number of topics of the model and the fitted LDA model itself. It is applied on a large variety of different topic numbers, passed to it by topic_numbers_to_fit. The models with the three highest c_v scores are then selected and used for the topic distribution calculation. They are subsequently saved.
-        #
-        #
-
-        # Train LDA Models:
-        # sources: https://towardsdatascience.com/evaluate-topic-model-in-python-latent-dirichlet-allocation-lda-7d57484bb5d0
-        # https://medium.com/datadriveninvestor/nlp-with-lda-analyzing-topics-in-the-enron-email-dataset-20326b7ae36f
-        # https://github.com/xillig/nlp_yelp_review_unsupervised/blob/master/notebooks/2-train_corpus_prep_and_LDA_train.ipynb
-
-        # see: https://radimrehurek.com/gensim/models/ldamulticore.html
+        # Train LDAs and get the optimal number of Topics by topic coherence analysis:
         def train_a_lda_and_compute_coherence_values(corpus, id2word, num_topics, n_jobs):
             with warnings.catch_warnings():
                 warnings.simplefilter('ignore')
+                # see: https://radimrehurek.com/gensim/models/ldamulticore.html
                 lda = gensim.models. \
                     ldamulticore.LdaMulticore(corpus=corpus,
                                               # corpus — Stream of document vectors or sparse matrix of shape
@@ -930,7 +1027,7 @@ class LDAAnalyzer(object):
                                               chunksize=60000,
                                               # chunksize — Number of documents to be used in each training chunk.
                                               workers=n_jobs,
-                                              # workers: number of physical cpu-cores. use core-number - 1
+                                              # workers - number of physical cpu-cores. use available core-number - 1
                                               passes=30,
                                               # passes — Number of passes through the corpus during training.
                                               per_word_topics=True
@@ -974,13 +1071,13 @@ class LDAAnalyzer(object):
         # Define function to save the n models, vocabulary and corpus:
         def save_lda_models(model, save_name, path):
             p = (path, save_name)
-            d_path = os.path.join(*p)  # join path and name, "datapath()" is unabele to join them
+            d_path = os.path.join(*p)  # join path and name, "datapath()" is unable to join them
             d_path = datapath(d_path)
             model.save(d_path)  # save the model to specified path
             return
 
         # save models:
-        for key, value in models.items():  # save the models by using theier dictionary named(models.keys)
+        for key, value in models.items():  # save the models by using their dictionary named(models.keys)
             save_lda_models(value, key, models_save_path)
 
         # save vocabulary:
@@ -993,32 +1090,27 @@ class LDAAnalyzer(object):
 
         # __Details about the following blocks:__
         # The next part describes the preparation of the single tweets for the calculation of the topic distributions
-        # by the trained LDA models. Indices_of_pooled_unique_tweets is a list, where all indices of all tweets are
-        # saved that were used during the pooling process. Making use of this list, a new DataFrame is built from
-        # lda_df_full called lda_df_trained_tweets, containing all information from the pooled tweets. Next, bigrams
-        # are created in the same way as above for this DataFrame. Hereby, it is important to use the pretrained
-        # dic_id2word_bi gensim dictionary since the resulting corpus ut_corpus_bi is later passed to the pre-trained
+        # by the trained LDA models. 'Indices_of_pooled_unique_tweets' is a list, where all indices of all tweets are
+        # saved that were used during the pooling process. Making use of this list, a new DataFrame is copied from
+        # 'self.data' called 'lda_df_trained_tweets', containing all information from the pooled tweets. Next, n-grams
+        # are created in the same way as above for this DataFrame. Hereby, it is important to use the pre-trained
+        # 'dic_id2word' gensim dictionary since the resulting corpus 'ut_corpus' is later passed to the pre-trained
         # LDAs for topic distribution calculation. Using this gensim dictionary, it is ensured that the corpus is
         # formed only by words the LDA was trained on. Doc2bow is a utility function used for a sparser vector
-        # representation of the corpus. The same procedure is done for the test set lda_df_test_set, resulting in the
-        # corpus test_set_corpus_bi.
+        # representation of the corpus.
 
         # get a set of all, for-pooling-used tweets:
         indices_of_pooled_unique_tweets = []
         for i in range(len(self.lda_all_tweets_pooled)):
-            if type(self.lda_all_tweets_pooled['index'].iloc[
-                        i]) is list:  # in case index is from as single appended tweet
-                indices_of_pooled_unique_tweets.extend(self.lda_all_tweets_pooled['index'].iloc[i])
-            else:
-                indices_of_pooled_unique_tweets.extend(self.lda_all_tweets_pooled['index'].iloc[i])
+            indices_of_pooled_unique_tweets.extend(self.lda_all_tweets_pooled['index'].iloc[i])
         indices_of_pooled_unique_tweets = list(set(indices_of_pooled_unique_tweets))  # get only the unique tweets
 
         # make a COPY of df of all for lda-training used tweets
         lda_df_trained_tweets = self.data.loc[indices_of_pooled_unique_tweets, :].copy()
 
-        # As for the pooled tweets, get also bigrams for the the tweets that produced the pooled tweets.
+        # As for the pooled tweets, produce n-grams for the the tweets that created the hashtag pools.
 
-        # create corpus for the training set:
+        # create corpus for all tweets:
         if ngram_type == 'bi_grams':
             lda_df_trained_tweets['bi_grams'] = LDAAnalyzer.make_ngrams(lda_df_trained_tweets['text_tokens'],
                                                                         self.ngram_min_count, self.ngram_threshold)
@@ -1027,7 +1119,7 @@ class LDAAnalyzer(object):
                                                                          self.ngram_min_count, self.ngram_threshold,
                                                                          ngram_type='tri')
 
-        # IMPORTANT! use the pre-trained "dic_id2word*"-objects!
+        # IMPORTANT! use the pre-trained "dic_id2word"-object!
         if ngram_type == 'pooled_tweets_token':
             ut_corpus = [dic_id2word.doc2bow(tweets_unique) for tweets_unique in lda_df_trained_tweets['text_tokens']]
 
@@ -1037,26 +1129,36 @@ class LDAAnalyzer(object):
         if ngram_type == 'tri_grams':
             ut_corpus = [dic_id2word.doc2bow(tweets_unique) for tweets_unique in lda_df_trained_tweets['tri_grams']]
 
-        # __Details about the following blocks:__
-        # The next part finally outlines the single tweets topic distribution calculation for the training and test set, lda_df_trained_tweets and lda_df_test_set. The self-defined function get_topics_for_tweets is able to calculate the topic distribution for every tweet in a passed set by using a passed LDA model. In this case, only bigrams are used, but it is also possible to calculate the topic distributions for single tokens or trigrams, by setting gram_type = ‘token’ or gram_type = ‘tri’, respectively. A counter shows the calculation progress. Topic distribution calculation is done by the lda_model.get_document_topics function. Minimum_probability=0.0 assures that every topic probability is returned, regardless of how low it might be. Respectively, calculation is done by using the corpi ut_corpus_bi or test_set_corpus_bi. The top_topics are then saved in topic_vec and afterwards supplemented by the number of tokens (including bigram tokens) of the respective tweet (word count) by using topic_vec.extend([len(lda_df_trained_tweets['token_tm'].iloc[i])]). Iterating over all tweets, every tweets topic_vec is appended to topic_vecs, a nested list containing the topic distributions of all tweets of the dataset. This list is then returned by the function.
+        # __Details about the following code:__
+        # The next part finally outlines the single tweets topic distribution calculation for 'lda_df_trained_tweets'.
+        # The self-defined function 'get_topics_for_tweets' is able to calculate the topic distribution for every
+        # tweet in a passed set by using a passed LDA model. A counter shows the calculation progress.
+        # Topic distribution calculation is done by the lda_model.get_document_topics function.
+        # Minimum_probability=0.0 assures that every topic probability is returned, regardless of how low it might be.
+        # Respectively, calculation is done by using the corpus ut_corpus. The top_topics are then saved in 'topic_vec'
+        # and afterwards supplemented by the number of tokens (including n-gram tokens) of the respective tweet
+        # (word count) by using topic_vec.extend([len(lda_df_trained_tweets['token_tm'].iloc[i])]).
+        # Iterating over all tweets, every tweets 'topic_vec' is appended to 'topic_vecs', a nested list containing the
+        # topic distributions of all tweets of the dataset. This list is then returned by the function.
         #
-        # Get_topics_for_tweets is applied on each of the three best performing models by iterating over models, meaning both the training as well as the test set are getting three computed topic distributions with different topic numbers, each. The results are automatically appended to the lda_df_trained_tweets and lda_df_test_set DataFrames as new columns and are named accordingly. Once the data is appended, the two Dataframes are saved.
+        # Get_topics_for_tweets is applied on each of the n best performing models by iterating over models,
+        # meaning both the training as well as the test set are getting n computed topic distributions with
+        # different topic numbers, each. The results are automatically appended to the lda_df_trained_tweets DataFrame
+        # as new columns and are named accordingly. Once the data is appended, the Dataframe is saved.
 
-        # Finally, compute the topic distribution for every tweet from the by the trained LDA-model:
-
-        # get the topic distribution for all the tweets in the training and test set.
-        # source: https://github.com/xillig/nlp_yelp_review_unsupervised/blob/master/notebooks/2-train_corpus_prep_and_LDA_train.ipynb
-
+        # source:
+        # https://github.com/xillig/nlp_yelp_review_unsupervised/blob/master/notebooks/2-train_corpus_prep_and_LDA_train.ipynb
         def get_topics_for_tweets(lda_model, number_of_topics):
             train_vecs = []
             counter = 0
             for i in range(len(lda_df_trained_tweets['text_tokens'])):
                 if counter % 500 == 0:
-                    print(counter)
+                    print('Number of processed tweets:' + str(counter))
                 top_topics = lda_model.get_document_topics(ut_corpus[i],
-                                                           minimum_probability=0.0)  # calculate the topic distribution for every tweet in test set
+                                                           minimum_probability=0.0)  # calculate the topic distribution
+                # for every tweet.
                 topic_vec = [top_topics[i][1] for i in
-                             range(number_of_topics)]  # get the distribution values for all topics
+                             range(number_of_topics)]  # get the distribution values for all topics.
                 # topic_vec.extend(
                 #    [len(lda_df_trained_tweets['text_tokens'].iloc[i])])  # include length of tweet as covariate, too
                 train_vecs.append(topic_vec)
@@ -1064,9 +1166,11 @@ class LDAAnalyzer(object):
 
             return train_vecs
 
+        # Finally, compute the topic distribution for every tweet from the by the trained LDA-model:
         list_of_topic_distr_trained_tweets_lda = []
         counter = 0
-        for lda_model in models.values():
+        for lda_model, j in zip(models.values(), models.keys()):
+            print('Model ' + str(j) + ': calculating topic distribution!')
             list_of_topic_distr_trained_tweets_lda.append(
                 get_topics_for_tweets(lda_model=lda_model, number_of_topics=best_models[counter][1]))
             counter = counter + 1
@@ -1099,6 +1203,18 @@ class LDAAnalyzer(object):
 
         return
 
+    def time_series_producer(self, ts_type='d'):
+        # arguments:
+        # ts_type (str): define the interval of the time series. Choose between (d)aily, (w)eekly and (m)onthly.
+        # Default is d.
+        if ts_type == 'd':
+            return
+
+
+        return
+
+
+
     # Building ngrams:
     # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
 
@@ -1122,36 +1238,54 @@ class LDAAnalyzer(object):
         return [bigram_mod[hashtag_pool] for hashtag_pool in corpus]
 
 
+# __Additional information about the function parallel (used in the method "hashtag_pooling"):__
+# Let’s now have a look at parallel, the function that is called n-times in parallel during the hashtag-pooling process.
+# Parallel takes the following, above described, arguments: 'pooled_to_vectorize', 'self.cs_threshold',
+# 'len_pooled', 'vectorizer_fit' and 'single_vectorizer_fit_unpooled_values'. After that, every worker thread
+# takes one TF-IDF value from a single unlabeled tweet in form of a sublist from
+# 'single_vectorizer_fit_unpooled_values' and calculates the cosine similarity of all TF-IDF
+# values of the hashtag pools. The results are sorted by size and the index of the hashtag pool with the highest cosine
+# similarity is saved in 'most_similar_tweets_index'. Next, it is checked if this value can cross
+# the 'self.cs_threshold'. If True, the 'counter' value of the single tweet is appended to 'indices_unlabeled',
+# the corresponding cosine similarity score is appended to 'value_of_cs' and the index number of the hashtag
+# pool from 'pooled_to_vectorized' (where the single tweet without hashtag shall be appended later) is appended to
+# 'indices_to_append'. This process is repeated over the range of the length of 'no_of_packages_to_pass'.
+# The function finally returns 'indices_unlabeled', 'value_of_cs', 'indices_to_append_atp', if the single tweets
+# TF-IDF is greater than the self.cs_threshold, else it returns None.
+
 # parallel called function for cosine similarity calculation:
 def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, single_tweet_vectorizer_fit_unpooled):
-    # pooled_to_vectorize: nested list of all tokens, not separated by comma anymore but only by whitespace.
-    # cs_threshold: cosine similarity threshold. see markdown explanation about "Hashtag Labeling Algorithm" in script "LDA Preparation".
+    # pooled_to_vectorize: nested list of all tokens, not separated by comma, only by whitespace.
+    # cs_threshold: cosine similarity threshold.
     # len_pooled: length of all hashtag-pooled tweets.
-    # vectorizer_fit: fitted TF-IDF values for all tweets
-    # single_tweet_vectorizer_fit_unpooled: list containing fitted TF-IDF values of the single (unpooled) tweets. no. of entries is defined by no. of workers
+    # vectorizer_fit: fitted TF-IDF values for all tweets.
+    # single_tweet_vectorizer_fit_unpooled: list containing fitted TF-IDF values of the single tweets without hashtag.
+    # Number of entries is defined by the number of workers.
     indices_unlabeled = []
     value_of_cs = []
     indices_to_append_atp = []
 
-    # check all hashtag pool vs. one single tweet at a time at any worker.
+    # check all hashtag pools vs. one single tweet without hashtag at a time on any worker.
     cs = cosine_similarity(vectorizer_fit[:len_pooled], single_tweet_vectorizer_fit_unpooled[0]).flatten()
 
-    # gets the index with the highest cs score for a pooled hashtag.
+    # gets the index with the highest cs score for a hashtag pool.
     most_similar_tweets_index = cs.argsort()[:-2:-1]
 
     if cs[most_similar_tweets_index] > cs_threshold:  # cs min. default: 0.5
         indices_unlabeled.append(
-            single_tweet_vectorizer_fit_unpooled[1])  # index number of unlabeled tweet in 'all_tweets_pool'
+            single_tweet_vectorizer_fit_unpooled[1])  # index number of single tweet without hashtag
+        # in 'all_tweets_pool'
         value_of_cs.append(cs[most_similar_tweets_index][0])  # corresponding cs value
         indices_to_append_atp.append(pooled_to_vectorize.index[most_similar_tweets_index][
-                                         0])  # index number of hashtag pool in 'all_tweets_pool', where the single tweet shall be appended.
+                                         0])  # index number of hashtag pool in 'all_tweets_pool',
+        # where the single tweet  without hashtag shall be appended.
 
         return indices_unlabeled, value_of_cs, indices_to_append_atp
 
     else:
         return  # return 'None' if cs of single tweet couldn't pass the threshold
 
-
+# IGNORE!
 ##################################################################################################
 
 # import sys
@@ -1163,14 +1297,21 @@ def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, sing
 
 # pd.set_option('display.max_columns', None)  # show all columns
 
+##################################################################################################
+
+# Apply the whole class!
+
+# Data Scraping
 # wfl = WriteFileListener(r'C:\Users\gilli\OneDrive\Dokumente\Uni\Masterarbeit\Wichtige Informationen\Twitter API Access.txt',
 #                            save_path=r'C:\Users\gilli\OneDrive\Desktop', languages=['en'],locations=[-125,25,-65,48],
 #                        hashtag=False)
 
+#Data Cleaning
 # c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
 # print(c.raw_data)
 # c.saving(r'C:\Users\gilli\OneDrive\Desktop')
 
+#LDA Analysis
 if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.com/questions/58323993/passing-a-class-to-multiprocessing-pool-in-python-on-windows
     d = LDAAnalyzer(load_path=r'C:\Users\gilli\OneDrive\Desktop')
     # print(type(d.data))
