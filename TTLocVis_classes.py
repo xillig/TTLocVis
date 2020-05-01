@@ -1203,17 +1203,43 @@ class LDAAnalyzer(object):
 
         return
 
-    def time_series_producer(self, ts_type='d'):
-        # arguments:
-        # ts_type (str): define the interval of the time series. Choose between (d)aily, (w)eekly and (m)onthly.
-        # Default is d.
-        if ts_type == 'd':
-            return
-
-
+    # simple method to save a LDAAnalyzer-object
+    def save_lda_analyzer_object(self, save_path, obj_name='my_LDAAnalyzer_Object.pkl'):
+        with open(os.path.join(save_path, obj_name), "wb") as f:
+            pickle.dump(self, f)
         return
 
+    # simple method to load a LDAAnalyzer-object. Note that it is static.
+    @staticmethod
+    def load_lda_analyzer_object(load_path, obj_name):
+        with open(os.path.join(load_path, obj_name), "rb") as f:
+            dump = pickle.load(f)
+        return dump
 
+    # create a dict containing the tweets sorted by day / month:
+    def time_series_producer(self, ts_type='d'):
+        # arguments:
+        # ts_type (str): define the interval of the time series. Choose between (d)aily and (m)onthly.
+        # Default is d.
+        results_dic = {}
+        if ts_type == 'd':
+            # get a list of all available dates
+            available_dates = set(self.lda_df_trained_tweets['created_at'].apply(lambda x: x.strftime('%y-%m-%d')))
+            for i in available_dates: # get the tweets for every day into a new df, each
+                df = self.lda_df_trained_tweets[self.lda_df_trained_tweets['created_at'].
+                                                    apply(lambda x: x.strftime('%y-%m-%d')) == i]
+                results_dic[i] = df
+
+        else:
+            # get a list of all available dates
+            available_dates = set(self.lda_df_trained_tweets['created_at'].apply(lambda x: x.strftime('%y-%m')))
+            for i in available_dates:  # get the tweets for every day into a new df, each
+                df = self.lda_df_trained_tweets[self.lda_df_trained_tweets['created_at'].
+                                                    apply(lambda x: x.strftime('%y-%m')) == i]
+                results_dic[i] = df
+
+        self.time_series =  results_dic
+        return
 
     # Building ngrams:
     # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
@@ -1285,6 +1311,7 @@ def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, sing
     else:
         return  # return 'None' if cs of single tweet couldn't pass the threshold
 
+
 # IGNORE!
 ##################################################################################################
 
@@ -1306,17 +1333,19 @@ def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, sing
 #                            save_path=r'C:\Users\gilli\OneDrive\Desktop', languages=['en'],locations=[-125,25,-65,48],
 #                        hashtag=False)
 
-#Data Cleaning
+# Data Cleaning
 # c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
 # print(c.raw_data)
 # c.saving(r'C:\Users\gilli\OneDrive\Desktop')
 
-#LDA Analysis
+# LDA Analysis
 if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.com/questions/58323993/passing-a-class-to-multiprocessing-pool-in-python-on-windows
-    d = LDAAnalyzer(load_path=r'C:\Users\gilli\OneDrive\Desktop')
+    #d = LDAAnalyzer(load_path=r'C:\Users\gilli\OneDrive\Desktop')
     # print(type(d.data))
-    d.hashtag_pooling()
-    d.lda_training(data_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
-                   models_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
-                   ngram_style='bigrams', topic_numbers_to_fit=[3, 5], n_saved_top_models=2)
-    print(d.lda_df_trained_tweets)
+    #d.hashtag_pooling()
+    #d.lda_training(data_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
+    #               models_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
+    #               ngram_style='bigrams', topic_numbers_to_fit=[3, 5], n_saved_top_models=2)
+    #d.save_lda_analyzer_object(save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    q = LDAAnalyzer.load_lda_analyzer_object(load_path=r'C:\Users\gilli\OneDrive\Desktop\test', obj_name='my_LDAAnalyzer_Object.pkl')
+    q.time_series_producer()
