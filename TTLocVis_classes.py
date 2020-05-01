@@ -1203,19 +1203,6 @@ class LDAAnalyzer(object):
 
         return
 
-    # simple method to save a LDAAnalyzer-object
-    def save_lda_analyzer_object(self, save_path, obj_name='my_LDAAnalyzer_Object.pkl'):
-        with open(os.path.join(save_path, obj_name), "wb") as f:
-            pickle.dump(self, f)
-        return
-
-    # simple method to load a LDAAnalyzer-object. Note that it is static.
-    @staticmethod
-    def load_lda_analyzer_object(load_path, obj_name):
-        with open(os.path.join(load_path, obj_name), "rb") as f:
-            dump = pickle.load(f)
-        return dump
-
     # create a dict containing the tweets sorted by day / month:
     def time_series_producer(self, ts_type='d'):
         # arguments:
@@ -1240,6 +1227,19 @@ class LDAAnalyzer(object):
 
         self.time_series =  results_dic
         return
+
+    # simple method to save a LDAAnalyzer-object
+    def save_lda_analyzer_object(self, save_path, obj_name='my_LDAAnalyzer_Object.pkl'):
+        with open(os.path.join(save_path, obj_name), "wb") as f:
+            pickle.dump(self, f)
+        return
+
+    # simple method to load a LDAAnalyzer-object. Note that it is static.
+    @staticmethod
+    def load_lda_analyzer_object(load_path, obj_name):
+        with open(os.path.join(load_path, obj_name), "rb") as f:
+            dump = pickle.load(f)
+        return dump
 
     # Building ngrams:
     # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
