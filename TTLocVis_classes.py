@@ -522,6 +522,17 @@ class Cleaner(object):
 # - train several LDA models on all tweets, decide for the n-best to be saved by coherence score
 # - save corpi, models and vocabularies.
 # - calculate topic distributions and save them.
+# method "time_series_producer":
+# - creates a dict containing the tweets sorted by day / month
+# method "topic_prevalence_flattening":
+# - method to append the values of a selected topic distribution of each topic to each tweet as a new column, each.
+# method "word_count_prevalence":
+# - method to append prevalence statistics about passed tokens to every tweet.
+# method "save_lda_analyzer_object":
+# - simple method to save a LDAAnalyzer-object
+# method "load_lda_analyzer_object":
+# - simple method to load a LDAAnalyzer-object
+
 
 
 class LDAAnalyzer(object):
@@ -1203,7 +1214,7 @@ class LDAAnalyzer(object):
 
         return
 
-    # create a dict containing the tweets sorted by day / month:
+    # creates a dict containing the tweets sorted by day / month:
     def time_series_producer(self, ts_type='d'):
         # arguments:
         # ts_type (str): define the interval of the time series. Choose between (d)aily and (m)onthly.
@@ -1225,7 +1236,76 @@ class LDAAnalyzer(object):
                                                     apply(lambda x: x.strftime('%y-%m')) == i]
                 results_dic[i] = df
 
-        self.time_series =  results_dic
+        self.time_series = results_dic
+        return
+
+    # method to append the values of a selected topic distribution of each topic to each tweet as a new column, each.
+    def topic_prevalence_flattening(self, topic_prevalence_column_str, type='all', date_of_df_in_dict_str=None):
+        # arguments:
+        # topic_prevalence_column_str (str): String referring to the name of a topic distribution column of
+        # “token, bi- or tri-type” of 'self.lda_df_trained_tweets'.
+        # type (str): define on which DataFrame the method is applied. Choose between 'all' (self.lda_df_trained_tweets)
+        # and 'ts' (a time-series-dict entry). Default is 'all'.
+        # date_of_df_in_dict_str (str): optional, choose the key-string of the desired entry from the time-series-dict,
+        # if "type='ts'". Default is None.
+        if type == 'all':
+            df_final = self.lda_df_trained_tweets.loc[:, [topic_prevalence_column_str]]
+        elif type == 'ts':
+            df_final = self.time_series[date_of_df_in_dict_str].loc[:, [topic_prevalence_column_str]]
+        else:
+            return print('For "type" choose between "all" and "ts"!')
+        pd.options.display.precision = 10  # set the number of decimal-numbers up to ten. otherwise the new columns
+        # will be rounded
+        for i in range(len(df_final[topic_prevalence_column_str].iloc[0])):  # no. of features
+            df_final[str(topic_prevalence_column_str) + ': Topic no. ' + str(i)] = df_final[topic_prevalence_column_str
+            ].apply(lambda x: x[i])
+
+        df_final.drop([topic_prevalence_column_str], inplace=True, axis=1)
+        if type == 'all':
+            self.lda_df_trained_tweets = pd.concat([self.lda_df_trained_tweets, df_final], axis=1)
+        else:
+            self.time_series[date_of_df_in_dict_str] = \
+                pd.concat([self.time_series[date_of_df_in_dict_str], df_final], axis=1)
+
+        return
+
+    # method to append prevalence statistics about passed tokens to every tweet
+    def word_count_prevalence(self, searched_token_list, type='all', date_of_df_in_dict_str=None):
+        # arguments:
+        # searched_token_list (list of str): list containing strings that are searched for.
+        # type (str): define on which DataFrame the method is applied. Choose between 'all' (self.lda_df_trained_tweets)
+        # and 'ts' (a time-series-dict entry). Default is 'all'.
+        # date_of_df_in_dict_str (str): optional, choose the key-string of the desired entry from the time-series-dict,
+        # if "type='ts'". Default is None.
+        if type == 'all':
+            df_final = self.lda_df_trained_tweets.loc[:, ['text_tokens']]
+        elif type == 'ts':
+            df_final = self.time_series[date_of_df_in_dict_str].loc[:, ['text_tokens']]
+        else:
+            return print('For "type" choose between "all" and "ts"!')
+        for k in searched_token_list:
+            searched_token_occurrence = []
+            mean_occurrence = []
+            for i in range(len(df_final['text_tokens'])):
+                counter = 0
+                for j in df_final['text_tokens'].iloc[i]:
+                    if j == k:
+                        counter = counter + 1
+                searched_token_occurrence.append(counter)
+                try:
+                    mean_occurrence.append(counter / len(df_final['text_tokens'].iloc[i]))
+                except:
+                    mean_occurrence.append(0)
+
+            if type == 'all':
+                self.lda_df_trained_tweets['"' + str(k) + '" : total occurrence in tweet'] = searched_token_occurrence
+                self.lda_df_trained_tweets['"' + str(k) + '" : mean word occurrence in tweet'] = mean_occurrence
+            else:
+                self.time_series[date_of_df_in_dict_str]['"' + str(k) + '" : total occurrence in tweet'] = \
+                    searched_token_occurrence
+                self.time_series[date_of_df_in_dict_str]['"' + str(k) + '" : mean word occurrence in tweet'] = \
+                    mean_occurrence
+
         return
 
     # simple method to save a LDAAnalyzer-object
@@ -1349,3 +1429,6 @@ if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.
     #d.save_lda_analyzer_object(save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
     q = LDAAnalyzer.load_lda_analyzer_object(load_path=r'C:\Users\gilli\OneDrive\Desktop\test', obj_name='my_LDAAnalyzer_Object.pkl')
     q.time_series_producer()
+    q.topic_prevalence_flattening('lda_5_topics_bigrams')
+    q.topic_prevalence_flattening('lda_5_topics_bigrams', type='ts',date_of_df_in_dict_str='20-04-17')
+    q.word_count_prevalence(['open','hari'], type='ts',date_of_df_in_dict_str='20-04-17')
