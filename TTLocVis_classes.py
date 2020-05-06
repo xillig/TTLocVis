@@ -986,8 +986,9 @@ class LDAAnalyzer(object):
             # (fraction of total corpus size, not an absolute number).
             # keep_n (int, optional) – Keep only the first keep_n most frequent tokens.
             # keep_tokens (iterable of str) – Iterable of tokens that must stay in dictionary after filtering.
-            dic_id2word.filter_extremes(keep_n=filter_keep_n, no_below=filter_no_below, no_above=filter_no_above)
             print('Raw vocabulary size before filtering extreme tokens:' + str(len(dic_id2word)))
+            dic_id2word.filter_extremes(keep_n=filter_keep_n, no_below=filter_no_below, no_above=filter_no_above)
+            print('Raw vocabulary size after filtering extreme tokens:' + str(len(dic_id2word)))
             # Create Corpus: Term-Document Frequency for every tweet-pool
             corpus = [dic_id2word.doc2bow(tweets_pooled) for tweets_pooled in self.lda_all_tweets_pooled[ngram_type]]
             return dic_id2word, corpus
@@ -1090,6 +1091,7 @@ class LDAAnalyzer(object):
         # save models:
         for key, value in models.items():  # save the models by using their dictionary named(models.keys)
             save_lda_models(value, key, models_save_path)
+        self.lda_models = models
 
         # save vocabulary:
         with open(os.path.join(models_save_path, 'dic_id2word_' + ngram_style + '.pkl'), 'wb') as f:
@@ -1321,7 +1323,82 @@ class LDAAnalyzer(object):
             dump = pickle.load(f)
         return dump
 
-    # Building ngrams:
+    # method returning a histogram of top-words for selected topics of a lda model.
+    @staticmethod
+    def plot_top_topics_from_lda(lda_model_object, topics, num_top_words=10, save_path=None,
+                                 save_name='my_topics_top_word_histogram'):
+        # arguments:
+        # lda_model_object (gensim model object): one of the gensim model objects saved in self.lda_models.
+        # topics (list of int): list of integers corresponding to the designated topic numbers to be
+        # returned (i.e. [0,3] -> return "Topic 0" and "Topic 3"). Maximum of 10 Topics at once!
+        # save_path (str, optional): Defines a save path to save the plot as PDF. Default is None.
+        # save_name (str, optional): Defines a name for the PDF-file, if a "save_path" is chosen. Default
+        # is 'my_topics_top_word_histogram'
+        num_topics = len(topics)
+        if num_topics > 10:
+            return print('Please do not pass a list longer than 10 entries at once for "topics"!')
+
+        # visualize the top topics words:
+        fig = plt.figure(figsize=(32, 16))
+        plt.rcdefaults()  # set plot-option to default
+
+        axis = []
+        if num_topics < 6:  # define, if the plots are in one or two columns of the figure
+            for k in range(num_topics):
+                axis.append(fig.add_subplot(num_topics, 1, k+1))
+        else:
+            for k in range(num_topics):
+                axis.append(fig.add_subplot(num_topics, 2, k+1))
+
+        for j, z in zip(axis, topics):  # go through all sub-plots and selected topics
+            words = []
+            for i in range(0, num_top_words):  # get the top words
+                words.append(
+                    lda_model_object.show_topics(num_words=num_top_words, log=False, formatted=False)[z][1][i][0])
+            # print(words)
+            y_pos = np.arange(len(words))
+
+            values = []
+            for i in range(0, num_top_words):  # the the top words probability
+                values.append(
+                    lda_model_object.show_topics(num_words=num_top_words, log=False, formatted=False)[z][1][i][1])
+            # print(values)
+
+            j.barh(y_pos, values, align='center')
+            j.set_yticks(y_pos)
+            j.set_yticklabels(words)
+            j.invert_yaxis()  # labels read top-to-bottom
+            j.set_xlabel('Probability')
+            j.set_title('Topic ' + str(z))
+
+        fig.tight_layout()  # put enough space between subplots that they don't overcross
+        if save_path is not None:
+            fig.savefig(os.path.join(save_path, str(save_name + '.pdf')))
+
+        return plt.show()
+
+    def time_series_plot(self, lda_model_name='lda_3_topics_bigrams', topics_to_plot=[0,2]):
+
+        plt.rcdefaults()  # set plot-option to default
+
+        # get all the available dates
+        dates_to_plot = set(self.lda_df_trained_tweets['created_at'].apply(lambda x: x.strftime('%y-%m-%d')))
+        for i in dates_to_plot: # pick every available date.
+            topic_prevalence_of_ith_date = self.time_series[i][lda_model_name]
+            for j in topics_to_plot:  # get the average prevalence for every topic that was chosen.
+                topic_prevalence = sum(topic_prevalence_of_ith_date.apply(lambda x: x[j]))/len(
+                    topic_prevalence_of_ith_date)
+                print(dates_to_plot)
+                print(topic_prevalence)
+                plt.plot(x=dates_to_plot, y=topic_prevalence, fmt='-o')
+
+        plt.show()
+        return
+
+
+
+
+                # Building ngrams:
     # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
 
     # functionalize ngramization:
@@ -1407,7 +1484,7 @@ def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, sing
 ##################################################################################################
 
 # Apply the whole class!
-
+pd.set_option('display.max_columns', None)
 # Data Scraping
 # wfl = WriteFileListener(r'C:\Users\gilli\OneDrive\Dokumente\Uni\Masterarbeit\Wichtige Informationen\Twitter API Access.txt',
 #                            save_path=r'C:\Users\gilli\OneDrive\Desktop', languages=['en'],locations=[-125,25,-65,48],
@@ -1432,3 +1509,7 @@ if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.
     q.topic_prevalence_flattening('lda_5_topics_bigrams')
     q.topic_prevalence_flattening('lda_5_topics_bigrams', type='ts',date_of_df_in_dict_str='20-04-17')
     q.word_count_prevalence(['open','hari'], type='ts',date_of_df_in_dict_str='20-04-17')
+    #LDAAnalyzer.plot_top_topics_from_lda(q.lda_models['lda_5_topics_bigrams'], topics=[1,3], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    q.time_series['20-04-18'] = q.time_series['20-04-17']
+    q.time_series['20-04-19'] = q.time_series['20-04-17']
+    q.time_series_plot()
