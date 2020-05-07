@@ -17,6 +17,7 @@ from importlib import reload
 import itertools as it
 import json
 import math
+#from matplotlib import axes
 import matplotlib.pyplot as plt
 from multiprocessing import Pool
 from multiprocessing import cpu_count
@@ -1377,28 +1378,57 @@ class LDAAnalyzer(object):
 
         return plt.show()
 
-    def time_series_plot(self, lda_model_name='lda_3_topics_bigrams', topics_to_plot=[0,2]):
+    # plot the mean topical prevalence over time for chosen Topics
+    def time_series_plot(self, topical_prevalence_column_name, topics_to_plot, save_path=None,
+                         save_name='my_mean_topical_prevalence_over_time_for_chosen_topics'):
+        # for test-purposes set: topical_prevalence_column_name='lda_5_topics_bigrams', topics_to_plot=[0,2]
+        # arguments:
+        # topical_prevalence_column_name (str): Define the name of the column that shall be used for plotting from the
+        # time series.
+        # topics_to_plot (list of int): Defines a list of integers referring to the topics numbers to be plotted.
+        # save_path (str, optional): Defines a save path to save the plot as PDF. Default is None.
+        # save_name (str, optional): Defines a name for the PDF-file, if a "save_path" is chosen. Default
+        # is 'my_topics_top_word_histogram'
 
-        plt.rcdefaults()  # set plot-option to default
-
-        # get all the available dates
-        dates_to_plot = set(self.lda_df_trained_tweets['created_at'].apply(lambda x: x.strftime('%y-%m-%d')))
+        fig, ax = plt.subplots()
+        dates_to_plot = set(self.lda_df_trained_tweets['created_at'].apply(lambda x: x.strftime('%y-%m-%d')))  # get all
+        # the available dates
+        #############
+        # for test purposes: remove!
+        #dates_to_plot = ['20-04-17', '20-04-18', '20-04-19']
+        ############
+        x_ax = list(range(len(dates_to_plot)))  # define constant x-axis
+        topic_prevalences_by_date = []
         for i in dates_to_plot: # pick every available date.
-            topic_prevalence_of_ith_date = self.time_series[i][lda_model_name]
+            topic_prevalence_of_ith_date = self.time_series[i][topical_prevalence_column_name]
+            topic_prevalence = []
             for j in topics_to_plot:  # get the average prevalence for every topic that was chosen.
-                topic_prevalence = sum(topic_prevalence_of_ith_date.apply(lambda x: x[j]))/len(
-                    topic_prevalence_of_ith_date)
-                print(dates_to_plot)
-                print(topic_prevalence)
-                plt.plot(x=dates_to_plot, y=topic_prevalence, fmt='-o')
+                topic_prevalence.append(sum(topic_prevalence_of_ith_date.apply(lambda x: x[j]))/len(
+                    topic_prevalence_of_ith_date))
+            topic_prevalences_by_date.append(topic_prevalence)
+        #print(topic_prevalences_by_date)
+        for i in range(len(topics_to_plot)):  # i = topic
+            y = [d[i] for d in topic_prevalences_by_date]  # a topics values for each day d
+            ax.plot(x_ax, y, '-o', label='Topic no. ' + str(i))  # label: for the legend
 
+        ax.set_xticks(x_ax)  # define the x-axis "ticks" (where the values are shown)
+        ax.set_xticklabels(dates_to_plot)  # labels x-axis ticks
+        ax.set_yticks(list(np.arange(0,1,0.1)))
+        ax.set_xlabel('date')
+        ax.set_ylabel('Probability')
+        ax.set_title('Mean topical prevalence over time for chosen topics \n for model '
+                     + topical_prevalence_column_name)
+
+        plt.legend()  # call the legend.
         plt.show()
+
+        if save_path is not None:
+            fig.savefig(os.path.join(save_path, str(save_name + '.pdf')))
+
         return
 
 
-
-
-                # Building ngrams:
+    # Building ngrams:
     # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
 
     # functionalize ngramization:
@@ -1510,6 +1540,14 @@ if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.
     q.topic_prevalence_flattening('lda_5_topics_bigrams', type='ts',date_of_df_in_dict_str='20-04-17')
     q.word_count_prevalence(['open','hari'], type='ts',date_of_df_in_dict_str='20-04-17')
     #LDAAnalyzer.plot_top_topics_from_lda(q.lda_models['lda_5_topics_bigrams'], topics=[1,3], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
-    q.time_series['20-04-18'] = q.time_series['20-04-17']
-    q.time_series['20-04-19'] = q.time_series['20-04-17']
-    q.time_series_plot()
+    ################
+    # Do change the date and variate values to test " time_series_plot"
+    q.time_series['20-04-18'] = q.time_series['20-04-17'].copy()
+    q.time_series['20-04-18'].loc[:,'lda_5_topics_bigrams'] = q.time_series['20-04-18'].loc[:,'lda_5_topics_bigrams'].apply(lambda x: [i-0.1 for i in x])
+    q.time_series['20-04-19'] = q.time_series['20-04-17'].copy()
+    q.time_series['20-04-19'].loc[:,'lda_5_topics_bigrams'] = q.time_series['20-04-19'].loc[:,'lda_5_topics_bigrams'].apply(lambda x: [i-0.2 for i in x])
+    #print(q.time_series['20-04-17'].loc[:10,'lda_5_topics_bigrams'])
+    #print(q.time_series['20-04-18'].loc[:10, 'lda_5_topics_bigrams'])
+    #print(q.time_series)
+    ############################
+    q.time_series_plot(topical_prevalence_column_name='lda_5_topics_bigrams', topics_to_plot=[0,2], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
