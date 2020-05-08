@@ -1518,7 +1518,6 @@ class LDAAnalyzer(object):
         #################
         # plan: iterate over the classes (topics) and produce a scatter plot for each of the topics.
         # then set a color by iterating. then build the legend iteratively too.
-
         #################
         l1 = plt.scatter([], [], s=10, edgecolors='none')
         l2 = plt.scatter([], [], s=50, edgecolors='none')
