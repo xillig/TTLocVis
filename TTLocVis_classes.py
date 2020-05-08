@@ -13,12 +13,11 @@ from gensim.test.utils import datapath
 import glob
 from heapq import nlargest
 from http.client import IncompleteRead
-from importlib import reload
 import itertools as it
 import json
 import math
-#from matplotlib import axes
 import matplotlib.pyplot as plt
+from mpl_toolkits.basemap import Basemap
 from multiprocessing import Pool
 from multiprocessing import cpu_count
 import numpy as np
@@ -26,7 +25,6 @@ import os
 import pandas as pd
 from pandas.io.json import json_normalize
 import pickle
-import random as rm
 import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -42,6 +40,7 @@ import urllib3.exceptions
 from urllib3.exceptions import ProtocolError
 from urllib3.exceptions import ReadTimeoutError
 import warnings
+from wordcloud import WordCloud
 
 
 # 1. Data Scraping: TwitterStreamer class
@@ -417,7 +416,7 @@ class Cleaner(object):
         st = st.rename(columns={0: "bounding_box.coordinates_str"})  # rename the column
 
         # Calculate the center of the bounding box:
-        # LONG FIRST; LAT LATER: center of rectangle for first entry: x1=st[0][1], x2=st[0][3], y1=st[0][0], y2=st[0][4]
+        # LONG FIRST; LAT LATER: center of rectangle for first entry: y1=st[0][1], y2=st[0][3], x1=st[0][0], x2=st[0][4]
         # xy-center: (x1+x2)/2, (y1+y2)/2
         st['val1'] = st['bounding_box.coordinates_str'].apply(
             lambda x: float(x[1]))  # append the needed values as new column
@@ -425,8 +424,8 @@ class Cleaner(object):
         st['val0'] = st['bounding_box.coordinates_str'].apply(lambda x: float(x[0]))
         st['val4'] = st['bounding_box.coordinates_str'].apply(lambda x: float(x[4]))
 
-        st['center_coord_X'] = (st['val1'] + st['val3']) / 2  # bounding box-center x-coordinate
-        st['center_coord_Y'] = (st['val0'] + st['val4']) / 2  # bounding box-center y-coordinate
+        st['center_coord_X'] = (st['val0'] + st['val4']) / 2  # bounding box-center x-coordinate
+        st['center_coord_Y'] = (st['val1'] + st['val3']) / 2  # bounding box-center y-coordinate
         self.raw_data = pd.concat([self.raw_data, st], axis=1)  # append the X and Y coordinates to the dataframe
 
         # Tokenization (usage of static method):
@@ -1427,6 +1426,114 @@ class LDAAnalyzer(object):
 
         return
 
+    # produce word clouds for topics of an lda model.
+    def wordcloud(self, lda_model_object_str, no_of_words, topics=None, save_path=None):
+        # arguments:
+        # lda_model_object_str (str): string referring to one of the saved lda models inside the object.
+        # no_of_words (int): number of words for each word cloud to plot.
+        # topics (list of int, optional): passes a list of integers referring to the topics to be plotted. If None
+        # is passed, all topics are plotted. Default is None.
+        # save_path (str, optional): Defines a save path to save the plots as PDF. Default is None.
+        def helper_fct(iterator):  # outsource the main-body for less code in 'if-else' below.
+            dict_to_process = {}  # change the format for the input for the "fit_words" function below
+            for i in self.lda_models[lda_model_object_str].show_topic(iterator, no_of_words):
+                dict_to_process[i[0]] = i[1]
+            plt.figure()
+            plt.imshow(WordCloud().fit_words(dict_to_process))
+            plt.axis("off")
+            plt.title("Topic no. " + str(iterator) + ' of ' + lda_model_object_str)
+            if save_path is not None:
+                plt.savefig(
+                    os.path.join(save_path, "Topic no. " + str(iterator) + ' of ' + lda_model_object_str + '.pdf'))
+            plt.show()
+            return
+
+        if topics is not None:  # plot only certain topics
+            for t in topics:
+                helper_fct(t)
+        else:  # plot all topics
+            for t in range(self.lda_models[lda_model_object_str].num_topics):
+                helper_fct(t)
+        return
+
+    def loc_vis(self, topical_prevalence_column_name, type='all', markersize=5, draw_lat_and_lon=False, date_of_df_in_dict_str=None):
+        # arguments:
+        # topical_prevalence_column_name (str): Define the name of the column that shall be used for plotting.
+        # type (str): define on which DataFrame the method is applied. Choose between 'all' (self.lda_df_trained_tweets)
+        # and 'ts' (a time-series-dict entry). Default is 'all'.
+        # date_of_df_in_dict_str (str, optional): Choose the key-string of the desired entry from the time-series-dict,
+        # if "type='ts'". Default is None.
+        if type == 'all':
+            df = self.lda_df_trained_tweets.loc[:, [topical_prevalence_column_name, 'center_coord_X', 'center_coord_Y']]
+        elif type == 'ts':
+            df = self.time_series[date_of_df_in_dict_str].loc[:, [topical_prevalence_column_name, 'center_coord_X',
+                                                                  'center_coord_Y']]
+        else:
+            return print('For "type" choose between "all" and "ts"!')
+
+        # append index for the topic with the highest prevalence for each entry:
+        df['highest_prev'] = df[topical_prevalence_column_name].apply(lambda x: x.index(max(x)))
+        #print(df.loc[:10, [topical_prevalence_column_name, 'highest_prev']])
+
+        fig = plt.figure(figsize=(3*6.4, 3*4.8), edgecolor='w')  # figsize: 3 times the default
+        #fig, ax = plt.subplots(1,2,figsize=(3*6.4, 3*4.8))
+        # increase the zoom for 5 degrees in each direction from the maximum points
+        if min(df['center_coord_X']) > -175:
+            llcrnrlon = min(df['center_coord_X'])-5
+        else:
+            llcrnrlon = min(df['center_coord_X'])
+        if min(df['center_coord_Y']) > -85:
+            llcrnrlat = min(df['center_coord_Y'])-5
+        else:
+            llcrnrlat = min(df['center_coord_Y'])
+        if max(df['center_coord_X']) < 175:
+            urcrnrlon = max(df['center_coord_X'])+5
+        else:
+            urcrnrlon = max(df['center_coord_X'])
+        if max(df['center_coord_Y']) < 85:
+            urcrnrlat = max(df['center_coord_Y'])+5
+        else:
+            urcrnrlat = max(df['center_coord_Y'])
+
+        bmap = Basemap(projection='cyl', resolution = 'i', llcrnrlon=llcrnrlon,llcrnrlat=llcrnrlat,
+                      urcrnrlon=urcrnrlon, urcrnrlat=urcrnrlat)
+        #print(min(df['center_coord_Y']))
+        #print(max(df['center_coord_Y']))
+        #print(min(df['center_coord_X']))
+        #print(max(df['center_coord_X']))
+        bmap.drawmapboundary(fill_color='aqua')
+        bmap.fillcontinents(color='coral', lake_color='aqua')
+        bmap.drawcoastlines()
+        bmap.drawcountries()
+        if draw_lat_and_lon:  # put lat and lon on the map.
+            bmap.drawmeridians(np.arange(0, 360, 30))
+            bmap.drawparallels(np.arange(-90, 90, 30))
+
+        x = list(df['center_coord_X'])
+        y = list(df['center_coord_Y'])
+        classes = list(df['highest_prev'])
+        x, y = bmap(x, y)  # transform coordinates
+        bmap.scatter(x, y, marker="o", c=classes, label=classes, zorder=10)  # for 'zorder',
+        # see: https://matplotlib.org/3.1.1/gallery/misc/zorder_demo.html
+        #################
+        # plan: iterate over the classes (topics) and produce a scatter plot for each of the topics.
+        # then set a color by iterating. then build the legend iteratively too.
+
+        #################
+        l1 = plt.scatter([], [], s=10, edgecolors='none')
+        l2 = plt.scatter([], [], s=50, edgecolors='none')
+        l3 = plt.scatter([], [], s=100, edgecolors='none')
+        l4 = plt.scatter([], [], s=200, edgecolors='none')
+
+        labels = ["10", "50", "100", "200"]
+
+        plt.legend([l1, l2, l3, l4], labels, ncol=4, frameon=True, fontsize=12,
+                         handlelength=2, loc=8, borderpad=1.8,
+                         handletextpad=1, title='My Title', scatterpoints=1)
+        plt.show()
+
+        return
+
 
     # Building ngrams:
     # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
@@ -1521,9 +1628,9 @@ pd.set_option('display.max_columns', None)
 #                        hashtag=False)
 
 # Data Cleaning
-# c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
+#c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
 # print(c.raw_data)
-# c.saving(r'C:\Users\gilli\OneDrive\Desktop')
+#c.saving(r'C:\Users\gilli\OneDrive\Desktop')
 
 # LDA Analysis
 if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.com/questions/58323993/passing-a-class-to-multiprocessing-pool-in-python-on-windows
@@ -1550,4 +1657,6 @@ if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.
     #print(q.time_series['20-04-18'].loc[:10, 'lda_5_topics_bigrams'])
     #print(q.time_series)
     ############################
-    q.time_series_plot(topical_prevalence_column_name='lda_5_topics_bigrams', topics_to_plot=[0,2], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    #q.time_series_plot(topical_prevalence_column_name='lda_5_topics_bigrams', topics_to_plot=[0,2], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    #q.wordcloud(lda_model_object_str='lda_5_topics_bigrams', no_of_words=20, topics=[0,3], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    q.loc_vis(topical_prevalence_column_name='lda_5_topics_bigrams', type='ts', date_of_df_in_dict_str='20-04-17')
