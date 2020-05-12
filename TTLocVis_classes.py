@@ -612,7 +612,7 @@ class LDAAnalyzer(object):
         lda_df_wht = self.data[self.data.loc[:, 'hashtags'].str.len() == 0]  # get all entries WITHOUT hashtag(s)
 
         # lowercase the hashtags:
-        with warnings.catch_warnings():  # suppress warnings.
+        with warnings.catch_warnings():  # suppress warning.
             warnings.simplefilter("ignore")
             lda_df_ht.loc[:, 'hashtags'] = lda_df_ht['hashtags'].apply(lambda x: str(x).lower())
 
@@ -1626,7 +1626,6 @@ def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, sing
 
 
 # Sources:
-#
 
 # IGNORE!
 ##################################################################################################
@@ -1666,19 +1665,19 @@ if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.
     q = LDAAnalyzer.load_lda_analyzer_object(load_path=r'C:\Users\gilli\OneDrive\Desktop\test', obj_name='my_LDAAnalyzer_Object.pkl')
     q.time_series_producer()
     q.topic_prevalence_flattening('lda_5_topics_bigrams')
-    q.topic_prevalence_flattening('lda_5_topics_bigrams', type='ts',date_of_df_in_dict_str='20-04-17')
-    q.word_count_prevalence(['open','hari'], type='ts',date_of_df_in_dict_str='20-04-17')
-    #LDAAnalyzer.plot_top_topics_from_lda(q.lda_models['lda_5_topics_bigrams'], topics=[1,3], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    q.topic_prevalence_flattening('lda_5_topics_bigrams', type='ts',date_of_df_in_dict_str='19-10-26')
+    q.word_count_prevalence(['open','hari'], type='ts',date_of_df_in_dict_str='19-10-26')
+    LDAAnalyzer.plot_top_topics_from_lda(q.lda_models['lda_5_topics_bigrams'], topics=[1,3], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
     ################
     # Do change the date and variate values to test " time_series_plot"
-    q.time_series['20-04-18'] = q.time_series['20-04-17'].copy()
-    q.time_series['20-04-18'].loc[:,'lda_5_topics_bigrams'] = q.time_series['20-04-18'].loc[:,'lda_5_topics_bigrams'].apply(lambda x: [i-0.1 for i in x])
-    q.time_series['20-04-19'] = q.time_series['20-04-17'].copy()
-    q.time_series['20-04-19'].loc[:,'lda_5_topics_bigrams'] = q.time_series['20-04-19'].loc[:,'lda_5_topics_bigrams'].apply(lambda x: [i-0.2 for i in x])
+    #q.time_series['20-04-18'] = q.time_series['20-04-17'].copy()
+    #q.time_series['20-04-18'].loc[:,'lda_5_topics_bigrams'] = q.time_series['20-04-18'].loc[:,'lda_5_topics_bigrams'].apply(lambda x: [i-0.1 for i in x])
+    #q.time_series['20-04-19'] = q.time_series['20-04-17'].copy()
+    #q.time_series['20-04-19'].loc[:,'lda_5_topics_bigrams'] = q.time_series['20-04-19'].loc[:,'lda_5_topics_bigrams'].apply(lambda x: [i-0.2 for i in x])
     #print(q.time_series['20-04-17'].loc[:10,'lda_5_topics_bigrams'])
     #print(q.time_series['20-04-18'].loc[:10, 'lda_5_topics_bigrams'])
     #print(q.time_series)
     ############################
-    #q.time_series_plot(topical_prevalence_column_name='lda_5_topics_bigrams', topics_to_plot=[0,2], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
-    #q.wordcloud(lda_model_object_str='lda_5_topics_bigrams', no_of_words=20, topics=[0,3], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
-    q.loc_vis(topical_prevalence_column_name='lda_5_topics_bigrams',topics_to_plot=[0,1,2,3,4], type='ts', date_of_df_in_dict_str='20-04-17')
+    q.time_series_plot(topical_prevalence_column_name='lda_5_topics_bigrams', topics_to_plot=[0,2], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    q.wordcloud(lda_model_object_str='lda_5_topics_bigrams', no_of_words=20, topics=[0,3], save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    q.loc_vis(topical_prevalence_column_name='lda_5_topics_bigrams',topics_to_plot=[0,1,2,3,4], type='ts', date_of_df_in_dict_str='19-10-26')

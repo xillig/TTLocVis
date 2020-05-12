@@ -2,10 +2,11 @@
 # TTLocVis
 TTLocVis: Twitter Topic Location Visualization
 
-#Test 
-#Test 
-#Test 
-# Submitting a paper to JOSS
-https://joss.readthedocs.io/en/latest/submitting.html
+##Summary 
+##How to cite 
+##Installation
+##Documentation and Usage
+You can find the current TTLocVis master branch
+documentation at  
 
-# 
+##License
