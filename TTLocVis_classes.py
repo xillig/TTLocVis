@@ -251,7 +251,7 @@ class TwitterStreamer(StreamListener):
 # - place - sub-dictionary: contains information about the tweets associated location.
 # - source - hyperlink to the Twitter website, where the tweet object is stored.
 # ----- text - shows the complete text of a tweet, regardless of whether it’s longer than 140 characters or not.
-# ----- text_tokens - contains the created lemmatized tokens from "text".
+# ----- text_tokens - contains the created lemmarized tokens from "text".
 # - user - sub-dictionary: contains information about the tweets’ associated user.
 # - emojis - contains the emoji(s) of a tweet.
 # ----- hashtags - contains the hashtag(s) of a tweet (without “#”)
@@ -268,8 +268,8 @@ class TwitterStreamer(StreamListener):
 # - user_id - profile id of the users profile as integer. Originates from user.
 # - user_listed_count - The number of public lists which this user is a member of. Originates from user.
 # - user_location - self-defined location by the user for the profile. Originates from user.
-# - user_name - self-defined name for the user themselfs. Originates from user.
-# - user_screen_name - alias of the self-defined name for the user themselfs. Originates from user.
+# - user_name - self-defined name for the user themselves. Originates from user.
+# - user_screen_name - alias of the self-defined name for the user themselves. Originates from user.
 # - user_statuses_count - number of tweets published by the user (incl. retweets). Originates from user.
 
 
@@ -543,8 +543,6 @@ class Cleaner(object):
 # - scatter plot tweets from up to ten topics from the whole dataset or a time-series on a matplotlib basemap. The
 #   tweets are categorized by their individual maximum prevalence score for the passed topical prevalence column name.
 
-
-
 class LDAAnalyzer(object):
     # arguments:
     # load_path (str): path containing the cleaned data. Define this argument or "raw_data",
@@ -566,7 +564,7 @@ class LDAAnalyzer(object):
     # ngram_threshold (int): Represents a score threshold for forming the n-gram-phrases (higher means fewer phrases).
     # For details about the scores calculation,
     # see: https://radimrehurek.com/gensim/models/phrases.html#gensim.models.phrases.original_scorer
-    def __init__(self, load_path=None, raw_data=None, n_jobs=2, cs_threshold=0.5, output_type='All',
+    def __init__(self, load_path=None, raw_data=None, n_jobs=2, cs_threshold=0.5, output_type='all',
                  spacy_model='en_core_web_sm', ngram_min_count=10, ngram_threshold=300):
         self.load_path = load_path
         self.raw_data = raw_data
@@ -946,7 +944,7 @@ class LDAAnalyzer(object):
 
     def lda_training(self, data_save_path, models_save_path, data_save_type='pkl', ngram_style='unigrams',
                      filter_keep_n=15000, filter_no_below=10,
-                     filter_no_above=0.85, topic_numbers_to_fit=[10, 20, 30, 40, 50, 75, 100, 125, 150, 200, 250, 300],
+                     filter_no_above=0.85, topic_numbers_to_fit=[10, 20, 30, 50, 75, 100, 150],
                      n_saved_top_models=3):
         # arguments:
         # data_save_path (str): path directing where the topic distributions of the individual tweets shall be saved.
@@ -962,8 +960,7 @@ class LDAAnalyzer(object):
         # occurring in at least n percent of all documents (tweet pools, tweets). Value must be between 0 and 1. Default
         # is 0.85.
         # topic_numbers_to_fit (list of int): list containing integers. Each integer is referring to the number of
-        # topics chosen for one LDA model to be estimated. Default is [10, 20, 30, 40, 50, 75, 100, 125, 150, 200,
-        # 250, 300].
+        # topics chosen for one LDA model to be estimated. Default is [10, 20, 30, 50, 75, 100, 150].
         # n_saved_top_models (int): keep only the n best scoring LDA models regarding topical coherence score.
         # Default is 3.
 
@@ -1338,9 +1335,10 @@ class LDAAnalyzer(object):
     def plot_top_topics_from_lda(lda_model_object, topics, num_top_words=10, save_path=None,
                                  save_name='my_topics_top_word_histogram'):
         # arguments:
-        # lda_model_object (gensim model object): one of the gensim model objects saved in self.lda_models.
-        # topics (list of int): list of integers corresponding to the designated topic numbers to be
+        # lda_model_object (gensim model object): One of the gensim model objects saved in self.lda_models.
+        # topics (list of int): List of integers corresponding to the designated topic numbers to be
         # returned (i.e. [0,3] -> return "Topic 0" and "Topic 3"). Maximum of 10 Topics at once!
+        # num_top_words (int): Defines the number of words to be plotted for each topic. Default is 10.
         # save_path (str, optional): Defines a save path to save the plot as PDF. Default is None.
         # save_name (str, optional): Defines a name for the PDF-file, if a "save_path" is chosen. Default
         # is 'my_topics_top_word_histogram'
@@ -1384,8 +1382,9 @@ class LDAAnalyzer(object):
         fig.tight_layout()  # put enough space between subplots that they don't overcross
         if save_path is not None:
             fig.savefig(os.path.join(save_path, str(save_name + '.pdf')))
+        plt.show()
 
-        return plt.show()
+        return
 
     # plot the mean topical prevalence over time for chosen topics
     def time_series_plot(self, topical_prevalence_column_name, topics_to_plot, save_path=None,
@@ -1402,10 +1401,6 @@ class LDAAnalyzer(object):
         fig, ax = plt.subplots()
         dates_to_plot = set(self.lda_df_trained_tweets['created_at'].apply(lambda x: x.strftime('%y-%m-%d')))  # get all
         # the available dates
-        #############
-        # for test purposes: remove!
-        #dates_to_plot = ['20-04-17', '20-04-18', '20-04-19']
-        ############
         x_ax = list(range(len(dates_to_plot)))  # define constant x-axis
         topic_prevalences_by_date = []
         for i in dates_to_plot: # pick every available date.
@@ -1415,7 +1410,6 @@ class LDAAnalyzer(object):
                 topic_prevalence.append(sum(topic_prevalence_of_ith_date.apply(lambda x: x[j]))/len(
                     topic_prevalence_of_ith_date))
             topic_prevalences_by_date.append(topic_prevalence)
-        #print(topic_prevalences_by_date)
         for i in range(len(topics_to_plot)):  # i = topic
             y = [d[i] for d in topic_prevalences_by_date]  # a topics values for each day d
             ax.plot(x_ax, y, '-o', label='Topic no. ' + str(i))  # label: for the legend
@@ -1624,8 +1618,14 @@ def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, sing
         return  # return 'None' if cs of single tweet couldn't pass the threshold
 
 
-
 # Sources:
+# Mehrotra, Rishabh, Scott Sanner,Wray Buntine,and Lexing Xie. "Improving lda topic models for microblogs via tweet pooling and automatic labeling." In ​​Proceedings of the 36th international ACM SIGIR conference on Research and development in information retrieval​​, pp. 889-892. 2013.
+# Tweepy. 2019. “StreamingwithTweepy”. Accessed December 10, 2019. http://docs.tweepy.org/en/latest/streaming_how_to.html
+# Twitter. 2019a. “MoreaboutrestrictedusesoftheTwitterAPIs”. Accessed December 10, 2019. https://developer.twitter.com/en/developer-terms/more-on-restricted-use-cases.html
+# Twitter. 2019c. “RateLimiting”. Accessed December 10, 2019. https://developer.twitter.com/en/docs/basics/rate-limiting
+# Twitter. 2019d.“ResponseCodes”. Accessed December 11, 2019. https://developer.twitter.com/en/docs/basics/response-codes
+
+
 
 # IGNORE!
 ##################################################################################################
@@ -1644,9 +1644,9 @@ def parallel(pooled_to_vectorize, cs_threshold, len_pooled, vectorizer_fit, sing
 # Apply the whole class!
 pd.set_option('display.max_columns', None)
 # Data Scraping
-# wfl = WriteFileListener(r'C:\Users\gilli\OneDrive\Dokumente\Uni\Masterarbeit\Wichtige Informationen\Twitter API Access.txt',
-#                            save_path=r'C:\Users\gilli\OneDrive\Desktop', languages=['en'],locations=[-125,25,-65,48],
-#                        hashtag=False)
+ #wfl = TwitterStreamer(r'C:\Users\gilli\OneDrive\Dokumente\Uni\Masterarbeit\Wichtige Informationen\Twitter API Access.txt',
+ #                           save_path=r'C:\Users\gilli\OneDrive\Desktop', languages=['en'],locations=[-125,25,-65,48],
+ #                       hashtag=False)
 
 # Data Cleaning
 #c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
