@@ -11,19 +11,19 @@ from TTLocVis.module import LDAAnalyzer
 #                              hashtag=False)
 
 # Data Cleaning
-c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
+#c = Cleaner(load_path=r'C:\Users\gilli\OneDrive\Desktop')
 # print(c.raw_data)
-c.saving(r'C:\Users\gilli\OneDrive\Desktop')
+#c.saving(r'C:\Users\gilli\OneDrive\Desktop')
 
 # LDA Analysis
 if __name__ == '__main__':  # Mandatory for windows! see: https://stackoverflow.com/questions/58323993/passing-a-class-to-multiprocessing-pool-in-python-on-windows
-    d = LDAAnalyzer(load_path=r'C:\Users\gilli\OneDrive\Desktop')
+    #d = LDAAnalyzer(load_path=r'C:\Users\gilli\OneDrive\Desktop')
     # print(type(d.data))
-    d.hashtag_pooling()
-    d.lda_training(data_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
-                   models_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
-                   ngram_style='bigrams', topic_numbers_to_fit=[3, 5], n_saved_top_models=2)
-    d.save_lda_analyzer_object(save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
+    #d.hashtag_pooling()
+    #d.lda_training(data_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
+    #               models_save_path=r'C:\Users\gilli\OneDrive\Desktop\test',
+    #               ngram_style='bigrams', topic_numbers_to_fit=[3, 5], n_saved_top_models=2)
+    #d.save_lda_analyzer_object(save_path=r'C:\Users\gilli\OneDrive\Desktop\test')
     q = LDAAnalyzer.load_lda_analyzer_object(load_path=r'C:\Users\gilli\OneDrive\Desktop\test', obj_name='my_LDAAnalyzer_Object.pkl')
     q.time_series_producer()
     q.topic_prevalence_flattening('lda_5_topics_bigrams')

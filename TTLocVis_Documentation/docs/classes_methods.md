@@ -22,6 +22,7 @@ class TwitterStreamer(auth_path, languages, locations, save_path=os.getcwd(), ex
 ```
 
 __Parameters:__
+
 - __auth_path (str):__ Path to the txt-file containing the users Twitter API credentials (see below).
 - __languages (list of str):__ Language codes of desired language(s) of the streamed tweets content. See
  [Twitter language codes] for more info.

@@ -18,7 +18,14 @@ import json
 import math
 import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
-from mpl_toolkits.basemap import Basemap
+try:
+    from mpl_toolkits.basemap import Basemap
+    have_basemap = True
+except ImportError:
+    raise ImportError('No Basemap availiabe - deactivating method "loc_vis"')
+    have_basemap = True
+    pass
+
 from multiprocessing import Pool
 from multiprocessing import cpu_count
 import numpy as np
@@ -1469,91 +1476,92 @@ class LDAAnalyzer(object):
 
     # scatter plot tweets from up to ten topics from the whole dataset or a time-series on a matplotlib basemap. The
     # tweets are categorized by their individual maximum prevalence score for the passed topical prevalence column name.
-    def loc_vis(self, topical_prevalence_column_name, topics_to_plot, type='all', markersize=100,
-                draw_lat_and_lon=False, date_of_df_in_dict_str=None, save_path=None,
-                save_name='my_topics_spatial_visualization'):
-        # arguments:
-        # topical_prevalence_column_name (str): Defines the name of the column that shall be used for plotting.
-        # topics_to_plot (list of int): Defines a list of integers referring to the topics numbers to be plotted.
-        # Maximum of ten topics.
-        # type (str): Defines on which DataFrame the method is applied to. Choose between 'all'
-        # (self.lda_df_trained_tweets) and 'ts' (a time-series-dict entry). Default is 'all'.
-        # markersize (int): Defines the size of the markers of the scatter plot. Default is 100.
-        # draw_lat_and_lon (bool): Decides, if latitudes and longitudes are provides as lines on the map.
-        # Default is False.
-        # date_of_df_in_dict_str (str, optional): Choose the key-string of the desired entry from the time-series-dict,
-        # if "type='ts'". Default is None.
-        # save_path (str, optional): Defines a save path to save the plot as PDF. Default is None.
-        # save_name (str, optional): Defines a name for the PDF-file, if a "save_path" is chosen. Default
-        # is 'my_topics_spatial_visualization'
-        if type == 'all':
-            df = self.lda_df_trained_tweets.loc[:, [topical_prevalence_column_name, 'center_coord_X', 'center_coord_Y']]
-        elif type == 'ts':
-            df = self.time_series[date_of_df_in_dict_str].loc[:, [topical_prevalence_column_name, 'center_coord_X',
-                                                                  'center_coord_Y']]
-        else:
-            return print('For "type" choose between "all" and "ts"!')
-        if len(topics_to_plot) > 10:
-            return print('Please choose a maximum of 10 topics to plot at the same time!')
+    if have_basemap:
+        def loc_vis(self, topical_prevalence_column_name, topics_to_plot, type='all', markersize=100,
+                    draw_lat_and_lon=False, date_of_df_in_dict_str=None, save_path=None,
+                    save_name='my_topics_spatial_visualization'):
+            # arguments:
+            # topical_prevalence_column_name (str): Defines the name of the column that shall be used for plotting.
+            # topics_to_plot (list of int): Defines a list of integers referring to the topics numbers to be plotted.
+            # Maximum of ten topics.
+            # type (str): Defines on which DataFrame the method is applied to. Choose between 'all'
+            # (self.lda_df_trained_tweets) and 'ts' (a time-series-dict entry). Default is 'all'.
+            # markersize (int): Defines the size of the markers of the scatter plot. Default is 100.
+            # draw_lat_and_lon (bool): Decides, if latitudes and longitudes are provides as lines on the map.
+            # Default is False.
+            # date_of_df_in_dict_str (str, optional): Choose the key-string of the desired entry from the time-series-dict,
+            # if "type='ts'". Default is None.
+            # save_path (str, optional): Defines a save path to save the plot as PDF. Default is None.
+            # save_name (str, optional): Defines a name for the PDF-file, if a "save_path" is chosen. Default
+            # is 'my_topics_spatial_visualization'
+            if type == 'all':
+                df = self.lda_df_trained_tweets.loc[:, [topical_prevalence_column_name, 'center_coord_X', 'center_coord_Y']]
+            elif type == 'ts':
+                df = self.time_series[date_of_df_in_dict_str].loc[:, [topical_prevalence_column_name, 'center_coord_X',
+                                                                      'center_coord_Y']]
+            else:
+                return print('For "type" choose between "all" and "ts"!')
+            if len(topics_to_plot) > 10:
+                return print('Please choose a maximum of 10 topics to plot at the same time!')
 
-        # append index for the topic with the highest prevalence for each entry:
-        df['highest_prev'] = df[topical_prevalence_column_name].apply(lambda x: x.index(max(x)))
-        # pick the topics to plot:
+            # append index for the topic with the highest prevalence for each entry:
+            df['highest_prev'] = df[topical_prevalence_column_name].apply(lambda x: x.index(max(x)))
+            # pick the topics to plot:
 
-        fig = plt.figure(figsize=(3*6.4, 3*4.8), edgecolor='w')  # figsize: 3 times the default
-        # increase the zoom for 5 degrees in each direction from the maximum points
-        if min(df['center_coord_X']) > -175:
-            llcrnrlon = min(df['center_coord_X'])-5
-        else:
-            llcrnrlon = min(df['center_coord_X'])
-        if min(df['center_coord_Y']) > -85:
-            llcrnrlat = min(df['center_coord_Y'])-5
-        else:
-            llcrnrlat = min(df['center_coord_Y'])
-        if max(df['center_coord_X']) < 175:
-            urcrnrlon = max(df['center_coord_X'])+5
-        else:
-            urcrnrlon = max(df['center_coord_X'])
-        if max(df['center_coord_Y']) < 85:
-            urcrnrlat = max(df['center_coord_Y'])+5
-        else:
-            urcrnrlat = max(df['center_coord_Y'])
+            fig = plt.figure(figsize=(3*6.4, 3*4.8), edgecolor='w')  # figsize: 3 times the default
+            # increase the zoom for 5 degrees in each direction from the maximum points
+            if min(df['center_coord_X']) > -175:
+                llcrnrlon = min(df['center_coord_X'])-5
+            else:
+                llcrnrlon = min(df['center_coord_X'])
+            if min(df['center_coord_Y']) > -85:
+                llcrnrlat = min(df['center_coord_Y'])-5
+            else:
+                llcrnrlat = min(df['center_coord_Y'])
+            if max(df['center_coord_X']) < 175:
+                urcrnrlon = max(df['center_coord_X'])+5
+            else:
+                urcrnrlon = max(df['center_coord_X'])
+            if max(df['center_coord_Y']) < 85:
+                urcrnrlat = max(df['center_coord_Y'])+5
+            else:
+                urcrnrlat = max(df['center_coord_Y'])
 
-        bmap = Basemap(projection='cyl', resolution='i', llcrnrlon=llcrnrlon, llcrnrlat=llcrnrlat, urcrnrlon=urcrnrlon,
-                       urcrnrlat=urcrnrlat)
-        #print(min(df['center_coord_Y']))
-        #print(max(df['center_coord_Y']))
-        #print(min(df['center_coord_X']))
-        #print(max(df['center_coord_X']))
-        bmap.drawmapboundary(fill_color='aqua')
-        bmap.fillcontinents(color='coral', lake_color='aqua')
-        bmap.drawcoastlines()
-        bmap.drawcountries()
-        if draw_lat_and_lon:  # put lat and lon on the map.
-            bmap.drawmeridians(np.arange(0, 360, 30))
-            bmap.drawparallels(np.arange(-90, 90, 30))
+            bmap = Basemap(projection='cyl', resolution='i', llcrnrlon=llcrnrlon, llcrnrlat=llcrnrlat, urcrnrlon=urcrnrlon,
+                           urcrnrlat=urcrnrlat)
+            #print(min(df['center_coord_Y']))
+            #print(max(df['center_coord_Y']))
+            #print(min(df['center_coord_X']))
+            #print(max(df['center_coord_X']))
+            bmap.drawmapboundary(fill_color='aqua')
+            bmap.fillcontinents(color='coral', lake_color='aqua')
+            bmap.drawcoastlines()
+            bmap.drawcountries()
+            if draw_lat_and_lon:  # put lat and lon on the map.
+                bmap.drawmeridians(np.arange(0, 360, 30))
+                bmap.drawparallels(np.arange(-90, 90, 30))
 
-        scatter_plots = []
-        # iterate over the topics and a list of colors.
-        for i, j in zip(topics_to_plot, mcolors.TABLEAU_COLORS.values()):
-            x = list(df['center_coord_X'][df['highest_prev'] == i])  # get the x-coordinate for the topic i
-            y = list(df['center_coord_Y'][df['highest_prev'] == i])
-            x, y = bmap(x, y)  # transform coordinates
-            # regarding 'zorder', see: https://matplotlib.org/3.1.1/gallery/misc/zorder_demo.html
-            scatter_plots.append(plt.scatter(x, y, marker="o", s=markersize, c=j, edgecolors='k', zorder=3))
+            scatter_plots = []
+            # iterate over the topics and a list of colors.
+            for i, j in zip(topics_to_plot, mcolors.TABLEAU_COLORS.values()):
+                x = list(df['center_coord_X'][df['highest_prev'] == i])  # get the x-coordinate for the topic i
+                y = list(df['center_coord_Y'][df['highest_prev'] == i])
+                x, y = bmap(x, y)  # transform coordinates
+                # regarding 'zorder', see: https://matplotlib.org/3.1.1/gallery/misc/zorder_demo.html
+                scatter_plots.append(plt.scatter(x, y, marker="o", s=markersize, c=j, edgecolors='k', zorder=3))
 
-        # see: https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html
-        # possible 'title_fontsize' args: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'.
-        legend = plt.legend(scatter_plots, topics_to_plot, ncol=10, frameon=True, fontsize=14, handlelength=2, loc=8,
-                   borderpad=1.8, handletextpad=1, title='Topic no.', scatterpoints=1)
-        legend.get_title().set_fontsize('14')   # change legend fontsize.
+            # see: https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html
+            # possible 'title_fontsize' args: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'.
+            legend = plt.legend(scatter_plots, topics_to_plot, ncol=10, frameon=True, fontsize=14, handlelength=2, loc=8,
+                       borderpad=1.8, handletextpad=1, title='Topic no.', scatterpoints=1)
+            legend.get_title().set_fontsize('14')   # change legend fontsize.
 
-        if save_path is not None:
-            fig.savefig(os.path.join(save_path, str(save_name + '.pdf')))
+            if save_path is not None:
+                fig.savefig(os.path.join(save_path, str(save_name + '.pdf')))
 
-        plt.show()
+            plt.show()
 
-        return
+            return
 
     # Building ngrams:
     # source: https://www.machinelearningplus.com/nlp/topic-modeling-gensim-python/
