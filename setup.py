@@ -27,19 +27,32 @@ installation_dependencies = [
 setuptools.setup(
     name="TTLocVis",
     version="0.0.1",
+    license='MIT',
     author="Gillian Kant, Christoph Weisser, Benjamin Saefken",
     author_email="gilliankant@googlemail.com, c.weisser@stud.uni-goettingen.de, "
                  "benjamin.saefken@uni-goettingen.de",
     description="TTLocVis: A Twitter Topic Location Visualization package",
+    maintainer="Gillian Kant",
+    maintainer_email="gilliankant@googlemail.com",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/xillig/TTLocVis",
     install_requires=installation_dependencies,
     dependency_links=installation_dependencies,
+    packages=['TTLocVis'],  # important: this refers to the folder in which the __init__.py and content files (module.py
+    # ) are saved!
     classifiers=[
         "Programming Language :: Python :: 3",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "License :: OSI Approved :: MIT License",
         "Operating System :: OS Independent",
     ],
+    extra_require={
+        "dev":[
+            "pytest>3.6",
+        ],
+    },
     python_requires='>=3.6',
 )

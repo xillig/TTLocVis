@@ -1,5 +1,7 @@
 README.md
 setup.py
+TTLocVis/__init__.py
+TTLocVis/module.py
 TTLocVis.egg-info/PKG-INFO
 TTLocVis.egg-info/SOURCES.txt
 TTLocVis.egg-info/dependency_links.txt

@@ -10,3 +10,4 @@ spacy>=2.2.2
 tweepy>=3.8.0
 urllib3>=1.25.8
 wordcloud>=1.7.0
+pip>=19.1.1,
