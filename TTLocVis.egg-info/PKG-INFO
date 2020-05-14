@@ -5,7 +5,9 @@ Summary: TTLocVis: A Twitter Topic Location Visualization package
 Home-page: https://github.com/xillig/TTLocVis
 Author: Gillian Kant, Christoph Weisser, Benjamin Saefken
 Author-email: gilliankant@googlemail.com, c.weisser@stud.uni-goettingen.de, benjamin.saefken@uni-goettingen.de
-License: UNKNOWN
+Maintainer: Gillian Kant
+Maintainer-email: gilliankant@googlemail.com
+License: MIT
 Description: 
         # TTLocVis
         TTLocVis: A Twitter Topic Location Visualization package
@@ -36,6 +38,9 @@ Description:
         ##License
 Platform: UNKNOWN
 Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.6
