@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Covariates available after instancing a "Cleaner"-object - TTLocVis</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Covariates available after instancing a \"Cleaner\"-object";
+    var mkdocs_page_input_path = "covariates_cleaner_object.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> TTLocVis</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../README.md">Home</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../classes_methods">Classes and Methods</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="">Covariates available after instancing a "Cleaner"-object</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#covariates-available-after-instancing-a-cleaner-object">Covariates available after instancing a Cleaner object</a></li>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../examples">Usage and Examples</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">TTLocVis</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Covariates available after instancing a "Cleaner"-object</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h2 id="covariates-available-after-instancing-a-cleaner-object">Covariates available after instancing a <em>Cleaner</em> object</h2>
+<p>The following list provides an overview of the available covariates in an instanciated <em>cleaner</em> object. It can
+be accessed by the <em>raw_data</em> attribute. It is advised to keep the <code>metadata</code> parameter at default for data sets 
+planned to be used with the remaining features of this package.</p>
+<p>In case <code>metadata=False</code> (default):</p>
+<ul>
+<li><strong>created_at</strong> - timestamp of the creation of the corresponding tweet.</li>
+<li><strong>text</strong> - shows the complete text of a tweet, regardless of whether it’s longer than 140 characters or not.</li>
+<li><strong>text_tokens</strong> - contains the created lemmarized tokens from "text".</li>
+<li><strong>hashtags</strong> - contains the hashtag(s) of a tweet (without “#”)</li>
+<li><strong>center_coord_X</strong> - the X-coordinate of the center of the bounding box.</li>
+<li><strong>center_coord_Y</strong> - the Y-coordinate of the center of the bounding box.</li>
+</ul>
+<p>In case <code>metadata=True</code>, these covariates are available additionally to the ones listed above:</p>
+<ul>
+<li><strong>extended_tweet</strong> - shows the complete text of a tweet if it is longer than 140 characters. Else None.</li>
+<li><strong>id</strong> - the tweets id as integer. </li>
+<li><strong>id_str</strong> - the tweets id as string.</li>
+<li><strong>place</strong> - sub-dictionary: contains information about the tweets associated location.</li>
+<li><strong>source</strong> - hyperlink to the Twitter website, where the tweet object is stored.</li>
+<li><strong>user</strong> - sub-dictionary: contains information about the tweets’ associated user.</li>
+<li><strong>emojis</strong> - contains the emoji(s) of a tweet.</li>
+<li><strong>bounding_box.coordinates_str</strong> - contains all bounding box coordinates as a string. Originates from place</li>
+<li><strong>retweet_count</strong> - number of retweets of the corresponding tweet.</li>
+<li><strong>favorite_count</strong> - number of favorites of the corresponding tweet.</li>
+<li><strong>user_created_at</strong> - timestamp of the users’ profile creation. Originates from user.</li>
+<li><strong>user_description</strong> -  textual description of users’ profile. Originates from user.</li>
+<li><strong>user_favourites_count</strong> - The total number of favorites for all of the users tweets. Originates from user.</li>
+<li><strong>user_followers_count</strong> - The total number of followers of the user. Originates from user.</li>
+<li><strong>user_friends_count</strong> - The total number of users followed by the user. Originates from user.</li>
+<li><strong>user_id</strong> - profile id of the users profile as integer. Originates from user.</li>
+<li><strong>user_listed_count</strong> - The number of public lists which this user is a member of. Originates from user.</li>
+<li><strong>user_location</strong> - self-defined location by the user for the profile. Originates from user.</li>
+<li><strong>user_name</strong> - self-defined name for the user themselves. Originates from user.</li>
+<li><strong>user_screen_name</strong> - alias of the self-defined name for the user themselves. Originates from user.</li>
+<li><strong>user_statuses_count</strong> - number of tweets published by the user (incl. retweets). Originates from user.</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../examples" class="btn btn-neutral float-right" title="Usage and Examples">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+        <a href="../classes_methods" class="btn btn-neutral" title="Classes and Methods"><span class="icon icon-circle-arrow-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+        <span><a href="../classes_methods" style="color: #fcfcfc;">&laquo; Previous</a></span>
+      
+      
+        <span style="margin-left: 15px"><a href="../examples" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

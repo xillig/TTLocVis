@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  
+  <link rel="shortcut icon" href="../img/favicon.ico">
+  <title>Classes and Methods - TTLocVis</title>
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  <link rel="stylesheet" href="../css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css">
+  
+  <script>
+    // Current page data
+    var mkdocs_page_name = "Classes and Methods";
+    var mkdocs_page_input_path = "classes_methods.md";
+    var mkdocs_page_url = null;
+  </script>
+  
+  <script src="../js/jquery-2.1.1.min.js" defer></script>
+  <script src="../js/modernizr-2.8.3.min.js" defer></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script> 
+  
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side stickynav">
+      <div class="wy-side-nav-search">
+        <a href=".." class="icon icon-home"> TTLocVis</a>
+        <div role="search">
+  <form id ="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" title="Type search term here" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+	<ul class="current">
+	  
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../README.md">Home</a>
+	    </li>
+          
+            <li class="toctree-l1 current">
+		
+    <a class="current" href="">Classes and Methods</a>
+    <ul class="subnav">
+            
+    <li class="toctree-l2"><a href="#classes-and-methods">Classes and Methods</a></li>
+    
+        <ul>
+        
+            <li><a class="toctree-l3" href="#class-twitterstreamer">Class TwitterStreamer</a></li>
+        
+            <li><a class="toctree-l3" href="#class-cleaner">Class Cleaner</a></li>
+        
+            <li><a class="toctree-l3" href="#class-ldaanalyzer">Class LDAAnalyzer</a></li>
+        
+        </ul>
+    
+
+    </ul>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../covariates_cleaner_object">Covariates available after instancing a "Cleaner"-object</a>
+	    </li>
+          
+            <li class="toctree-l1">
+		
+    <a class="" href="../examples">Usage and Examples</a>
+	    </li>
+          
+        </ul>
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="..">TTLocVis</a>
+      </nav>
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="..">Docs</a> &raquo;</li>
+    
+      
+    
+    <li>Classes and Methods</li>
+    <li class="wy-breadcrumbs-aside">
+      
+    </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main">
+            <div class="section">
+              
+                <h1 id="classes-and-methods">Classes and Methods</h1>
+<p>This page provides an overview
+of the classes and Methods provided by the TTLocVis
+package.</p>
+<h2 id="class-twitterstreamer">Class TwitterStreamer</h2>
+<p>The class <em>TwitterStreamer</em> provides the following functionalities:</p>
+<ul>
+<li>Streaming of tweets via the Twitter API.</li>
+<li>Saving collected tweets as JSON-file.</li>
+</ul>
+<p><strong>Additional information:</strong>
+To be able to scrape Twitter data, one first needs to have access to it. Therefore, a Twitter Developer
+Account is necessary to access the Twitter API. This account can be obtained through an application process
+on the Twitter website, in which one has to enter his or her personal data and a description of the project
+one plans to use the Twitter data with: https://developer.twitter.com/en <br></p>
+<pre><code class="python">class TwitterStreamer(auth_path, languages, locations, save_path=os.getcwd(), extended=True,
+                      hashtag=True)
+</code></pre>
+
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>auth_path (str):</strong> Path to the txt-file containing the users Twitter API credentials (see below).</li>
+<li><strong>languages (list of str):</strong> Language codes of desired language(s) of the streamed tweets content. See
+ <a href="https://developer.twitter.com/en/docs/twitter-for-websites/twitter-for-websites-supported-languages/overview">Twitter language codes</a> for more info.</li>
+<li><strong>locations (list of float/int):</strong> Box-coordinates for streaming locations. Example: <code>[-125,25,-65,48]</code></li>
+<li><strong>save_path (str):</strong> Path to where the json files shall be saved. Default is the working directory.</li>
+<li><strong>extended (bool):</strong> Decides if only <em>extended tweets</em> are collected. Default is <code>True</code>.</li>
+<li><strong>hashtag (bool):</strong> Decides if only tweets with a minimum of one hashtag are collected. Default is <code>True</code>.</li>
+</ul>
+<p><strong>Authentication procedure:</strong> After getting an Twitter developer account, one has to verify themselves
+via the personal key, token and secrets. TwitterStreamer is using this information to access the Twitter API.
+The Twitter API credentials shall be passed as a txt-file containing the necessary information
+line by line in the following order:
+<em><br>consumer key<br> consumer secret<br> access token<br> access secret</em><br></p>
+<p><strong>Note:</strong> The streaming process continues indefinitely until the user is shutting down the process by 
+KeyboardInterrupt (Ctrl + C). Additionally, sometimes the direct filtering for <em>hashtag</em> and <em>extended tweet</em>
+are permeable. Therefore, additional filtering is possible during the cleaning process described below.</p>
+<h2 id="class-cleaner">Class Cleaner</h2>
+<p>The class <em>Cleaner</em> provides the following functionalities:</p>
+<ul>
+<li>loading-in of Twitter-JSON-files</li>
+<li>Data cleaning: removal of duplicates, quoted tweets and retweets.</li>
+<li>Text cleaning: removal of Hyperlink-embeddings and mentions (usernames), identification and handling of hashtags and 
+emojis.</li>
+<li>Handling location data: access bounding-box coordinates and calculate its center.</li>
+<li>Accessing user meta-data for every tweet.</li>
+<li>Removing unnecessary data. </li>
+<li>Tokenization and lemmarization of the tweets text.
+method <strong><em>saving</em></strong>:</li>
+<li>Saving the processed tweets as <em>pickle</em> or <em>csv</em> in batches of max. 300.000 tweets, each.</li>
+</ul>
+<p><strong>Note:</strong> At the moment it is impossible to process data sets larger than 150.000 tweets in one go using this
+ class due to performance and stability reasons!</p>
+<pre><code class="python">class Cleaner(load_path, data_save_name='my_cleaned_and_tokenized_data', languages=None,
+              metadata=False, min_tweet_len=None, spacy_model='en_core_web_sm')
+</code></pre>
+
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>load_path (str):</strong> Path containing raw Twitter-JSON-files.</li>
+<li><strong>data_save_name (str):</strong> Name of the data saved to drive after processing (without filetype-suffix).
+Default is <code>'my_cleaned_and_tokenized_data'</code>.</li>
+<li><strong>languages (list of str, optional):</strong> List of string codes for certain languages to filter for. Default is <code>None</code>.
+See <a href="https://developer.twitter.com/en/docs/twitter-for-websites/twitter-for-websites-supported-languages/overview">Twitter language codes</a> for more info.</li>
+<li><strong>metadata (bool):</strong> Keep all available covariates or only the ones necessary for the package. Default is <code>False</code>.</li>
+<li><strong>min_tweet_len (int, optional):</strong> Re-filter for a minimal token number for each tweet after the cleaning process. Default is <code>None</code>.</li>
+<li><strong>spacy_model (str):</strong> Choose the desired <em>spacy model</em> for text tokenization. Non-default model installation tutorial
+and an overview about the supported languages can be found at the <a href="https://spacy.io/usage/models">spacy website</a>.
+Default is the small <em>English</em> model called <code>'en_core_web_sm'</code>.</li>
+</ul>
+<p><strong>Note:</strong> The user might decide the create a <em>Cleaner</em> object for other analytical purposes than for this package. In 
+this case set <code>metadata=True</code> when instancing an object to get access to all the covariates! An overview can be found 
+at <a href="../covariates_cleaner_object">Covariates available after instancing a "Cleaner"-object</a>.</p>
+<h3 id="cleaner-methods">Cleaner methods</h3>
+<p><strong>Method <em>saving:</em></strong></p>
+<pre><code class="python">Cleaner.saving(save_path, type='pkl')
+</code></pre>
+
+<p><strong>Parameters:</strong>
+Saves the processed tweets as <em>pickle</em> or <em>csv</em> in batches of max. 300.000 tweets, each.</p>
+<ul>
+<li><strong>save_path (str):</strong> Path to where the resulting files shall be saved. </li>
+<li><strong>type (str):</strong> File type to be saved. Choose between <code>'pkl'</code> and <code>'csv'</code>. Default is <code>'pkl'</code>.</li>
+</ul>
+<h2 id="class-ldaanalyzer">Class LDAAnalyzer</h2>
+<p>The class <em>LDAAnalyzer</em> provides the following functionalities:</p>
+<ul>
+<li>Loads cleaned data, from <em>Cleaner</em> object or path.<br></li>
+<li>Pools tweets by hashtags using cosine similarity to create longer pseudo-documents for better LDA estimation.</li>
+<li>Creates n-gram tokens<br></li>
+<li>Trains several LDA models on all tweets, decides for the n-best to be saved by coherence score</li>
+<li>Saves corpi, models and vocabularies.</li>
+<li>Calculates topic distributions and saves them.<br></li>
+<li>Creates a dict containing the tweets sorted by day / month.<br></li>
+<li>Appends the values of a selected topic distribution of each topic to each tweet as a new column.<br></li>
+<li>Appends prevalence statistics about passed tokens to every tweet.<br></li>
+<li>Saves an LDAAnalyzer-object.<br></li>
+<li>Loads an LDAAnalyzer-object.<br></li>
+<li>Provides a histogram of top-words for selected topics of a lda model.<br></li>
+<li>Plots the mean topical prevalence over time for chosen topics.<br></li>
+<li>Produces word clouds for topics of an lda model.<br></li>
+<li>Scatter plot tweets from up to ten topics from the whole dataset or a time-series on a <em>matplotlib basemap</em>. The 
+tweets are categorized by their individual maximum prevalence score for the passed topical prevalence column name.<br></li>
+</ul>
+<p><strong>Note:</strong> The <em>LDAAnalyzer</em> object acts a container for the results of the methods <em>hashtag_pooling</em> and
+<em>lda_training</em>. After these methods are successfully applied, all other methods can be applied. </p>
+<pre><code class="python">class LDAAnalyzer(load_path=None, raw_data=None, n_jobs=2, cs_threshold=0.5, output_type='all',
+                  spacy_model='en_core_web_sm', ngram_min_count=10, ngram_threshold=300)
+</code></pre>
+
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>load_path (str, optional):</strong> Path containing the cleaned data. Define this argument or the <code>raw_data</code> argument,
+but not both. Default is <code>None</code>.</li>
+<li><strong>raw_data (pandas DataFrame, optional):</strong> Pass the <code>self.raw_data</code> attribute from a previous instantiated 
+<em>Cleaner</em>-object. Define this argument or <code>load_path</code>, but not both. Default is <code>None</code>.</li>
+<li><strong>n_jobs (int):</strong> Defines the number of CPU-cores to use for the hashtag-pooling and for LDA training. Default is <code>2</code>.</li>
+<li><strong>cs_threshold (float):</strong> Defines the value for the cosine-similarity threshold: 0 &gt; cs &gt; 1. It is advised to choose a
+value between 0.5 and 0.9. Default is <code>0.5</code>.</li>
+<li><strong>output_type (str):</strong> Defines the type of tweets that are returned after the hashtag-pooling. Choose <code>'pool_hashtags'</code>
+to return all hashtag-pools as well as all single tweets containing a hashtag. Choose <code>'pool'</code> to return only all
+hashtag-pools. Choose <code>'all'</code> (or any other string) to return all hashtag-pools, all single tweets containing a
+hashtag and all single tweets containing no hashtag (if any). Default is <code>'all'</code>.</li>
+<li><strong>spacy_model (str):</strong> Choose the desired <em>spacy model</em> for hashtag tokenization. Non-default model installation tutorial
+and an overview about the supported languages can be found at the <a href="https://spacy.io/usage/models">spacy website</a>.
+Default is the small <em>English</em> model called <code>'en_core_web_sm'</code>.</li>
+<li><strong>ngram_min_count (int):</strong> Ignores all words and n-grams with total collected count lower than this value.
+Default is <code>10</code>.</li>
+<li><strong>ngram_threshold (int):</strong> Represents a score threshold for forming the n-gram-phrases (higher means fewer phrases).
+For details about the scores calculation, see <a href="https://radimrehurek.com/gensim/models/phrases.html#gensim.models.phrases.original_scorer">this</a>. Default is <code>300</code>.</li>
+</ul>
+<h3 id="ldaanalyzer-methods">LDAAnalyzer methods</h3>
+<p><strong>Method <em>hashtag_pooling:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.hashtag_pooling()
+</code></pre>
+
+<p>Pools tweets by hashtags using cosine similarity to create longer pseudo-documents for better LDA estimation and creates
+n-gram tokens. The method applies an implementation of the pooling algorithm from <a href="https://dl.acm.org/doi/abs/10.1145/2484028.2484166">Mehrotra et al. 2013</a>. The method adds
+the result as a new attribute to the <em>LDAAnalyzer</em> object itself (<em>self.lda_all_tweets_pooled</em>). It returns <code>None</code>.</p>
+<p><strong>Attention!</strong> 
+Since the method uses the python library <em>multiprocessing</em>, Windows user must apply the method using the following format:</p>
+<pre><code class="python">if __name__ == '__main__':
+    LDAAnalyzer.hashtag_pooling()
+</code></pre>
+
+<p>The reason is that Windows does not provide <a href="https://docs.python.org/2.7/library/multiprocessing.html#multiprocessing-programming"><em>os.fork</em> (scroll down to chapter "16.6.3.2. Windows")</a>.</p>
+<p><br/><br/>
+<strong>Method <em>lda_training:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.lda_training(data_save_path, models_save_path, data_save_type='pkl', 
+                         ngram_style='unigrams', filter_keep_n=15000, filter_no_below=10,
+                         filter_no_above=0.85, 
+                         topic_numbers_to_fit=[10, 20, 30, 50, 75, 100, 150],
+                         n_saved_top_models=3)
+</code></pre>
+
+<p>This method trains several LDA models on all tweets and decides for the n-best to be kept by coherence score. Additionally,
+it saves corpi, models and vocabularies to drive. Finally, it calculates the topic distributions for the chosen models
+and attaches it as a new attribute to the <em>LDAAnalyzer</em> object itself (<em>self.lda_df_trained_tweets</em>). It returns <code>None</code>.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>data_save_path (str):</strong> Path directing to where the topic distributions of the individual tweets shall be saved.</li>
+<li><strong>models_save_path (str):</strong> Path directing to where the trained LDA models, corpi and vocabularies shall be saved.</li>
+<li><strong>data_save_type (str):</strong> Decides in which file format the topic distributions of the individual tweets are saved.
+Choose between <code>'pkl'</code> and <code>'csv'</code>. Default is <code>'pkl'</code>.</li>
+<li><strong>ngram_style (str):</strong> Defines the n-gram type. Choose between <code>unigrams</code> (default), <code>bigrams</code> and <code>trigrams</code>.</li>
+<li><strong>filter_keep_n (int):</strong> Token filtering before the LDA training regarding the DTM. Keep only the <em>n</em> most
+occurring tokens. Default is <code>15.000</code>.</li>
+<li><strong>filter_no_below (int):</strong> Token filtering before the LDA training regarding the DTM. Keep only tokens occurring
+at least <em>n</em> times. Default is <code>10</code>.</li>
+<li><strong>filter_no_above (float):</strong> Token filtering before the LDA training regarding the DTM. Keep only tokens that are
+occurring in at least <em>m</em> percent of all documents (tweet pools and tweets). Value must be between 0 and 1. Default
+is <code>0.85</code>. </li>
+<li><strong>topic_numbers_to_fit (list of int):</strong> Each integer in this list is referring to the number of
+topics chosen for a LDA model to be estimated. Default is <code>[10, 20, 30, 50, 75, 100, 150]</code>.</li>
+<li><strong>n_saved_top_models (int):</strong> keep only the <em>n</em> best scoring LDA models regarding topical coherence score.
+Default is <code>3</code>.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>time_series_producer:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.time_series_producer(ts_type='d')
+</code></pre>
+
+<p>This method creates a dict containing the processed tweets sorted by day or month. It attaches the time series as a new
+attribute to the <em>LDAAnalyzer</em> object itself (<em>self.time_series</em>). It returns <code>None</code>.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>ts_type (str):</strong> Defines the interval of the time series. Choose between (<code>'d'</code>)aily and (<code>'m'</code>)onthly. Default is <code>'d'</code>.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>topic_prevalence_flattening:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.topic_prevalence_flattening(topic_prevalence_column_str, type='all',
+                                        date_of_df_in_dict_str=None)
+</code></pre>
+
+<p>This method appends the values of a selected topic distribution of each topic to each tweet as a new column to the 
+chosen attribute. It returns <code>None</code>.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>topic_prevalence_column_str (str):</strong> String referring to the name of a topic distribution column of <em>token</em>, 
+<em>bi-</em> or <em>tri</em>-type of <code>self.lda_df_trained_tweets</code>.</li>
+<li><strong>type (str):</strong> Defines on which <em>DataFrame</em> the method is applied. Choose between <code>'all'</code> (<code>self.lda_df_trained_tweets</code>)
+and <code>'ts'</code> (a <em>time-series-dict</em> entry). Default is <code>'all'</code>.</li>
+<li><strong>date_of_df_in_dict_str (str, optional):</strong> Choose the <em>key</em>-string of the desired entry from the <em>time-series-dict</em>,
+if <code>type='ts'</code> (one of the strings from <code>self.lda_df_trained_tweets['created_at']</code> in the form of <code>yy-mm-dd</code>). Default is
+<code>None</code>.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>word_count_prevalence:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.word_count_prevalence(searched_token_list, type='all', date_of_df_in_dict_str=None)
+</code></pre>
+
+<p>This method appends prevalence statistics about passed tokens to every tweet for chosen attribute. It returns <code>None</code>.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>searched_token_list (list of str):</strong> List containing strings that are searched for.</li>
+<li><strong>type (str):</strong> Defines on which <em>DataFrame</em> the method is applied. Choose between <code>'all'</code> (<code>self.lda_df_trained_tweets</code>)
+and <code>'ts'</code> (a <em>time-series-dict</em> entry). Default is <code>'all'</code>.</li>
+<li><strong>date_of_df_in_dict_str (str, optional):</strong> Choose the <em>key</em>-string of the desired entry from the <em>time-series-dict</em>,
+if <code>type='ts'</code> (one of the strings from <code>self.lda_df_trained_tweets['created_at']</code> in the form of <code>yy-mm-dd</code>). Default
+is <code>None</code>.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>save_lda_analyzer_object:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.save_lda_analyzer_object(save_path, obj_name='my_LDAAnalyzer_Object.pkl')
+</code></pre>
+
+<p>Simple method to save a <em>LDAAnalyzer</em> object as <em>pkl</em> to drive. Returns the saved object.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>save_path (str):</strong> Path to where the <em>LDAAnalyzer</em> object shall be saved.</li>
+<li><strong>obj_name (str):</strong> Name of the <em>pkl</em> object. Make sure the name ends with <em>.pkl</em>. Default is <code>'my_LDAAnalyzer_Object.pkl'</code>.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>load_lda_analyzer_object:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.load_lda_analyzer_object(load_path, obj_name)
+</code></pre>
+
+<p>Simple static method to load a <em>LDAAnalyzer</em> object. Returns the loaded object.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>load_path (str):</strong> Path to where the <em>LDAAnalyzer</em> object is saved.</li>
+<li><strong>obj_name (str):</strong> Name of the <em>pkl</em> object to be loaded.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>plot_top_topics_from_lda:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.plot_top_topics_from_lda(lda_model_object, topics, num_top_words=10, save_path=None,
+                                     save_name='my_topics_top_word_histogram')
+</code></pre>
+
+<p>This static method plots a histogram of top-words for selected topics of a lda model. It returns <code>None</code>.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>lda_model_object (gensim model object):</strong> One of the <em>gensim</em> model objects saved in <code>self.lda_models</code>.</li>
+<li><strong>topics (list of int):</strong> List of integers corresponding to the designated topic numbers to be
+plotted (i.e. [0,3] -&gt; plots "Topic 0" and "Topic 3"). Maximum of 10 Topics at once!</li>
+<li><strong>num_top_words (int):</strong> Defines the number of words to be plotted for each topic. Default is <code>10</code>.</li>
+<li><strong>save_path (str, optional):</strong> Defines a save path to where the plot is saved as <em>PDF</em>. Default is <code>None</code>.</li>
+<li><strong>save_name (str, optional):</strong> Defines a name for the <em>PDF</em> file, if a <code>save_path</code> is chosen. Default
+is <code>'my_topics_top_word_histogram'</code>.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>time_series_plot:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.time_series_plot(topical_prevalence_column_name, topics_to_plot, save_path=None,
+                             save_name='my_mean_topical_prevalence_over_time_for_chosen_topics')
+</code></pre>
+
+<p>This method plots the mean topical prevalence over time for chosen topics. It returns <code>None</code>.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>topical_prevalence_column_name (str):</strong> Defines the name of the column that shall be used for plotting from the
+time series (one the strings from <code>self.lda_df_trained_tweets['created_at']</code> in the form of <code>yy-mm-dd</code>).</li>
+<li><strong>topics_to_plot (list of int):</strong> Defines a list of integers referring to the topics numbers to be plotted.</li>
+<li><strong>save_path (str, optional):</strong> Defines a save path to where the plot is saved as <em>PDF</em>. Default is <code>None</code>.</li>
+<li><strong>save_name (str, optional):</strong> Defines a name for the <em>PDF</em> file, if a <code>save_path</code> is chosen. Default
+is <code>'my_mean_topical_prevalence_over_time_for_chosen_topics'</code>.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>wordcloud:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.wordcloud(lda_model_object_str, no_of_words, topics=None, save_path=None)
+</code></pre>
+
+<p>This method plots word clouds for chosen topics of an lda model. It returns <code>None</code>.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>lda_model_object_str (str):</strong> Defines a string referring to the name of one of the saved <em>LDA</em> models
+(in <code>self.lda_models</code>).</li>
+<li><strong>no_of_words (int):</strong> Number of top words for each word cloud to plot.</li>
+<li><strong>topics (list of int, optional):</strong> Passes a list of integers referring to the topics to be plotted. If <code>None</code>
+is passed, all topics are plotted. Default is <code>None</code>.</li>
+<li><strong>save_path (str, optional):</strong> Defines a save path to where the plots are saved as <em>PDF</em>. Default is <code>None</code>.</li>
+</ul>
+<p><br/><br/>
+<strong>Method <em>loc_vis:</em></strong></p>
+<pre><code class="python">LDAAnalyzer.loc_vis(topical_prevalence_column_name, topics_to_plot, type='all',
+                    markersize=100, draw_lat_and_lon=False, date_of_df_in_dict_str=None, 
+                    save_path=None, save_name='my_topics_spatial_visualization')
+</code></pre>
+
+<p>This method provides a scatter plot of tweets from up to ten topics from the whole dataset or a time-series on a 
+<em>matplotlib basemap</em>. The tweets are categorized by their individual maximum prevalence score for the passed topical
+prevalence column name. It returns <code>None</code>.</p>
+<p><strong>Parameters:</strong></p>
+<ul>
+<li><strong>topical_prevalence_column_name (str):</strong> Defines the name of the topical prevalence column that shall be used for
+plotting.</li>
+<li><strong>topics_to_plot (list of int):</strong> Defines a list of integers referring to the topics numbers to be plotted.
+Maximum of ten topics.</li>
+<li><strong>type (str):</strong> Defines on which <em>DataFrame</em> the method is applied to. Choose between <code>'all'</code>
+(<code>self.lda_df_trained_tweets</code>) and <code>'ts'</code> (a <em>time-series-dict</em> entry). Default is <code>'all'</code>.</li>
+<li><strong>markersize (int):</strong> Defines the size of the markers of the scatter plot. Default is <code>100</code>.</li>
+<li><strong>draw_lat_and_lon (bool):</strong> Decides, if latitudes and longitudes are provides as lines on the map.
+Default is <code>False</code>.</li>
+<li><strong>date_of_df_in_dict_str (str, optional):</strong> Choose the <em>key</em>-string of the desired entry from the <em>time-series-dict</em>,
+if <code>type='ts'</code> (one the strings from <code>self.lda_df_trained_tweets['created_at']</code> in the form of <code>yy-mm-dd</code>). Default 
+is <code>None</code>.</li>
+<li><strong>save_path (str, optional):</strong> Defines a save path to where the plot is saved as <em>PDF</em>. Default is <code>None</code>.</li>
+<li><strong>save_name (str, optional):</strong> Defines a name for the <em>PDF</em> file, if a <code>save_path</code> is chosen. Default
+is <code>'my_topics_spatial_visualization'</code>.</li>
+</ul>
+              
+            </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../covariates_cleaner_object" class="btn btn-neutral float-right" title="Covariates available after instancing a " Cleaner"-object">Next <span class="icon icon-circle-arrow-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <!-- Copyright etc -->
+    
+  </div>
+
+  Built with <a href="http://www.mkdocs.org">MkDocs</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+</footer>
+      
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <div class="rst-versions" role="note" style="cursor: pointer">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+      
+      
+      
+        <span style="margin-left: 15px"><a href="../covariates_cleaner_object" style="color: #fcfcfc">Next &raquo;</a></span>
+      
+    </span>
+</div>
+    <script>var base_url = '..';</script>
+    <script src="../js/theme.js" defer></script>
+      <script src="../search/main.js" defer></script>
+
+</body>
+</html>

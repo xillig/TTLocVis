@@ -53,5 +53,9 @@ Potential contributions include ways to further improve the quality of the LDA t
 Twitter data and an improvement of the *loc_vis* function in a way that it becomes independent form the *basemap*
 package.
 
-##License
-TTLocVis is published under the __GNU GPLv3__ license.
+##Authors
+- Gillian Kant
+- Christoph Weißer
+- Benjamin Säfken
+
+##LicenseTTLocVis is published under the __GNU GPLv3__ license.
