@@ -2,7 +2,7 @@
 # TTLocVis
 TTLocVis: A Twitter Topic Location Visualization package
 
-##Summary 
+###Summary 
 TTLocVis is a package providing a wide range of tools to analyze the contents of Twitter data. The user will be provided
 with methods so they can collect Tweets (using a Twitter developer account), clean and transform them (also possible to
 make use of the data for tasks exceeding the scope of this package), preparing them for LDA analysis by pooling them 
@@ -13,18 +13,18 @@ from the topics itself to the change of topical prevalence over time to a spatia
 prevalence. There are methods provided to gain insights into to resulting data itself regarding specific words the user 
 is interested in and their change in prevalence over time.     
 
-##Statement of need
+###Statement of need
 
-##How to cite 
+###How to cite 
 
 
-##Installation
+###Installation
 The package can be installed via *pip*:
 ```commandline
 python pip install TTLocVis
 ```
 
-###Windows
+####Windows
 After successful insallation, the user must install the [*basemap* package] manually via *pip*:
 ```commandline
 python -m pip install [your basemap wheel here]
@@ -34,16 +34,16 @@ The *cpXX* in the filenames refer to the python version you will use. An example
 
 [*basemap* package]: https://www.lfd.uci.edu/~gohlke/pythonlibs/#basemap
 
-###Linux and iOS
+####Linux and iOS
 Download [basemap package version 1.2.1] and install it accordingly.
 
 [basemap package version 1.2.1]: https://github.com/matplotlib/basemap/releases
 
-##Documentation and Usage
+###Documentation and Usage
 You can find the current TTLocVis master branch
 documentation at  
 
-##Community guidelines
+###Community guidelines
 Contributions to TTLocVis are welcome.
 
 - Just file an Issue to ask questions, report bugs, or request new features.
@@ -53,9 +53,9 @@ Potential contributions include ways to further improve the quality of the LDA t
 Twitter data and an improvement of the *loc_vis* function in a way that it becomes independent form the *basemap*
 package.
 
-##Authors
+###Authors
 - Gillian Kant
 - Christoph Weißer
 - Benjamin Säfken
 
-##LicenseTTLocVis is published under the __GNU GPLv3__ license.
+###LicenseTTLocVis is published under the __GNU GPLv3__ license.
