@@ -22,7 +22,7 @@ try:
     from mpl_toolkits.basemap import Basemap
     have_basemap = True
 except ImportError:
-    raise ImportError('No Basemap availiabe - deactivating method "loc_vis"')
+    print('No Basemap availiabe - deactivating method "loc_vis"')
     have_basemap = True
     pass
 

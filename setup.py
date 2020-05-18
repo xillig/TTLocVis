@@ -26,8 +26,8 @@ installation_dependencies = [
 
 setuptools.setup(
     name="TTLocVis",
-    version="0.0.2",
-    license='MIT',
+    version="0.0.3",
+    license='GNU GPLv3',
     author="Gillian Kant, Christoph Weisser, Benjamin Saefken",
     author_email="gilliankant@googlemail.com, c.weisser@stud.uni-goettingen.de, "
                  "benjamin.saefken@uni-goettingen.de",
