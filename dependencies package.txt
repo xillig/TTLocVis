@@ -1,0 +1,13 @@
+Basemap>=1.2.1
+en-core-web-sm>=2.2.0
+gensim>=3.8.1
+matplotlib>=2.2.2
+numpy==1.16.1
+pandas==0.24.2
+pyproj>=2.6.1.post1
+sklearn>=0.21.2
+spacy>=2.2.2
+tweepy>=3.8.0
+urllib3>=1.25.8
+wordcloud>=1.7.0
+pip>=19.1.1,
