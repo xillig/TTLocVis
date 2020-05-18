@@ -26,7 +26,7 @@ installation_dependencies = [
 
 setuptools.setup(
     name="TTLocVis",
-    version="0.0.1",
+    version="0.0.2",
     license='MIT',
     author="Gillian Kant, Christoph Weisser, Benjamin Saefken",
     author_email="gilliankant@googlemail.com, c.weisser@stud.uni-goettingen.de, "

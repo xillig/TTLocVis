@@ -1551,7 +1551,6 @@ class LDAAnalyzer(object):
                 scatter_plots.append(plt.scatter(x, y, marker="o", s=markersize, c=j, edgecolors='k', zorder=3))
 
             # see: https://matplotlib.org/3.1.1/api/_as_gen/matplotlib.pyplot.legend.html
-            # possible 'title_fontsize' args: 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'.
             legend = plt.legend(scatter_plots, topics_to_plot, ncol=10, frameon=True, fontsize=14, handlelength=2, loc=8,
                        borderpad=1.8, handletextpad=1, title='Topic no.', scatterpoints=1)
             legend.get_title().set_fontsize('14')   # change legend fontsize.
@@ -1559,6 +1558,7 @@ class LDAAnalyzer(object):
             if save_path is not None:
                 fig.savefig(os.path.join(save_path, str(save_name + '.pdf')))
 
+            plt.title('Spatial Visualization of topical prevalence for model ' + topical_prevalence_column_name)
             plt.show()
 
             return

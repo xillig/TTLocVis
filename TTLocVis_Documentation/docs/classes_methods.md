@@ -229,7 +229,7 @@ __Parameters:__
 - __type (str):__ Defines on which *DataFrame* the method is applied. Choose between `'all'` (`self.lda_df_trained_tweets`)
 and `'ts'` (a *time-series-dict* entry). Default is `'all'`.
 - __date_of_df_in_dict_str (str, optional):__ Choose the *key*-string of the desired entry from the *time-series-dict*,
-if `type='ts'` (one the strings from `self.lda_df_trained_tweets['created_at']` in the form of `yy-mm-dd`). Default is
+if `type='ts'` (one of the strings from `self.lda_df_trained_tweets['created_at']` in the form of `yy-mm-dd`). Default is
 `None`.
 
 <br/><br/>
@@ -245,7 +245,7 @@ __Parameters:__
 - __type (str):__ Defines on which *DataFrame* the method is applied. Choose between `'all'` (`self.lda_df_trained_tweets`)
 and `'ts'` (a *time-series-dict* entry). Default is `'all'`.
 - __date_of_df_in_dict_str (str, optional):__ Choose the *key*-string of the desired entry from the *time-series-dict*,
-if `type='ts'` (one the strings from `self.lda_df_trained_tweets['created_at']` in the form of `yy-mm-dd`). Default
+if `type='ts'` (one of the strings from `self.lda_df_trained_tweets['created_at']` in the form of `yy-mm-dd`). Default
 is `None`.
 
 <br/><br/>
