@@ -1,6 +1,6 @@
 site_name: TTLocVis
 nav:
-    - Home: home.md
+    - Home: index.md
     - Classes and Methods: classes_methods.md
     - Covariates available after instancing a "Cleaner"-object: covariates_cleaner_object.md
     - Usage and Examples: examples.md

@@ -32,8 +32,8 @@ After successful insallation, the user must install the [*basemap* package] manu
 ```commandline
 python -m pip install *your basemap wheel here*
 ```
-The *cpXX* in the filenames refer to the python version you will use. An example for python 3.6. would be the file 
-*basemap-1.2.1-cp36-cp36m-win_amd64.whl* Remember, TTLocVis is developed to run only on python 3.6, 3.7 and 3.8.
+__Note:__ The *cpXX* in the filenames refer to the python version you will use. An example for python 3.6. would be the file 
+*basemap-1.2.1-cp36-cp36m-win_amd64.whl* Remember, TTLocVis is developed to run only on Python 3.6, 3.7 and 3.8.
 
 [*basemap* package]: https://www.lfd.uci.edu/~gohlke/pythonlibs/#basemap
 
@@ -46,7 +46,9 @@ Download [basemap package version 1.2.1] and install it accordingly.
 ## Documentation and Usage
 
 You can find the current TTLocVis master branch
-documentation at  
+documentation at our [docs website].
+
+[docs website]: https://ttlocvis.readthedocs.io/en/latest/
 
 ## Community guidelines
 
@@ -56,8 +58,8 @@ Contributions to TTLocVis are welcome.
 - Pull requests via GitHub are also welcome.
 
 Potential contributions include ways to further improve the quality of the LDA topics in handling the noisy
-Twitter data and an improvement of the *loc_vis* function in a way that it becomes independent form the *basemap*
-package.
+Twitter data and an improvement of the *loc_vis* method in a way that it becomes independent form the *basemap*
+module.
 
 ## Authors
 
