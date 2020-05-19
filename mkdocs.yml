@@ -3,4 +3,5 @@ nav:
     - Classes and Methods: classes_methods.md
     - Covariates available after instancing a "Cleaner"-object: covariates_cleaner_object.md
     - Usage and Examples: examples.md
+    - Test: test.md
 theme: readthedocs
