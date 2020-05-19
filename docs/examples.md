@@ -11,7 +11,7 @@ from TTLocVis.module import TwitterStreamer
 from TTLocVis.module import Cleaner
 from TTLocVis.module import LDAAnalyzer
 ```
-[installation]: README.md
+[installation]: index.md#Installation
 
 ##Streaming
 The Twitter data can be accessed easily when a [Twitter developer account] has been created by just one statement:

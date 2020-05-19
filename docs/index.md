@@ -18,7 +18,7 @@ is interested in and their change in prevalence over time.
 ###How to cite 
 
 
-###Installation
+#Installation
 The package can be installed via *pip*:
 ```commandline
 python pip install TTLocVis
@@ -29,8 +29,8 @@ After successful insallation, the user must install the [*basemap* package] manu
 ```commandline
 python -m pip install [your basemap wheel here]
 ```
-The *cpXX* in the filenames refer to the python version you will use. An example for python 3.6. would be the file 
-*basemap-1.2.1-cp36-cp36m-win_amd64.whl* Remember, TTLocVis is developed to run only on python 3.6, 3.7 and 3.8.
+The *cpXX* in the filenames refer to the python version you will use. An example for Python 3.6. would be the file 
+*basemap-1.2.1-cp36-cp36m-win_amd64.whl* Remember, TTLocVis is developed to run only on Python 3.6, 3.7 and 3.8.
 
 [*basemap* package]: https://www.lfd.uci.edu/~gohlke/pythonlibs/#basemap
 
@@ -58,4 +58,5 @@ package.
 - Christoph Weißer
 - Benjamin Säfken
 
-###LicenseTTLocVis is published under the __GNU GPLv3__ license.
+###License
+TTLocVis is published under the __GNU GPLv3__ license.

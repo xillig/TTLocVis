@@ -1,7 +1,6 @@
 
 # TTLocVis
 TTLocVis: A Twitter Topic Location Visualization package
-TESTTT
 
 ## Summary 
 
