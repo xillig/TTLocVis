@@ -1,31 +1,33 @@
-# This is an example file!
-
----
-title: 'Gala: A Python package for galactic dynamics'
+title: 'TTLocVis: A Twitter Topic Location Visualization package'
 tags:
   - Python
-  - astronomy
-  - dynamics
-  - galactic dynamics
-  - milky way
+  - Twitter
+  - Topic Modelling
+  - LDA
+  - Latent Dirichlet Allocation
+  - Visualization
+  - Spatial Modelling
+  - Geocoded Text
+  - Hashtag-Pooling Algorithm
 authors:
-  - name: Adrian M. Price-Whelan
-    orcid: 0000-0003-0872-7098
+  - name: Gillian Kant
+    orcid: 0000-0003-2346-2841
     affiliation: "1, 2" # (Multiple affiliations must be quoted)
-  - name: Author Without ORCID
+  - name: Christoph Weißer
+    orcid: 0000-0003-0616-1027
     affiliation: 2
+  - name: Benjamin Säfken
+    orcid: ?
+
+
 affiliations:
  - name: Lyman Spitzer, Jr. Fellow, Princeton University
    index: 1
  - name: Institution 2
    index: 2
-date: 13 August 2017
+date: 25 May 2020
 bibliography: paper.bib
 
-# Optional fields if submitting to a AAS journal too, see this blog post:
-# https://blog.joss.theoj.org/2018/12/a-new-collaboration-with-aas-publishing
-aas-doi: 10.3847/xxxxx <- update this with the DOI from AAS once you know it.
-aas-journal: Astrophysical Journal <- The name of the AAS journal.
 ---
 
 # Summary
