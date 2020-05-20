@@ -12,25 +12,104 @@ tags:
 authors:
   - name: Gillian Kant
     orcid: 0000-0003-2346-2841
-    affiliation: "1, 2" # (Multiple affiliations must be quoted)
+    affiliation: 1
   - name: Christoph Weißer
     orcid: 0000-0003-0616-1027
-    affiliation: 2
+    affiliation: 1
   - name: Benjamin Säfken
     orcid: 0000-0003-4702-3333
+    affiliation: 1
 
 
 affiliations:
- - name: Lyman Spitzer, Jr. Fellow, Princeton University
+ - name: Center of Statistics, Georg-August-Universität Göttingen, Germany
    index: 1
- - name: Institution 2
-   index: 2
 date: 25 May 2020
 bibliography: paper.bib
 
 ---
 
 # Summary
+
+-- Mention of R-LDA package!
+
+TTLocVis is a package providing a wide range of tools to analyze the contents of Twitter data. The user will be provided
+with methods so they can collect Tweets (using a Twitter developer account), clean and transform them (also possible to
+make use of the data for tasks exceeding the scope of this package), preparing them for LDA analysis by pooling them 
+using a distinct algorithm to account for problems when it comes to LDA analysis of short, sparse and noisy text.
+Furthermore, it provides options for automatized Topic Model parameter optimization to get the best results for the 
+users data sets. The resulting tweets topic distributions can be visualized using several plotting methods, ranging 
+from the topics itself to the change of topical prevalence over time to a spatial visualization of the topical
+prevalence. There are methods provided to gain insights into to resulting data itself regarding specific words the user 
+is interested in and their change in prevalence over time.   
+
+The package provides a ordered working scheme, which provides the user with the ability to start collecting their own
+tweets and processing them to use them accordingly or for other purposes. The cleaned tweets are then further prepared
+by pooling. 
+The pooling of tweets by hashtag to create pseudo-documents which will be fed into LDAs is a vital part of this package.
+The goal of this preparation is to supply the Topic Models with longer documents than just single tweets to counteract
+the problems (ZITIEREN) of Topic Models with short and sparse text. The pooling idea arose from Mehrotra et. al. (2013)
+and is described as follows: 
+
+- Pooling of all tweets by existing hashtags. 
+- Check the similarity of an unlabeled tweet with all labeled ones (hashtag-pools).
+- The unlabeled tweet joins the hashtag-pool with the highest cosine similarity value if the value exceeds a certain
+threshold *C*.
+- Repeat that procedure for all unlabeled tweets.   
+
+The chosen measure for cosine similarity is TF-IDF. The authors show that hashtag-pooled tweets perform best, compared
+to unpooled, author (i.e. user)-pooled and time-pooled documents (Mehrotra et. al. 2013, 892). The algorithm described 
+above was self-implemented in the package as a parallelized function to speed up the heavy computational task that 
+comes with it.
+
+Feeding this data into the LDAs for training benefits the performance of the Topic Models quiet well. The resulting 
+topic distributions for single tweets do resemble the topical prevalence way better when an LDA is trained without 
+pooling. When trained with sufficient data, decent topics can be generated and the short coming of LDAs with short 
+and sparse text can be overcome. The resulting topic distributions are used for gaining insight into the time- and 
+spatial variation of topics. Our package provides the methods to visualize these information.  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 The forces on stars, galaxies, and dark matter under external gravitational
 fields lead to the dynamical evolution of structures in the universe. The orbits
