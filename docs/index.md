@@ -25,10 +25,12 @@ python pip install TTLocVis
 ```
 
 ####Windows
-After successful insallation, the user must install the [*basemap* package] manually via *pip*:
+After successful installation, the user must download the [*basemap* package] and install it manually via *pip*:
 ```commandline
-python -m pip install [your basemap wheel here]
+python -m pip install [path-to-the-downloaded-file/your-basemap-wheel]
 ```
+__Note:__ Do not copy the name of your *basemap wheel* from the above mentioned website into your python console! Write
+it out manually!
 The *cpXX* in the filenames refer to the python version you will use. An example for Python 3.6. would be the file 
 *basemap-1.2.1-cp36-cp36m-win_amd64.whl* Remember, TTLocVis is developed to run only on Python 3.6, 3.7 and 3.8.
 
@@ -39,9 +41,6 @@ Download [basemap package version 1.2.1] and install it accordingly.
 
 [basemap package version 1.2.1]: https://github.com/matplotlib/basemap/releases
 
-###Documentation and Usage
-You can find the current TTLocVis master branch
-documentation at  
 
 ###Community guidelines
 Contributions to TTLocVis are welcome.

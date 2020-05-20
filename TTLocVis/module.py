@@ -23,7 +23,7 @@ try:
     have_basemap = True
 except ImportError:
     print('No Basemap availiabe - deactivating method "loc_vis"')
-    have_basemap = True
+    have_basemap = False
     pass
 
 from multiprocessing import Pool
@@ -37,6 +37,7 @@ import re
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import spacy
+from spacy.cli import download
 from spacy.lang.en.stop_words import STOP_WORDS
 import sys
 import time
@@ -303,7 +304,6 @@ class Cleaner(object):
             self.spacy_model = spacy.load(spacy_model)
         except OSError:
             print('Downloading spacy language model. This will only happen once.')
-            from spacy.cli import download
             download(spacy_model)
             self.spacy_model = spacy.load(spacy_model)
         #self.spacy_model = spacy.load(spacy_model)  # loading the statistical spacy-model

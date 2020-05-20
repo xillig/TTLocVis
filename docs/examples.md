@@ -1,7 +1,7 @@
 #Usage and Examples
 
 This section provides a few coding examples applying the functionalities of the TTLocVis package. To get to know the
-Package, it is advised to use the JSON *example_files* provided in the *github repository* as data input for the 
+Package, it is advised to use the JSON *example_files* provided in the [*github repository*] as data input for the 
 classes *Cleaner* and *LDAAnalyzer*, skipping the streaming at first. __Note that the provided example data is for
 presentation purposes only and does not provide any meaningful results!__   
 
@@ -11,6 +11,7 @@ from TTLocVis.module import TwitterStreamer
 from TTLocVis.module import Cleaner
 from TTLocVis.module import LDAAnalyzer
 ```
+[*github repository*]: https://github.com/xillig/TTLocVis
 [installation]: index.md#Installation
 
 ##Streaming
