@@ -36,16 +36,30 @@ TTLocVis enables the user to work with geo-spatial Twitter data and to generate 
 for geo-coded Tweets. As such, TTLocVis is an innovative tool to work with geo-coded text on a high geo-spatial resolution to 
 analyse the public discourse on various topics in space and time for any location in the world. As such, the package has
 a broad range of applications which are not only limited to scientific research. For instance, the package could be used
-to analyse the public discourse on the COVID-19 pandemic on Twitter in different countries and regions in the world over time.
+to analyse the public discourse on the COVID-19 pandemic on Twitter in different countries and regions in the world over time. In particular, 
+data from the recently provided COVID-19 stream by Twitter can be analysed to research the discussion of COVID-19. The package might be 
+for instance useful to research the spread of the virus or the dissemination of misleading information 
+(https://developer.twitter.com/en/docs/labs/covid19-stream/overview). 
 
-(!!! In particular,  the SARS-CoV-2 Twitter data set that was made available by Twitter recently (link) to!!!).
-  
 Firstly, the package allows the user to collect Tweets using a Twitter developer account for any area in the world that 
 is specified with its longitude and latitude. Subsequently, the inherently messy Twitter data can be cleaned, transformed and exported. 
 
 In particular, TTLocVis enables the user to apply LDA Topic models on extremely sparse Twitter data by preparing the Tweets 
 for LDA analysis hy pooling Tweets by Hashtags using cosine similarity to create longer pseudo-documents for better 
-LDA estimations. The pooling is implemented with the the specifically adjusted Hashtag pooling algorithm (cite). 
+LDA estimations. 
+
+The pooling is implemented with the the specifically adjusted Hashtag pooling algorithm. 
+The goal of this preparation is to supply the Topic Models with longer documents than just single tweets to counteract
+the problems of Topic Models with short and sparse text. The pooling idea arose from Mehrotra et. al. (2013)
+and is described as follows: Pool all tweets by existing hashtags and check the similarity of an unlabeled tweet with all labeled ones 
+(hashtag-pools). Subsequently, the unlabeled join the hashtag-pool with the highest cosine similarity value, if the value exceeds a certain
+threshold. This process is repeated for all unlabeled tweets.  The chosen measure for cosine similarity is TF-IDF. 
+The described algorithm by Mehrotra et. al. (2013) was self-implemented in the package as a parallelized function 
+in order to speed up the heavy computational task that comes with it.
+
+The resulting topic distributions for which are computed with the LDA model that are trained on the pooled Tweets are substantially
+improved. When trained with sufficient data, clear topics can be generated and the short coming of LDAs with short 
+and sparse text is minimised. 
 
 Additionally, it provides options for automatized Topic Model parameter optimization. Topic models provide an insight in hidden information of large text data sets by generation underlying topic of the texts.
 Each topic is a distribution over words that can be labeled. For the the labelling histograms or wordclouds (for example see graph)
@@ -53,60 +67,9 @@ can be used.
  
 Additionally, a distribution over topics is generated for each document. The distribution of topics over documents
 can be visualized with various plotting methods. The average prevalence of topics in the documents at each day can be plotted 
-as a time series in order to visualise how topics develop over time.
-
-
-Ranging from the topics itself to the change of topical prevalence over time to a spatial visualization of the topical
-prevalence. 
-
-- histogramm 
-
-There are methods provided to gain insights into to resulting data itself regarding specific words the user 
-is interested in and their change in prevalence over time.   
-
-During the described analysis the data can be easily exported and an. 
-
-The package provides a ordered working scheme, which provides the user with the ability to start collecting their own
-tweets and processing them to use them accordingly or for other purposes. The cleaned tweets are then further prepared
-by pooling. 
-The pooling of tweets by hashtag to create pseudo-documents which will be fed into LDAs is a vital part of this package.
-The goal of this preparation is to supply the Topic Models with longer documents than just single tweets to counteract
-the problems (ZITIEREN) of Topic Models with short and sparse text. The pooling idea arose from Mehrotra et. al. (2013)
-and is described as follows: 
-
-- Pooling of all tweets by existing hashtags. 
-- Check the similarity of an unlabeled tweet with all labeled ones (hashtag-pools).
-- The unlabeled tweet joins the hashtag-pool with the highest cosine similarity value if the value exceeds a certain
-threshold *C*.
-- Repeat that procedure for all unlabeled tweets.   
-
-The chosen measure for cosine similarity is TF-IDF. The authors show that hashtag-pooled tweets perform best, compared
-to unpooled, author (i.e. user)-pooled and time-pooled documents (Mehrotra et. al. 2013, 892). The algorithm described 
-above was self-implemented in the package as a parallelized function to speed up the heavy computational task that 
-comes with it.
-
-Feeding this data into the LDAs for training benefits the performance of the Topic Models quiet well. The resulting 
-topic distributions for single tweets do resemble the topical prevalence way better when an LDA is trained without 
-pooling. When trained with sufficient data, decent topics can be generated and the short coming of LDAs with short 
-and sparse text can be overcome. The resulting topic distributions are used for gaining insight into the time- and 
-spatial variation of topics. Our package provides the methods to visualize these information.  
-
-# Mathematics
-
-Single dollars ($) are required for inline mathematics e.g. $f(x) = e^{\pi/x}$
-
-Double dollars make self-standing equations:
-
-$$\Theta(x) = \left\{\begin{array}{l}
-0\textrm{ if } x < 0\cr
-1\textrm{ else}
-\end{array}\right.$$
-
-You can also use plain \LaTeX for equations
-\begin{equation}\label{eq:fourier}
-\hat f(\omega) = \int_{-\infty}^{\infty} f(x) e^{i\omega x} dx
-\end{equation}
-and refer to \autoref{eq:fourier} from text.
+as a time series in order to visualise how topics develop over time (see graph). Above this, the spatial distribution of Tweets 
+can be plotted on a map which automatically chooses an appropriate part of the world map to visualise the choosen sample of Tweets.
+In the map the most prevalent topics in each Tweet are visualised with different colors (see graph). 
 
 # Citations
 
@@ -128,15 +91,6 @@ Figures can be included like this:
 ![Caption for example figure.\label{fig:example}](figure.png)
 and referenced from text using \autoref{fig:example}.
 
-Fenced code blocks are rendered with syntax highlighting:
-```python
-for n in range(10):
-    yield f(n)
-```	
-
-# Acknowledgements
-
-We acknowledge contributions from Brigitta Sipocz, Syrtis Major, and Semyeong
-Oh, and support from Kathryn Johnston during the genesis of this project.
 
 # References
+
