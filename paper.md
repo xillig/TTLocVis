@@ -31,19 +31,29 @@ bibliography: paper.bib
 
 # Summary
 
--- Mention of R-LDA package!
+The package TTLocVis provides a broad range of methods to generate, clean, analyze and visualize the content of Twitter data.
+TTLocVis enables the user to work with geo-spatial Twitter data and to generate topic distributions from LDA topic models (cite) 
+for geo-coded Tweets. As such, TTLocVis is an innovative tool to work with geo-coded text on a high geo-spatial resolution to 
+analyse the public discourse on various topics in space and time for any location in the world. 
 
-TTLocVis is a package providing a wide range of tools to analyze the contents of Twitter data. The user will be provided
-with methods so they can collect Tweets (using a Twitter developer account), clean and transform them (also possible to
-make use of the data for tasks exceeding the scope of this package), preparing them for LDA analysis by pooling them 
-using a distinct algorithm to account for problems when it comes to LDA analysis of short, sparse and noisy text.
-Furthermore, it provides options for automatized Topic Model parameter optimization to get the best results for the 
-users data sets. The resulting tweets topic distributions can be visualized using several plotting methods, ranging 
-from the topics itself to the change of topical prevalence over time to a spatial visualization of the topical
-prevalence. There are methods provided to gain insights into to resulting data itself regarding specific words the user 
+Firstly, the package allows the user to collect Tweets using a Twitter developer account for any area in the world that 
+is specified with its longitude and latitude. Subsequently, the inherently messy Twitter data can be cleaned, transformed and exported. 
+
+In particular, TTLocVis enables the user to apply LDA Topic models on extremely sparse Twitter data by preparing the Tweets 
+for LDA analysis by pooling them to larger artificial pseudo-tweets with the specifically adjusted Hashtag pooling algorithm (cite). 
+Additionally, it provides options for automatized Topic Model parameter optimization. 
+
+Topic models provide an insight in hidden information of large text data sets by generation underlying topic of the texts.
+Each topic is a distribution over words (see graph) that can be labeled. Additionally, a distribution over topics is generated for
+each document (see graphs). The distributions from the LDA model can be visualized with various plotting methods.
+
+Ranging from the topics itself to the change of topical prevalence over time to a spatial visualization of the topical
+prevalence. 
+
+There are methods provided to gain insights into to resulting data itself regarding specific words the user 
 is interested in and their change in prevalence over time.   
 
-The package provides a ordered working scheme, which provides the user with the ability to start collecting their own
+During the described analysis the data can be easily exported and an. The package provides a ordered working scheme, which provides the user with the ability to start collecting their own
 tweets and processing them to use them accordingly or for other purposes. The cleaned tweets are then further prepared
 by pooling. 
 The pooling of tweets by hashtag to create pseudo-documents which will be fed into LDAs is a vital part of this package.
@@ -73,73 +83,6 @@ spatial variation of topics. Our package provides the methods to visualize these
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-The forces on stars, galaxies, and dark matter under external gravitational
-fields lead to the dynamical evolution of structures in the universe. The orbits
-of these bodies are therefore key to understanding the formation, history, and
-future state of galaxies. The field of "galactic dynamics," which aims to model
-the gravitating components of galaxies to study their structure and evolution,
-is now well-established, commonly taught, and frequently used in astronomy.
-Aside from toy problems and demonstrations, the majority of problems require
-efficient numerical tools, many of which require the same base code (e.g., for
-performing numerical orbit integration).
-
-`Gala` is an Astropy-affiliated Python package for galactic dynamics. Python
-enables wrapping low-level languages (e.g., C) for speed without losing
-flexibility or ease-of-use in the user-interface. The API for `Gala` was
-designed to provide a class-based and user-friendly interface to fast (C or
-Cython-optimized) implementations of common operations such as gravitational
-potential and force evaluation, orbit integration, dynamical transformations,
-and chaos indicators for nonlinear dynamics. `Gala` also relies heavily on and
-interfaces well with the implementations of physical units and astronomical
-coordinate systems in the `Astropy` package [@astropy] (`astropy.units` and
-`astropy.coordinates`).
-
-`Gala` was designed to be used by both astronomical researchers and by
-students in courses on gravitational dynamics or astronomy. It has already been
-used in a number of scientific publications [@Pearson:2017] and has also been
-used in graduate courses on Galactic dynamics to, e.g., provide interactive
-visualizations of textbook material [@Binney:2008]. The combination of speed,
-design, and support for Astropy functionality in `Gala` will enable exciting
-scientific explorations of forthcoming data releases from the *Gaia* mission
-[@gaia] by students and experts alike.
 
 # Mathematics
 
