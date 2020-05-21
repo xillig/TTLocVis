@@ -3,15 +3,11 @@
 TTLocVis: A Twitter Topic Location Visualization package
 
 ###Summary 
-TTLocVis is a package providing a wide range of tools to analyze the contents of Twitter data. The user will be provided
-with methods so they can collect Tweets (using a Twitter developer account), clean and transform them (also possible to
-make use of the data for tasks exceeding the scope of this package), preparing them for LDA analysis by pooling them 
-using a distinct algorithm to account for problems when it comes to LDA analysis of short, sparse and noisy text.
-Furthermore, it provides options for automatized Topic Model parameter optimization to get the best results for the 
-users data sets. The resulting tweets topic distributions can be visualized using several plotting methods, ranging 
-from the topics itself to the change of topical prevalence over time to a spatial visualization of the topical
-prevalence. There are methods provided to gain insights into to resulting data itself regarding specific words the user 
-is interested in and their change in prevalence over time.     
+The package TTLocVis provides a broad range of methods to generate, clean, analyze and visualize the content of Twitter data.
+TTLocVis enables the user to work with geo-spatial Twitter data and to generate topic distributions from LDA Topic Models
+for geo-coded Tweets. As such, TTLocVis is an innovative tool to work with geo-coded text on a high geo-spatial resolution to 
+analyse the public discourse on various topics in space and time. The package has the potential to be used for a broad range of applications 
+for scientific research to gain insights into public discourse.   
 
 ###How to cite 
 

@@ -26,7 +26,7 @@ installation_dependencies = [
 
 setuptools.setup(
     name="TTLocVis",
-    version="0.0.3",
+    version="0.1.0",
     license='GNU GPLv3',
     author="Gillian Kant, Christoph Weisser, Benjamin Saefken",
     author_email="gilliankant@googlemail.com, c.weisser@stud.uni-goettingen.de, "
@@ -42,6 +42,7 @@ setuptools.setup(
     packages=['TTLocVis'],  # important: this refers to the folder in which the __init__.py and content files (module.py
     # ) are saved!
     classifiers=[
+        "Development Status :: 4 - Beta"
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
