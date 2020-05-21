@@ -89,7 +89,7 @@ For a quick reference, the following citation commands can be used:
 
 # Figures
 
-![Time Series.\label{fig:example}](figures/time_series.png)
+![Time Series.\label{fig:example}](figures/time_series.pdf)
 and referenced from text using \autoref{fig:example}.
 
 ![Word Cloud.\label{fig:example}](figures/word_cloud.pdf)
