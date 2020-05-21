@@ -46,7 +46,7 @@ data from the recently provided COVID-19 stream by Twitter can be analysed to re
 Firstly, the package allows the user to collect Tweets using a Twitter developer account for any area in the world.
 Subsequently, the inherently noisy Twitter data can be cleaned, transformed and exported. 
 In particular, TTLocVis enables the user to apply LDA Topic models on extremely sparse Twitter data by preparing the Tweets 
-for LDA analysis by pooling Tweets by hashtags. The hashtags pooling is implemented with the the specifically adjusted 
+for LDA analysis by pooling Tweets by hashtags. The hashtags pooling is implemented with the specifically adjusted 
 hashtag pooling algorithm from Mehrotra et. al. (2013). The goal of hashtag pooling is to supply the Topic Models with longer documents 
 than just single Tweets to reduce the problems of Topic Models to process short and sparse texts. 
 
