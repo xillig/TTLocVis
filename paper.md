@@ -10,6 +10,8 @@ tags:
   - Spatial Modelling
   - Geocoded Text
   - Hashtag-Pooling Algorithm
+  - Natural Language Processing
+  - Machine Learning
 authors:
   - name: Gillian Kant
     orcid: 0000-0003-2346-2841
