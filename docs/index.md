@@ -13,12 +13,13 @@ from the topics itself to the change of topical prevalence over time to a spatia
 prevalence. There are methods provided to gain insights into to resulting data itself regarding specific words the user 
 is interested in and their change in prevalence over time.     
 
-###Statement of need
-
 ###How to cite 
 
 
 #Installation
+__Attention:__ Event though TTLocVis should run on Python 3.7 and 3.8, it was not fully tested under these conditions.
+We do recommend to install a new (conda) environment with Python 3.6. 
+
 The package can be installed via *pip*:
 ```commandline
 python pip install TTLocVis

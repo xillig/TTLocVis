@@ -18,27 +18,28 @@ is interested in and their change in prevalence over time.
 
 ## How to cite 
 
-
-## Installation
+#Installation
+__Attention:__ Event though TTLocVis should run on Python 3.7 and 3.8, it was not fully tested under these conditions.
+We do recommend to install a new (conda) environment with Python 3.6. 
 
 The package can be installed via *pip*:
 ```commandline
 python pip install TTLocVis
 ```
 
-### Windows
-
-After successful insallation, the user must install the [*basemap* package] manually via *pip*:
+####Windows
+After successful installation, the user must download the [*basemap* package] and install it manually via *pip*:
 ```commandline
-python -m pip install *your basemap wheel here*
+python -m pip install [path-to-the-downloaded-file/your-basemap-wheel]
 ```
-__Note:__ The *cpXX* in the filenames refer to the python version you will use. An example for python 3.6. would be the file 
+__Note:__ Do not copy the name of your *basemap wheel* from the above mentioned website into your python console! Write
+it out manually!
+The *cpXX* in the filenames refer to the python version you will use. An example for Python 3.6. would be the file 
 *basemap-1.2.1-cp36-cp36m-win_amd64.whl* Remember, TTLocVis is developed to run only on Python 3.6, 3.7 and 3.8.
 
 [*basemap* package]: https://www.lfd.uci.edu/~gohlke/pythonlibs/#basemap
 
-### Linux and iOS
-
+####Linux and iOS
 Download [basemap package version 1.2.1] and install it accordingly.
 
 [basemap package version 1.2.1]: https://github.com/matplotlib/basemap/releases
