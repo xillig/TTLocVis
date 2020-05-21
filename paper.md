@@ -89,15 +89,17 @@ For a quick reference, the following citation commands can be used:
 
 # Figures
 
-![Caption for example figure.\label{fig:example}](\1.png)
-and referenced from text using \autoref{fig:example}.
-
 ![Time Series.\label{fig:example}](figures/time_series.png)
 and referenced from text using \autoref{fig:example}.
 
 ![Word Cloud.\label{fig:example}](figures/word_cloud.pdf)
 and referenced from text using \autoref{fig:example}.
 
+![Word Cloud.\label{fig:example}](figures/word_map1.pdf)
+and referenced from text using \autoref{fig:example}.
+
+![Word Cloud.\label{fig:example}](figures/word_map2.pdf)
+and referenced from text using \autoref{fig:example}.
 
 # References
 
