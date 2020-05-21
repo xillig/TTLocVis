@@ -38,7 +38,7 @@ analyse the public discourse on various topics in space and time for any locatio
 a broad range of applications which are not only limited to scientific research. For instance, the package could be used
 to analyse the public discourse on the COVID-19 pandemic on Twitter in different countries and regions in the world over time.
 
-(In particular,  the SARS-CoV-2 Twitter data set that was made available by Twitter recently (link) to ).
+(!!! In particular,  the SARS-CoV-2 Twitter data set that was made available by Twitter recently (link) to!!!).
   
 Firstly, the package allows the user to collect Tweets using a Twitter developer account for any area in the world that 
 is specified with its longitude and latitude. Subsequently, the inherently messy Twitter data can be cleaned, transformed and exported. 
@@ -48,8 +48,13 @@ for LDA analysis hy pooling Tweets by Hashtags using cosine similarity to create
 LDA estimations. The pooling is implemented with the the specifically adjusted Hashtag pooling algorithm (cite). 
 
 Additionally, it provides options for automatized Topic Model parameter optimization. Topic models provide an insight in hidden information of large text data sets by generation underlying topic of the texts.
-Each topic is a distribution over words (see graph) that can be labeled. Additionally, a distribution over topics is generated for
-each document (see graphs). The distributions from the LDA model can be visualized with various plotting methods.
+Each topic is a distribution over words that can be labeled. For the the labelling histograms or wordclouds (for example see graph)
+can be used. 
+ 
+Additionally, a distribution over topics is generated for each document. The distribution of topics over documents
+can be visualized with various plotting methods. The average prevalence of topics in the documents at each day can be plotted 
+as a time series in order to visualise how topics develop over time.
+
 
 Ranging from the topics itself to the change of topical prevalence over time to a spatial visualization of the topical
 prevalence. 
