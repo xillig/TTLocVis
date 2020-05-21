@@ -89,17 +89,18 @@ For a quick reference, the following citation commands can be used:
 
 # Figures
 
-![Time Series.\label{fig:example}](figures/time_series.png)
+![Word Map1.\label{fig:example}](figures/word_map1.pdf)
+and referenced from text using \autoref{fig:example}.
+
+![Word Map2.\label{fig:example}](figures/word_map2.pdf)
+and referenced from text using \autoref{fig:example}.
+
+![Time Series.\label{fig:example}](figures/time_series.pdf)
 and referenced from text using \autoref{fig:example}.
 
 ![Word Cloud.\label{fig:example}](figures/word_cloud.pdf)
 and referenced from text using \autoref{fig:example}.
 
-![Word Cloud.\label{fig:example}](figures/word_map1.pdf)
-and referenced from text using \autoref{fig:example}.
-
-![Word Cloud.\label{fig:example}](figures/word_map2.pdf)
-and referenced from text using \autoref{fig:example}.
 
 # References
 
