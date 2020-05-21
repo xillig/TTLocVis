@@ -94,7 +94,10 @@ Figures can be included like this:
 ![Caption for example figure.\label{fig:example}](\1.png)
 and referenced from text using \autoref{fig:example}.
 
-![Caption for example figure.\label{fig:example}](figures\time_series.pdf)
+![Time Series.\label{fig:example}](figures\time_series.pdf)
+and referenced from text using \autoref{fig:example}.
+
+![Word Cloud.\label{fig:example}](figures\word_cloud.pdf)
 and referenced from text using \autoref{fig:example}.
 
 
