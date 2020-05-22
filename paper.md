@@ -97,8 +97,8 @@ For a quick reference, the following citation commands can be used:
 
 ![Word Cloud.\label{fig:Word Cloud}](figures/word_cloud.pdf)
 
-![World Map 1.\label{fig:test2}](figures/world_map1 Kopie.png)
+![World Map 1.\label{fig:test2}](figures/world_map1.png)
 
-![World Map 2.\label{fig:test2}](figures/world_map2 Kopie.png)
+![World Map 2.\label{fig:test2}](figures/world_map2.png)
 
 # References
