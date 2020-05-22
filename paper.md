@@ -71,7 +71,7 @@ plotted as a time series, in order to visualise, how topics develop over time (s
  
 Above this, the spatial distribution of Tweets can be plotted on a map, which automatically chooses an appropriate part of the world map,
 in order to visualise the chosen sample of Tweets. As part of the mapping process, each Tweet is classified by its most 
-prevalent topic and colour coded (see graph). 
+prevalent topic and colour coded (see graph). \autoref{fig:test2}
 
 
 
@@ -91,8 +91,8 @@ For a quick reference, the following citation commands can be used:
 
 # Figures
 
-![Word Map1.\label{fig:example}](figures/world_map3.png)
-and referenced from text using \autoref{fig:example}.
+![Word Map1.\label{fig:test2}](figures/world_map3.png)
+and referenced from text using \autoref{fig:test2}.
 
 [//]: #!![Word Map2.\label{fig:example}](figures/word_map2.pdf)
 and referenced from text using \autoref{fig:example}.
