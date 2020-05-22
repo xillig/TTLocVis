@@ -1,5 +1,5 @@
 ---
-title: 'TTLocVis: A Twitter Topic Location Visualization package'
+title: 'TTLocVis: A Twitter Topic Location Visualization Package'
 tags:
   - Python
   - Twitter
@@ -25,7 +25,7 @@ authors:
 
 
 affiliations:
- - name: Center of Statistics, Georg-August-Universität Göttingen, Germany
+ - name: Centre for Statistics, Georg-August-Universität Göttingen, Germany
    index: 1
 date: 25 May 2020
 bibliography: paper.bib
