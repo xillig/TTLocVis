@@ -42,7 +42,7 @@ space and time. The package can be used for a broad range of applications for sc
 topics discussed on Twitter. For instance, the package could be used to analyse the public discourse on the COVID-19 
 pandemic on Twitter in different countries and regions in the world over time. In particular, 
 data from the recently provided COVID-19 stream by Twitter can be analysed to research the discussion about COVID-19 
-on Twitter (https://developer.twitter.com/en/docs/labs/covid19-stream/overview). ^[This is a footnote.]
+on Twitter.^[https://developer.twitter.com/en/docs/labs/covid19-stream/overview]
 
 In general, Topic Models are generative probabilistic models, that provide an insight into hidden information 
 in large text corpora by estimating the underlying topics of the texts in an unsupervised manner. In Topic Models, 
