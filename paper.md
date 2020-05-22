@@ -34,8 +34,8 @@ bibliography: paper.bib
 
 # Summary
 
-The package TTLocVis provides a broad range of methods to generate, clean, analyze and visualize the content of Twitter data.
-TTLocVis enables the user to work with geo-spatial Twitter data and to generate topic distributions from latent Dirichlet allocation (LDA)
+The package TTLocVis provides a broad range of methods to generate, clean, analyze and visualize the contents of Twitter data.
+TTLocVis enables the user to work with geo-spatial Twitter data and to generate topic distributions from Latent Dirichlet Allocation (LDA)
 Topic Models (!!cite Blei) for geo-coded Tweets. As such, TTLocVis is an innovative tool to work with geo-coded text on a high geo-spatial
 resolution to analyse the public discourse on various topics in space and time. The package can be used for a broad range of applications 
 for scientific research to gain insights into topics discussed on Twitter. For instance, the package could be used to analyse the public
@@ -52,22 +52,22 @@ than just single Tweets to reduce the problems of Topic Models to process short 
 
 The pooling idea can be summarized into the following steps: Pool all Tweets by existing hashtags and check the similarity of an unlabeled
 tweet with all labeled Tweets (hashtag-pools). Subsequently, the unlabeled Tweets join the hashtag-pool with the highest cosine similarity
-value, if the value exceeds a certain threshold. This process is repeated for all unlabeled tweets. The described algorithm origination from
+value, if the value exceeds a certain threshold. This process is repeated for all unlabeled tweets. The described algorithm originating from
 Mehrotra et. al. (2013) was self-implemented in the package as a parallelized function in order to speed up the heavy computational task 
 that comes with it.
 
-The resulting topic distributions that are computed with a LDA model that is trained on the pooled Tweets, are substantially
+The resulting topic distributions that are computed with a LDA model that is trained on the pooled Tweets are substantially
 improved. When trained with sufficient data, clear topics can be generated and the shortcoming of LDAs with short 
 and sparse text are minimized. 
 
 TTLocVis provides options for automatized Topic Model parameter optimization. Topic Models, are generative probabilistic models, that  
 provide an insight into hidden information in large text corpora by estimating the underlying topics of the texts in an unsupervised manner.
-Each topic is a distribution over words that can be labeled by humans. For the purpose of labelling histograms and wordclouds
+Each topic is a distribution over words that can be labeled by humans. For the purpose of labelling histograms and word clouds
 (for example see graph) provide helpful visualizations for the decision-making process of the user.
 
 Additionally, a distribution over topics is generated for each document. The distribution of topics over documents
 can be visualized with various plotting methods. The average prevalence of topics in the documents at each day can be 
-plotted as a time series, in order to visualise, how topics develop over time (see graph). fig:Word Cloud}
+plotted as a time series, in order to visualize, how topics develop over time (see graph). fig:Word Cloud}
  
 Above this, the spatial distribution of Tweets can be plotted on a map, which automatically chooses an appropriate part of the world map,
 in order to visualise the chosen sample of Tweets. As part of the mapping process, each Tweet is classified by its most 
