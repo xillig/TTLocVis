@@ -1,5 +1,6 @@
 
 # TTLocVis
+
 A Twitter Topic Location Visualization Python package
 
 ## Summary   
