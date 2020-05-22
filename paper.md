@@ -91,7 +91,14 @@ For a quick reference, the following citation commands can be used:
 
 # Figures
 
-![Word Map1.\label{fig:test2}](figures/world_map3.png)*My caption*
+![Word Cloud.\label{fig:example}](figures/word_cloud.pdf)
+
+![Time Series.\label{fig:example}](figures/time_series.pdf)
+
+![Word Map1.\label{fig:test2}](figures/world_map1 Kopie.png)
+
+![Word Map1.\label{fig:test2}](figures/world_map2 Kopie.png)
+
 
 [//]: #!![Word Map2.\label{fig:example}](figures/word_map2.pdf)
 and referenced from text using \autoref{fig:example}.
