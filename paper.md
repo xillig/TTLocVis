@@ -67,7 +67,7 @@ Each topic is a distribution over words that can be labeled by humans. For the p
 
 Additionally, a distribution over topics is generated for each document. The distribution of topics over documents
 can be visualized with various plotting methods. The average prevalence of topics in the documents at each day can be 
-plotted as a time series, in order to visualise, how topics develop over time (see graph).
+plotted as a time series, in order to visualise, how topics develop over time (see graph). fig:Word Cloud}
  
 Above this, the spatial distribution of Tweets can be plotted on a map, which automatically chooses an appropriate part of the world map,
 in order to visualise the chosen sample of Tweets. As part of the mapping process, each Tweet is classified by its most 
@@ -91,9 +91,9 @@ For a quick reference, the following citation commands can be used:
 
 # Figures
 
-![Word Cloud.\label{fig:example}](figures/word_cloud.pdf)
+![Word Cloud.\label{fig:Word Cloud}](figures/word_cloud.pdf)
 
-![Time Series.\label{fig:example}](figures/time_series.pdf)
+![Time Series.\label{fig:Time Series}](figures/time_series.pdf)
 
 ![Word Map1.\label{fig:test2}](figures/world_map1 Kopie.png)
 
