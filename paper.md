@@ -75,12 +75,12 @@ the spatial distribution of the same selected topics at different points in time
 # Figures
 
 
-![Time Series.\label{fig:Time Series}](figures/time_series.pdf){ width=50% }
+![Time Series.\label{fig:Time Series}](figures/time_series.pdf){ width=80% }
 
-![Word Cloud.\label{fig:Word Cloud}](figures/word_cloud.pdf)
+![Word Cloud.\label{fig:Word Cloud}](figures/word_cloud.pdf) { width=100% }
 
-![World Map 1.\label{fig:test2}](figures/world_map1.png)
+![World Map 1.\label{fig:test2}](figures/world_map1.png) { width=60% }
 
-![World Map 2.\label{fig:test2}](figures/world_map2.png)
+![World Map 2.\label{fig:test2}](figures/world_map2.png) { width=60% }
 
 # References
