@@ -3,14 +3,33 @@
 TTLocVis: A Twitter Topic Location Visualization package
 
 ###Summary 
-The package TTLocVis provides a broad range of methods to generate, clean, analyze and visualize the content of Twitter data.
-TTLocVis enables the user to work with geo-spatial Twitter data and to generate topic distributions from LDA Topic Models
-for geo-coded Tweets. As such, TTLocVis is an innovative tool to work with geo-coded text on a high geo-spatial resolution to 
-analyse the public discourse on various topics in space and time. The package has the potential to be used for a broad range of applications 
-for scientific research to gain insights into public discourse.   
+The package TTLocVis provides a broad range of methods to generate, clean, analyze and visualize the contents of Twitter
+data. TTLocVis enables the user to work with geo-spatial Twitter data and to generate topic distributions from Latent 
+Dirichlet Allocation (LDA) Topic Models for geo-coded Tweets. As such, TTLocVis is an innovative 
+tool to work with geo-coded text on a high geo-spatial resolution to analyse the public discourse on various topics in 
+space and time. The package can be used for a broad range of applications for scientific research to gain insights into 
+topics discussed on Twitter. 
+
+In general, Topic Models are generative probabilistic models, that provide an insight into hidden information 
+in large text corpora by estimating the underlying topics of the texts in an unsupervised manner.
+
+Firstly, the package allows the user to collect Tweets using a Twitter developer account for any area in the world.
+Subsequently, the inherently noisy Twitter data can be cleaned, transformed and exported. 
+In particular, TTLocVis enables the user to apply LDA Topic Models on extremely sparse Twitter data by preparing 
+the Tweets for LDA analysis by the pooling Tweets by hashtags.
+
+TTLocVis provides options for automatized Topic Model parameter optimization. Furthermore, a distribution over 
+topics is generated for each document. The distribution of topics over documents can be visualized with various 
+plotting methods. The average prevalence of topics in the documents at each day can 
+be plotted as a time series, in order to visualize, how topics develop over time.
+ 
+Above this, the spatial distribution of Tweets can be plotted on a world map, which automatically chooses an appropriate
+part of the world, in order to visualise the chosen sample of Tweets. As part of the mapping process, each Tweet is 
+classified by its most prevalent topic and colour coded.
 
 ###How to cite 
 
+TBA
 
 #Installation
 __Attention:__ Event though TTLocVis should run on Python 3.7 and 3.8, it was not fully tested under these conditions.

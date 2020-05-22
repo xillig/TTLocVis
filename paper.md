@@ -64,13 +64,13 @@ the shortcoming of LDAs with short and sparse text are minimized.
 
 TTLocVis provides options for automatized Topic Model parameter optimization. Furthermore, a distribution over 
 topics is generated for each document. The distribution of topics over documents can be visualized with various 
-plotting methods (For example see figure Word Cloud). The average prevalence of topics in the documents at each day can 
-be plotted as a time series (For example see figure Time Series.), in order to visualize, how topics develop over time.
+plotting methods (for example see figure Word Cloud). The average prevalence of topics in the documents at each day can 
+be plotted as a time series (for example see figure Time Series), in order to visualize, how topics develop over time.
  
 Above this, the spatial distribution of Tweets can be plotted on a world map, which automatically chooses an appropriate
 part of the world, in order to visualise the chosen sample of Tweets. As part of the mapping process, each Tweet is 
-classified by its most prevalent topic and colour coded (For example see figure Word Map 1 and figure World Map 2 for 
-the spatial distribution of the same selected topics at different points in time.)
+classified by its most prevalent topic and colour coded (for example see figure Word Map 1 and figure World Map 2 for 
+the spatial distribution of the same selected topics at different points in time).
  
 # Figures
 
