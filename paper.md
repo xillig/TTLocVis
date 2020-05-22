@@ -42,7 +42,7 @@ space and time. The package can be used for a broad range of applications for sc
 topics discussed on Twitter. For instance, the package could be used to analyse the public discourse on the COVID-19 
 pandemic on Twitter in different countries and regions in the world over time. In particular, 
 data from the recently provided COVID-19 stream by Twitter can be analysed to research the discussion about COVID-19 
-on Twitter (https://developer.twitter.com/en/docs/labs/covid19-stream/overview). 
+on Twitter (https://developer.twitter.com/en/docs/labs/covid19-stream/overview). ^[This is a footnote.]
 
 In general, Topic Models are generative probabilistic models, that provide an insight into hidden information 
 in large text corpora by estimating the underlying topics of the texts in an unsupervised manner. In Topic Models, 
@@ -74,12 +74,9 @@ be plotted as a time series (For example see figure Time Series.), in order to v
  
 Above this, the spatial distribution of Tweets can be plotted on a world map, which automatically chooses an appropriate
 part of the world, in order to visualise the chosen sample of Tweets. As part of the mapping process, each Tweet is 
-classified by its most prevalent topic and colour coded. 
-
-(For example see figure Time Series.)
-
-
-
+classified by its most prevalent topic and colour coded (For example see figure Word Map 1 and figure World Map 2 for 
+the spatial distribution of the same selected topics at different points in time.)
+ 
 # Citations
 
 Citations to entries in paper.bib should be in
@@ -100,8 +97,8 @@ For a quick reference, the following citation commands can be used:
 
 ![Word Cloud.\label{fig:Word Cloud}](figures/word_cloud.pdf)
 
-![Word Map1.\label{fig:test2}](figures/world_map1 Kopie.png)
+![World Map 1.\label{fig:test2}](figures/world_map1 Kopie.png)
 
-![Word Map1.\label{fig:test2}](figures/world_map2 Kopie.png)
+![World Map 2.\label{fig:test2}](figures/world_map2 Kopie.png)
 
 # References
