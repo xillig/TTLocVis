@@ -79,7 +79,7 @@ the spatial distribution of the same selected topics at different points in time
 
 ![Word Cloud.\label{fig:Word Cloud}](figures/word_cloud.pdf){ width=80% }
 
-![World Map 1.\label{fig:test2}](figures/world_map1.png){ width=70% }
+![World Map 1.\label{fig:test2}](figures/world_map1.png){ width=100% }
 
 ![World Map 2.\label{fig:test2}](figures/world_map2.png){ width=80% }
 
