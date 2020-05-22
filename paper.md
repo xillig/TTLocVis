@@ -36,7 +36,7 @@ bibliography: paper.bib
 
 The package TTLocVis provides a broad range of methods to generate, clean, analyze and visualize the contents of Twitter
 data. TTLocVis enables the user to work with geo-spatial Twitter data and to generate topic distributions from Latent 
-Dirichlet Allocation (LDA) Topic Models [see @blei]  for [see @Mehrotra]  geo-coded Tweets. As such, TTLocVis is an innovative 
+Dirichlet Allocation (LDA) Topic Models [@blei] for geo-coded Tweets. As such, TTLocVis is an innovative 
 tool to work with geo-coded text on a high geo-spatial resolution to analyse the public discourse on various topics in 
 space and time. The package can be used for a broad range of applications for scientific research to gain insights into 
 topics discussed on Twitter. For instance, the package could be used to analyse the public discourse on the COVID-19 
@@ -53,7 +53,7 @@ Firstly, the package allows the user to collect Tweets using a Twitter developer
 Subsequently, the inherently noisy Twitter data can be cleaned, transformed and exported. 
 In particular, TTLocVis enables the user to apply LDA Topic models on extremely sparse Twitter data by preparing 
 the Tweets for LDA analysis by pooling Tweets by hashtags. The hashtags pooling is implemented with the specifically 
-adjusted hashtag pooling algorithm from Mehrotra et. al. (2013). The goal of hashtag pooling is to supply the 
+adjusted hashtag pooling algorithm [@Mehrotra]. The goal of hashtag pooling is to supply the 
 Topic Models with longer documents than just single Tweets to reduce the problems of Topic Models to process short 
 and sparse texts. 
 
