@@ -16,7 +16,7 @@ authors:
   - name: Gillian Kant
     orcid: 0000-0003-2346-2841
     affiliation: 1
-  - name: Christoph Weißer
+  - name: Christoph Weisser
     orcid: 0000-0003-0616-1027
     affiliation: 1
   - name: Benjamin Säfken
@@ -73,6 +73,9 @@ classified by its most prevalent topic and colour coded (For example see figure 
 the spatial distribution of the same selected topics at different points in time.)
  
 # Figures
+
+<img src="figures/time_series.pdf" alt="Kitten"
+	title="A cute kitten" width="150" height="100" />
 
 ![Time Series.\label{fig:Time Series}](figures/time_series.pdf)
 
