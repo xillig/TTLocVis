@@ -47,25 +47,20 @@ on Twitter.^[https://developer.twitter.com/en/docs/labs/covid19-stream/overview]
 In general, Topic Models are generative probabilistic models, that provide an insight into hidden information 
 in large text corpora by estimating the underlying topics of the texts in an unsupervised manner. In Topic Models, 
 each topic is a distribution over words that can be labeled by humans. For the purpose of labelling histograms and 
-word clouds (for example see graph) provide helpful visualizations for the decision-making process of the user.
+word clouds (for example see graph) provide helpful visualizations for the decision-making process of the user [@blei].
 
 Firstly, the package allows the user to collect Tweets using a Twitter developer account for any area in the world.
 Subsequently, the inherently noisy Twitter data can be cleaned, transformed and exported. 
-In particular, TTLocVis enables the user to apply LDA Topic models on extremely sparse Twitter data by preparing 
-the Tweets for LDA analysis by pooling Tweets by hashtags. The hashtags pooling is implemented with the specifically 
-adjusted hashtag pooling algorithm [@Mehrotra]. The goal of hashtag pooling is to supply the 
-Topic Models with longer documents than just single Tweets to reduce the problems of Topic Models to process short 
-and sparse texts. 
-
-The pooling idea can be summarized into the following steps: Pool all Tweets by existing hashtags and check the 
-similarity of an unlabeled tweet with all labeled Tweets (hashtag-pools). Subsequently, the unlabeled Tweets join the 
-hashtag-pool with the highest cosine similarity value, if the value exceeds a certain threshold. This process is 
-repeated for all unlabeled tweets. The described algorithm originating from Mehrotra et. al. (2013) was self-implemented
-in the package as a parallelized function in order to speed up the heavy computational task that comes with it.
-
-The resulting topic distributions that are computed with a LDA model that is trained on the pooled Tweets are 
-substantially improved. When trained with sufficient data, clear topics can be generated and the shortcoming of 
-LDAs with short and sparse text are minimized. 
+In particular, TTLocVis enables the user to apply LDA Topic Models on extremely sparse Twitter data by preparing 
+the Tweets for LDA analysis by the pooling Tweets by hashtags. The hashtags pooling algorithm [@Mehrotra] is implemented 
+in a parallelized form in order to speed up the heavy computational task. The goal of hashtag pooling is to supply the 
+Topic Models with longer documents than just single Tweets to reduce the problems of Topic Models to process short and 
+sparse texts. The pooling idea can be summarized into the following steps: Pool all Tweets by existing hashtags and 
+check the similarity of an unlabeled Tweet with all labeled Tweets (hashtag-pools). Subsequently, the unlabeled Tweets
+join the hashtag-pool with the highest cosine similarity value, if the value exceeds a certain threshold. This process is 
+repeated for all unlabeled Tweets. The resulting topic distributions that are computed with a LDA model that is trained 
+on the pooled Tweets are substantially improved. When trained with sufficient data, clear topics can be generated and 
+the shortcoming of LDAs with short and sparse text are minimized. 
 
 TTLocVis provides options for automatized Topic Model parameter optimization. Furthermore, a distribution over 
 topics is generated for each document. The distribution of topics over documents can be visualized with various 
