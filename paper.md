@@ -72,21 +72,6 @@ part of the world, in order to visualise the chosen sample of Tweets. As part of
 classified by its most prevalent topic and colour coded (For example see figure Word Map 1 and figure World Map 2 for 
 the spatial distribution of the same selected topics at different points in time.)
  
-# Citations
-
-Citations to entries in paper.bib should be in
-[rMarkdown](http://rmarkdown.rstudio.com/authoring_bibliographies_and_citations.html)
-format.
-
-If you want to cite a software repository URL (e.g. something on GitHub without a preferred
-citation) then you can do it with the example BibTeX entry below for @fidgit.
-
-For a quick reference, the following citation commands can be used:
-- `@author:2001`  ->  "Author et al. (2001)"
-- `[@author:2001]` -> "(Author et al., 2001)"
-- `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
-
-
 # Figures
 
 ![Time Series.\label{fig:Time Series}](figures/time_series.pdf)
