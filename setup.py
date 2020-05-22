@@ -42,7 +42,7 @@ setuptools.setup(
     packages=['TTLocVis'],  # important: this refers to the folder in which the __init__.py and content files (module.py
     # ) are saved!
     classifiers=[
-        "Development Status :: 4 - Beta"
+        "Development Status :: 4 - Beta",
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
