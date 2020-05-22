@@ -74,10 +74,8 @@ the spatial distribution of the same selected topics at different points in time
  
 # Figures
 
-<img src="figures/time_series.pdf" alt="Kitten"
-	title="A cute kitten" width="150" height="100" />
 
-![Time Series.\label{fig:Time Series}](figures/time_series.pdf)
+![Time Series.\label{fig:Time Series}](figures/time_series.pdf){ width=50% }
 
 ![Word Cloud.\label{fig:Word Cloud}](figures/word_cloud.pdf)
 
