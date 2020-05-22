@@ -91,7 +91,7 @@ For a quick reference, the following citation commands can be used:
 
 # Figures
 
-![Word Map1.\label{fig:example}](figures/test Kopie.png)
+![Word Map1.\label{fig:example}](figures/world_map3.png)
 and referenced from text using \autoref{fig:example}.
 
 [//]: #!![Word Map2.\label{fig:example}](figures/word_map2.pdf)
