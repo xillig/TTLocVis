@@ -49,6 +49,9 @@ in large text corpora by estimating the underlying topics of the texts in an uns
 each topic is a distribution over words that can be labeled by humans. For the purpose of labelling histograms and 
 word clouds (for example see graph) provide helpful visualizations for the decision-making process of the user.
 
+Blah blah [see @blei].
+
+
 Firstly, the package allows the user to collect Tweets using a Twitter developer account for any area in the world.
 Subsequently, the inherently noisy Twitter data can be cleaned, transformed and exported. 
 In particular, TTLocVis enables the user to apply LDA Topic models on extremely sparse Twitter data by preparing 
@@ -90,6 +93,7 @@ For a quick reference, the following citation commands can be used:
 - `@author:2001`  ->  "Author et al. (2001)"
 - `[@author:2001]` -> "(Author et al., 2001)"
 - `[@author1:2001; @author2:2001]` -> "(Author1 et al., 2001; Author2 et al., 2002)"
+
 
 # Figures
 
