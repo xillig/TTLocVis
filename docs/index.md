@@ -14,7 +14,7 @@ for scientific research to gain insights into public discourse.
 
 #Installation
 __Attention:__ Event though TTLocVis should run on Python 3.7 and 3.8, it was not fully tested under these conditions.
-We do recommend to install a new (conda) environment with Python 3.6. 
+We do recommend to install a new (conda) environment using Python 3.6. 
 
 The package can be installed via *pip*:
 ```commandline
