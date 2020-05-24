@@ -43,7 +43,7 @@ The package can be installed via *pip*:
 python pip install TTLocVis
 ```
 
-#### Windows
+### Windows
 
 After successful installation, the user must download the [*basemap* package] and install it manually via *pip*:
 ```commandline
@@ -56,7 +56,7 @@ The *cpXX* in the filenames refer to the python version you will use. An example
 
 [*basemap* package]: https://www.lfd.uci.edu/~gohlke/pythonlibs/#basemap
 
-#### Linux and iOS
+### Linux and iOS
 
 Download [basemap package version 1.2.1] and install it accordingly.
 
