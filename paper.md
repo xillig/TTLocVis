@@ -82,13 +82,13 @@ options for geo-spatial and temporal analysis. Further, a major limitation of Tw
 the LDA estimation is always fixed at 20. TTLocVis gives the option to define a range of potential topic numbers and 
 also includes an algorithm to select the optimal topic number according to coherence scoring. 
 
-Alternatively, Twitter data may be analysed with a web application by [@malik2013] with a LDA Topic Model. 
+Alternatively, Twitter data may be analyzed with a web application by [@malik2013] with a LDA Topic Model. 
 The authors use so-called bins resembling time intervals for the Topic Model estimation. For each of these bins,
 a LDA Topic Model is estimated in order to account for the topical change over time. They then use cosine similarity 
 to align the topics from the several bins to a resulting topic. In contrast to this approach, the LDA model is trained 
 on pooled tweets in TTLocVis in order to improve the estimation results. The estimation procedure in [@malik2013] could 
-be beneficial in the modelling of topic changes in short time intervals. However, in this framework Topic Models are 
-estimated on very samples on which LDA Models usually do not perform well.  
+be beneficial in the modelling of topical changes in short time intervals. However, in this framework Topic Models are 
+estimated on very small samples on which LDA Models usually do not perform well.  
 
 A further web application for the analysis of Tweets is provided by [@onorati2019]. They offer functionality to generate
 word clouds, tree maps and map visualization. In contrast to TTLocVis, they do not estimate 
