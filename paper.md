@@ -76,7 +76,7 @@ classified by its most prevalent topic and colour coded (for example see figure 
 the spatial distribution of the same selected topics at different points in time).
 
 To the knowledge of the authors no Python Package with a comparable functionality of TTLocVis is currently available. 
-A web tool that is most related to TTLocVis is TweetViz by [@Stojanovski2014]. TweetViz provides word clouds and topic 
+A web tool that is most related to TTLocVis is TweetViz by [@stojanovski2014]. TweetViz provides word clouds and topic 
 distributions for Twitter data. However, TTLocVis improves on TweetViz by optimizing the LDA input with tweet pooling and
 options for geo-spatial and temporal analysis. Further, a major limitation of TweetViz is that the number of topic for 
 the LDA estimation is always fixed at 20. TTLocVis gives the option to define a range of potential topic numbers and 
