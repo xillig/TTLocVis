@@ -75,88 +75,33 @@ part of the world, in order to visualise the chosen sample of Tweets. As part of
 classified by its most prevalent topic and colour coded (for example see figure Word Map 1 and figure World Map 2 for 
 the spatial distribution of the same selected topics at different points in time).
 
-A package that is most related to TTLocVis,  
+To the knowledge of the authors no Python Package with a comparable functionality of TTLocVis is currently available. 
+A web tool that is most related to TTLocVis is TweetViz by [Stojanovski2014]. TweetViz provides word clouds and topic 
+distributions for Twitter data. However, TTLocVis improves on TweetViz by optimizing the LDA input with tweet pooling and
+options for geo-spatial and temporal analysis. Further, a major limitation of TweetViz is that the number of topic for 
+the LDA estimation is always fixed as 20. TTLocVis gives the option to define a range of potential topic numbers and 
+also includes an algorithm to select the optional topic number according to coherence scoring. 
 
-[Stojanovski2014] use their TweetViz framework is a similar fashion as we do: 
-They provide word clouds and topic distributions of twitter topics for a fed data set. 
-The main difference between TTLocVis and TweetViz that TTLocVis boosts its topical coherence 
-by tweet pooling. It also lets the user define the LDA topic number as well as automatically chooses
- the best models in contrast to TweetViz. 
-
--- Do they take the geolocation into account? No.
--  How about the time dimension? Yes, but only for user hashtag usage.
-
-
-
-
-Twitter data can be analysed with a web application by [@malik2013] with a LDA Topic Model. The authors use
-so-called bins resembling time intervals of equal length. For each of these bins,
-a LDA model is estimated to account for the topical change over time. They then use cosine similarity to align the 
-topics from the several bins to a resulting topic. In contrast to this approach, the LDA model is trained on pooled 
-tweets in TTLocVis in order to improve the estimation results. The estimation procedure in [@malik2013] could 
+Alternatively, Twitter data may be analysed with a web application by [@malik2013] with a LDA Topic Model. 
+The authors use so-called bins resembling time intervals for the Topic Model estimation. For each of these bins,
+a LDA Topic Model is estimated in order to account for the topical change over time. They then use cosine similarity 
+to align the topics from the several bins to a resulting topic. In contrast to this approach, the LDA model is trained 
+on pooled tweets in TTLocVis in order to improve the estimation results. The estimation procedure in [@malik2013] could 
 be beneficial in the modelling of topic changes in short time intervals. However, in this framework Topic Models are 
 estimated on very samples on which LDA Models usually do not perform well.  
 
+A further web application for the analysis of Tweets is provided by [@onorati2019]. They offer functionality to generate
+word clouds, tree maps and map visualization. In contrast to TTLocVis, they do not estimate 
+their topics by LDA, but rather use semantic relations. The focus of their application is on the contents of individual 
+tweets with regard to disaster-related classification.
 
-
-
-
-
-In [@hu20116] social media text is visualized with word clouds. In contrast to our approach, 
+In [@hu20116] a framework for social media text is provided. In contrast to our approach, 
 the selected words are choosen by a mix of frequency and sentence structure rather than LDA Topic Models.  
 The package does not provide options for a visualisation of the spatial or time dimension. 
 
- 
-
-
-Onorati et al., 2019 visualize Tweets Topics with their software focusing on word clouds, 
-tree maps and map visualization. Nevertheless, in contrast to TTLocVis, they do not estimate 
-their topics by LDA but rather use semantic relations and do focus on the contents of individual 
-tweets with regard to disaster-related classification.
-
-
--- Do they take the geolocation into account? Yes, map visualization as mentioned (they plot the location of tweets 
-topicwise based on semantic relation). 
--- How about the time dimension? Count the number of occurrences of a hashtag over time (i guess, since there is a 
-chart displayed at fig 4 but not properly explained: 
-https://e-tarjome.com/storage/panel/fileuploads/2019-04-16/1555404695_E12033-e-tarjome.pdf)
-
-Maia et al., 2016 use a clustering approach for spatial tweet content visualization but do not 
-involve any topical analysis. 
-
--- Do they take the geolocation into account? Individual tweets and clusters, produced by a not 
-further specified algorithm.
--- How about the time dimension? Clusters are visualized on an hourly and daily basis.
-
-
-Florence Ying Wang, A. Sallaberry, K. Klein, M. Takatsuka, andM. Roche, “Senticompass: 
-Interactive visualization for exploring and comparing the sentiments of time-varying twitter data,” 
-inPacificVis,2015, pp. 129–133. 
-
-cannot access this paperAbstract + Video suggest: Temporal Sentiment analysis of Twitter data
-Visualisation based on 2D psychology model 
-
-https://www.csc2.ncsu.edu/faculty/healey/tweet_viz/
-
-Sentiment analysis of Tweets
-Geolocation of Tweets can be used and visualise on a map
-
-
-Q. Kong, R. Ram, and M.-A. Rizoiu, “A toolkit for analyzing and visualizing online users via reshare cascade
- modeling,”ArXiv, vol.abs/2006.06167, 2020.
-
-Integrates two packages birdspotter and evently in order to analyse retweet cascades, provide a small case study
-on  COVID-19 related Tweets Birdspotter is a package to analyse social influence and botness of Twitter users
-Evently can be used to model the temporal  spread of information 
-
-
-
-
-
-
-
-
-
+A recent analysis of COVID-19 related Tweets can be found in [@kong2020]. They draw on the package birdspotter and
+evently in order to analyse retweet cascades. Birdspotter is a package to analyse social influence and botness of 
+Twitter users, while Evently can be used to model the temporal spread of information. 
 
 
 
