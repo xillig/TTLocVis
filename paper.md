@@ -78,7 +78,7 @@ the spatial distribution of the same selected topics at different points in time
 To the knowledge of the authors no Python Package with a comparable functionality of TTLocVis is currently available. 
 A web tool that is most related to TTLocVis is TweetViz [@stojanovski2014]. TweetViz provides word clouds and topic 
 distributions for Twitter data. However, TTLocVis improves on TweetViz by optimizing the LDA input with tweet pooling and
-options for geo-spatial and temporal analysis. Further, a major limitation of TweetViz is that the number of topic for 
+options for geo-spatial and temporal analysis. Further, a major limitation of TweetViz is that the number of topics for 
 the LDA estimation is always fixed at 20. TTLocVis gives the option to define a range of potential topic numbers and 
 also includes an algorithm to select the optimal topic number according to coherence scoring. 
 
@@ -86,15 +86,15 @@ Alternatively, Twitter data may be analyzed with a web application [@malik2013] 
 The authors use so-called bins resembling time intervals for the Topic Model estimation. For each of these bins,
 a LDA Topic Model is estimated in order to account for the topical change over time. They then use cosine similarity 
 to align the topics from the several bins to a resulting topic. However, in this framework Topic Models are 
-estimated on very small samples on which LDA Models usually do not perform well. In contrast to this approach, the LDA model is trained 
-on pooled tweets in TTLocVis in order to improve the estimation results. 
+estimated on very small samples on which LDA Models usually do not perform well. In contrast to this approach, the LDA 
+Model is trained on pooled tweets in TTLocVis in order to improve the estimation results. 
 
 A further web application [@onorati2019] offers functionality to generate word clouds, tree maps and map visualization. 
 In contrast to TTLocVis, topics are not estimated by LDA, but rather by semantic relations. 
 The focus of this application is on the contents of individual tweets with regard to disaster-related classification.
 
 Recent analysis of COVID-19 related Tweets can be found in the integration of the packages Birdspotter and
-Evently [@kong2020], in order to analyse retweet cascades. Birdspotter is a package to analyze social influence and Botness of 
+Evently [@kong2020], in order to analyse retweet cascades. Birdspotter is a package to analyze social influence and botness of 
 Twitter users, while Evently can be used to model the temporal spread of information. 
 
 
