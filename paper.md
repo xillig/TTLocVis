@@ -47,6 +47,8 @@ will be provided. Finally, it will be also discussed how TTLocVis extends existi
 The installation of TTLocVis can easily be done via pip. Further details on the installation and the package an be 
 found in the packages repository or on the documentation website of TTLocVis.^[https://ttlocvis.readthedocs.io/en/latest/#installation]
 
+## About the package
+
 In general, Topic Models are generative probabilistic models, that provide an insight into hidden information 
 in large text corpora by estimating the underlying topics of the texts in an unsupervised manner. In Topic Models, 
 each topic is a distribution over words that can be labeled by humans. For the purpose of labelling histograms and 
@@ -68,12 +70,14 @@ the shortcoming of LDAs with short and sparse text are minimized.
 TTLocVis provides options for automatized Topic Model parameter optimization. Furthermore, a distribution over 
 topics is generated for each document. The distribution of topics over documents can be visualized with various 
 plotting methods (for example see figure Word Cloud). The average prevalence of topics in the documents at each day can 
-be plotted as a time series (for example see figure Time Series), in order to visualize, how topics develop over time.
+be plotted as a time series (for example see figure Time Series), in order to visualize, how topics develop over time. 
  
 Above this, the spatial distribution of Tweets can be plotted on a world map, which automatically chooses an appropriate
 part of the world, in order to visualise the chosen sample of Tweets. As part of the mapping process, each Tweet is 
 classified by its most prevalent topic and colour coded (for example see figure Word Map 1 and figure World Map 2 for 
 the spatial distribution of the same selected topics at different points in time).
+
+## Comparison with existing tools
 
 To the knowledge of the authors no Python Package with a comparable functionality of TTLocVis is currently available. 
 A web tool that is most related to TTLocVis is TweetViz [@stojanovski2014]. TweetViz provides word clouds and topic 
