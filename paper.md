@@ -19,14 +19,17 @@ authors:
   - name: Christoph Weisser
     orcid: 0000-0003-0616-1027
     affiliation: 1
+    affiliation: 2
   - name: Benjamin Säfken
     orcid: 0000-0003-4702-3333
     affiliation: 1
-
+    affiliation: 2
 
 affiliations:
  - name: Centre for Statistics, Georg-August-Universität Göttingen, Germany
    index: 1
+ - name: Campus-Institut Data Science, Göttingen, Germany
+   index: 2  
 date: 25 May 2020
 bibliography: paper.bib
 
