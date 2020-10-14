@@ -18,12 +18,10 @@ authors:
     affiliation: 1
   - name: Christoph Weisser
     orcid: 0000-0003-0616-1027
-    affiliation: 1
-    affiliation: 2
+    affiliation: "1, 2"
   - name: Benjamin Säfken
     orcid: 0000-0003-4702-3333
-    affiliation: 1
-    affiliation: 2
+    affiliation: "1, 2"
 
 affiliations:
  - name: Centre for Statistics, Georg-August-Universität Göttingen, Germany
