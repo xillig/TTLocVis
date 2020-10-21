@@ -59,7 +59,7 @@ TTLocVis provides options for automatized Topic Model parameter optimization. Fu
 be plotted as a time series (for example see figure Time Series), in order to visualize, how topics develop over time.
 
 Above this, the spatial distribution of Tweets can be plotted on a world map, which automatically chooses an appropriate
-part of the world, in order to visualize the chosen sample of Tweets. As part of the mapping process, each Tweet is classified by its most prevalent topic and colour coded (for example see figure Word Map 1 and figure World Map 2 for the spatial distribution of the same selected topics at different points in time).
+part of the world, in order to visualize the chosen sample of Tweets. As part of the mapping process, each Tweet is classified by its most prevalent topic and color coded (for example see figure Word Map 1 and figure World Map 2 for the spatial distribution of the same selected topics at different points in time).
 
 ## Comparison with existing tools
 
