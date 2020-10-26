@@ -44,7 +44,7 @@ on Twitter.^[https://developer.twitter.com/en/docs/labs/covid19-stream/overview]
 The installation of TTLocVis can easily be done via pip. Further details on the installation and the package can be
 found in the packages repository or on the documentation website of TTLocVis.^[https://ttlocvis.readthedocs.io/en/latest/#installation]
 
-## About the package
+## Statement of Need
 
 In general, Topic Models are generative probabilistic models, that provide an insight into hidden information in large text corpora by estimating the underlying topics of the texts in an unsupervised manner. In Topic Models,
 each topic is a distribution over words that can be labeled by humans. For the purpose of labelling histograms and word clouds (for example, see graph) provide helpful visualizations for the decision-making process of the user [@blei].
