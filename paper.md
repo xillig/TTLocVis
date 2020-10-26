@@ -77,7 +77,7 @@ In contrast to TTLocVis, topics are not estimated by LDA, but rather by semantic
 The focus of this application is on the contents of individual tweets with regard to disaster-related classification.
 
 A recent analysis of COVID-19 related Tweets can be found in the integration of the packages Birdspotter and
-Eventually, [@kong2020], in order to analyze retweet cascades. Birdspotter is a package to analyze the social influence and botness of
+Evently [@kong2020], in order to analyze retweet cascades. Birdspotter is a package to analyze the social influence and botness of
 Twitter users, while Evently can be used to model the temporal spread of information.
 
 
