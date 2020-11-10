@@ -31,7 +31,7 @@ classified by its most prevalent topic and colour coded.
 
 ## How to cite 
 
-TBA
+Kant, G., Weisser, C. and Säfken, B. (2020), TTLocVis: A Twitter Topic Location Visualization Package. Journal of Open Source Software, 5 (54), 2507, https://doi.org/10.21105/joss.02507.
 
 # Installation
 
