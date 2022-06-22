@@ -14,7 +14,7 @@ installation_dependencies = [
     #'en_core_web_sm @ https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-2.0.0/en_core_web_sm-2.0.0.tar.gz',
     'gensim>=3.8.1',
     'matplotlib>=2.2.2',
-    'numpy==1.16.1',
+    'numpy==1.22.0',
     'pandas==0.24.2',
     'pyproj>=2.6.1.post1',
     'scikit-learn>=0.21.2',
